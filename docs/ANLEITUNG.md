@@ -21,6 +21,16 @@ Alles Wichtige findest du links im Menü unter **Mein Shop**.
 
 Tipp für Fotos: Muster bei Tageslicht von oben fotografieren, ohne Schatten, quadratisch zuschneiden.
 
+## Referenzen (Kundenküchen)
+*Mein Shop → Referenzen → Neue Referenz*
+1. Layout wählen: **Vorher / Nachher** (Schieberegler), **Galerie** oder **Ein Bild + Text**
+2. Fotos hineinziehen (bei Vorher/Nachher beide Fotos vom gleichen Standpunkt)
+3. Titel, Kurztext und Text schreiben – Leerzeile = neuer Absatz
+4. Speichern. Die Seite wird automatisch gestaltet und erscheint auf der Startseite.
+
+## Über-uns-Foto
+*Seiten & Texte → Über uns → bearbeiten*: auf das Bild klicken → „Ersetzen“ → eigenes Foto wählen → Aktualisieren.
+
 ## Preise, Zuschläge, Versand
 *Mein Shop → Preise & Versand*: Topfband, Aufsteckdichtung, Grifffräsung, Maße, Mindermengen- und Längenzuschlag, Versandstaffeln.
 

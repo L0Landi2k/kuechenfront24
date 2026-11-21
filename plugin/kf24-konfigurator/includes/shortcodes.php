@@ -9,11 +9,12 @@ function kf24_tools_data() {
 			'id' => $p['id'], 'n' => $p['name'], 'g' => $p['group'], 'p' => $p['m2'], 'lz' => $p['lz'], 'u' => $p['url'],
 			'kg' => $p['kgm2'], 'tex' => kf24_product_look( $p['id'] )['img'], 'col' => kf24_product_look( $p['id'] )['color'],
 			'sid' => $sid, 'sp' => $sid ? (float) wc_get_product( $sid )->get_price() : 0,
-			'sadd' => $sid ? add_query_arg( 'add-to-cart', $sid, wc_get_cart_url() ) : '',
+			'sadd' => $sid ? kf24_sample_link( $sid ) : '',
 		];
 	}
 	return [
 		'products' => $list,
+		'terms'    => function_exists( 'kf24_front_terms_flat' ) ? kf24_front_terms_flat() : [],
 		's'        => [
 			'min_t' => (float) kf24_opt( 'min_order_threshold' ), 'min_f' => (float) kf24_opt( 'min_order_fee' ),
 			'len_l' => (float) kf24_opt( 'length_limit' ), 'len_w' => (float) kf24_opt( 'length_weight_limit' ), 'len_f' => (float) kf24_opt( 'length_fee' ),
@@ -89,22 +90,6 @@ function kf24_sample_look( $p ) {
 	$sw = get_post_meta( $p->get_id(), '_kf24_swatch', true );
 	return [ 'img' => kf24_swatch_url( $sw ), 'color' => kf24_swatch_color( $sw ) ];
 }
-
-/** [kf24_muster] – sample grid from the sample category. */
-add_shortcode( 'kf24_muster', function () {
-	wp_enqueue_style( 'kf24' );
-	$q = wc_get_products( [ 'category' => [ kf24_opt( 'sample_cat' ) ], 'limit' => 100, 'status' => 'publish', 'orderby' => 'price', 'order' => 'ASC' ] );
-	if ( ! $q ) {
-		return '<p>Derzeit sind keine Muster verfügbar.</p>';
-	}
-	$o = '<div class="kf24-samples">';
-	foreach ( $q as $p ) {
-		$lk  = kf24_sample_look( $p );
-		$bg  = $lk['img'] ? 'background-image:url(' . esc_url( $lk['img'] ) . ')' : 'background:' . $lk['color'];
-		$o  .= '<div class="kf24-sample"><a class="kf24-sample-pic" href="' . esc_url( $p->get_permalink() ) . '" style="' . esc_attr( $bg ) . '" aria-label="' . esc_attr( $p->get_name() ) . '"></a><div class="kf24-sample-b"><h3>' . esc_html( str_replace( ' – Muster', '', $p->get_name() ) ) . '</h3><div class="kf24-sample-r"><span class="price">' . wc_price( $p->get_price() ) . '</span><a href="' . esc_url( $p->add_to_cart_url() ) . '" data-quantity="1" data-product_id="' . (int) $p->get_id() . '" class="button add_to_cart_button ajax_add_to_cart">In den Warenkorb</a></div></div></div>';
-	}
-	return $o . '</div><p class="kf24-hint">Musterversand innerhalb Deutschlands ' . wp_strip_all_tags( wc_price( kf24_opt( 'ship_sample_de' ) ) ) . ', in die Schweiz ' . wp_strip_all_tags( wc_price( kf24_opt( 'ship_sample_ch' ) ) ) . '. Muster sind Standardware und können widerrufen werden.</p>';
-} );
 
 /** [kf24_kontakt] */
 add_shortcode( 'kf24_kontakt', function () {

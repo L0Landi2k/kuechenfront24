@@ -20,7 +20,9 @@ function kf24_run_setup( $overwrite = false ) {
 	$n    = kf24_import_materials();
 	$log[] = $n . ' Materialien in die Materialbibliothek übernommen';
 	$fc   = kf24_term( 'Fronten für Metod', kf24_opt( 'front_cat' ) );
-	$ic   = kf24_term( 'Individuell konfigurierbar', 'individuell-konfigurierbar', $fc );
+	$ic   = kf24_term( 'Fronten nach Maß', 'fronten-nach-mass' );
+	// Move configurable fronts out of the old "Metod / individuell konfigurierbar" category.
+	$old  = get_term_by( 'slug', 'individuell-konfigurierbar', 'product_cat' );
 	$mc   = kf24_term( 'Muster', kf24_opt( 'sample_cat' ) );
 	foreach ( $data['samples'] as $s ) {
 		$post = get_page_by_path( $s['slug'], OBJECT, 'product' );
@@ -57,6 +59,11 @@ function kf24_run_setup( $overwrite = false ) {
 			$p->save();
 		} else {
 			$p = wc_get_product( $post->ID );
+			if ( $p && $p->is_type( 'simple' ) ) {
+				$cats = array_diff( $p->get_category_ids(), $old ? [ (int) $old->term_id ] : [] );
+				$p->set_category_ids( array_values( array_unique( array_merge( $cats, [ $ic ] ) ) ) );
+				$p->save();
+			}
 			if ( ! $p->is_type( 'simple' ) ) {
 				$log[] = 'Übersprungen (kein einfaches Produkt): ' . $d['slug'];
 				continue;

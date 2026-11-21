@@ -90,7 +90,7 @@ function kf24_render_configurator() {
 				<?php endforeach; ?>
 			</div>
 			<p class="kf24-filter-empty" hidden>Nichts gefunden. Anderer Suchbegriff?</p>
-			<p class="kf24-hint">Bildschirmfarben weichen vom Original ab. <?php $sid = kf24_sample_product_id( $c['sample'] ); echo $sid ? '<a href="' . esc_url( add_query_arg( 'add-to-cart', $sid, wc_get_cart_url() ) ) . '">Muster bestellen</a>.' : 'Rufen Sie uns an: ' . esc_html( kf24_opt( 'phone' ) ) . '.'; ?></p>
+			<p class="kf24-hint">Bildschirmfarben weichen vom Original ab. <?php $sid = kf24_sample_product_id( $c['sample'] ); echo $sid ? '<a href="' . esc_url( kf24_sample_link( $sid ) ) . '">Muster bestellen</a>.' : 'Rufen Sie uns an: ' . esc_html( kf24_opt( 'phone' ) ) . '.'; ?></p>
 		</fieldset>
 
 		<fieldset class="kf24-step">
@@ -102,7 +102,7 @@ function kf24_render_configurator() {
 					<select name="kf24[grain]" id="kf24-grain"><option value="aufrecht">aufrecht</option><option value="quer">quer (90° gedreht)</option></select>
 				</label>
 			</div>
-			<label class="kf24-block">Eigene Bezeichnung <small>(optional, z. B. „Spüle links“)</small><input type="text" name="kf24[label]" maxlength="60"></label>
+			<label class="kf24-block">Eigene Bezeichnung <small>(optional, z. B. „Spüle links“)</small><input type="text" name="kf24[label]" maxlength="60" list="kf24-terms"></label><datalist id="kf24-terms"><?php foreach ( kf24_front_terms_flat() as $t ) { echo '<option value="' . esc_attr( $t['l'] ) . '">'; } ?></datalist>
 			<p class="kf24-hint">Messen Sie die alte Front von Kante zu Kante. Für IKEA Metod: Rastermaß minus 3 mm, z. B. 597 × 797 mm.</p>
 		</fieldset>
 
@@ -191,6 +191,9 @@ add_action( 'wp_enqueue_scripts', function () {
 /** Products without own image: show their materials instead of the grey placeholder. */
 function kf24_material_collage( $product_id, $class = '' ) {
 	$opts = array_slice( array_values( array_filter( array_map( 'trim', explode( "\n", (string) get_post_meta( $product_id, '_kf24_options', true ) ) ) ) ), 0, 4 );
+	return kf24_collage_from_names( $opts, $class );
+}
+function kf24_collage_from_names( $opts, $class = '' ) {
 	if ( ! $opts ) {
 		return '';
 	}

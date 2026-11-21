@@ -263,4 +263,55 @@
 		if (startQ) ms.value = startQ;
 		renderMats();
 	}
+	/* ---------------- Reference editor ---------------- */
+	var rf = $('#kf24a-ref-form');
+	if (rf) {
+		var layout = function () {
+			var v = (rf.querySelector('[name=layout]:checked') || {}).value;
+			$('.kf24a-ref-ba', rf).hidden = v !== 'vorher-nachher';
+			$('.kf24a-ref-cover', rf).hidden = v === 'vorher-nachher';
+			$('.kf24a-ref-gal', rf).hidden = v === 'einzelbild';
+		};
+		rf.addEventListener('change', function (e) { if (e.target.name === 'layout') layout(); });
+		layout();
+		$$('.kf24a-drop-one', rf).forEach(function (z) {
+			var w = z.parentNode, hid = $('input[type=hidden]', w), pic = $('.kf24a-drop-pic', z), rm = $('.kf24a-one-remove', w);
+			dropzone(z, function (files) {
+				z.classList.add('is-busy');
+				post('kf24_upload', {}, files[0]).then(function (d) { hid.value = d.id; pic.style.backgroundImage = 'url(' + d.url + ')'; rm.hidden = false; })
+					.catch(function (e) { toast(e.message, true); }).then(function () { z.classList.remove('is-busy'); });
+			});
+			rm.addEventListener('click', function () { hid.value = 0; pic.style.backgroundImage = ''; rm.hidden = true; });
+		});
+		var gbox = $('.kf24a-gal', rf), gin = $('[name=gallery]', rf), items = JSON.parse(gbox.dataset.items || '[]');
+		var renderGal = function () {
+			gin.value = items.map(function (i) { return i.id; }).join(',');
+			gbox.innerHTML = items.map(function (it, i) {
+				return '<div class="kf24a-gal-i" style="background-image:url(' + esc(it.url) + ')"><button type="button" data-mv="-1" data-i="' + i + '" aria-label="nach vorne">←</button><button type="button" data-mv="1" data-i="' + i + '" aria-label="nach hinten">→</button><button type="button" data-rm="' + i + '" aria-label="entfernen">×</button></div>';
+			}).join('');
+		};
+		gbox.addEventListener('click', function (e) {
+			var b = e.target.closest('button'); if (!b) return;
+			if (b.dataset.rm != null) items.splice(+b.dataset.rm, 1);
+			if (b.dataset.mv) { var i = +b.dataset.i, j = i + (+b.dataset.mv); if (j >= 0 && j < items.length) { var t = items[i]; items[i] = items[j]; items[j] = t; } }
+			renderGal();
+		});
+		var many = $('.kf24a-drop-many', rf);
+		dropzone(many, function (files) {
+			many.classList.add('is-busy');
+			files.reduce(function (p, f) { return p.then(function () { return post('kf24_upload', {}, f).then(function (d) { items.push({ id: d.id, url: d.url }); renderGal(); }).catch(function (e) { toast(f.name + ': ' + e.message, true); }); }); }, Promise.resolve())
+				.then(function () { many.classList.remove('is-busy'); });
+		}, true);
+		renderGal();
+		rf.addEventListener('submit', function (e) {
+			var v = rf.querySelector('[name=layout]:checked').value;
+			if (v === 'vorher-nachher' && (!+rf.elements['before'].value || !+rf.elements['after'].value)) { e.preventDefault(); toast('Für Vorher / Nachher bitte beide Fotos hineinziehen.', true); }
+		});
+		var rdel = $('.kf24a-ref-del', rf);
+		if (rdel) rdel.addEventListener('click', function () {
+			ask('Referenz löschen?', 'Sie verschwindet von der Website und landet im Papierkorb.', 'Ja, löschen').then(function (ok) {
+				if (ok) post('kf24_ref_delete', { id: rdel.dataset.id }).then(function (d) { location.href = d.redirect; }).catch(function (e) { toast(e.message, true); });
+			});
+		});
+	}
 })();

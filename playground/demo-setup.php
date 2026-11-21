@@ -7,6 +7,9 @@
  */
 
 ( function () {
+// Run as the administrator so page layouts (forms, SVG icons) are stored unfiltered.
+wp_set_current_user( 1 );
+kses_remove_filters();
 $log = function ( $m ) {
 	if ( class_exists( 'WP_CLI' ) ) {
 		WP_CLI::log( $m );
@@ -114,17 +117,30 @@ if ( function_exists( 'kf24t_run_setup' ) ) {
 	}
 }
 
-/* ---------- Beispiel: IKEA-Metod-Front mit Varianten (wie im alten Shop) ---------- */
-if ( ! get_page_by_path( 'massivholzfront-3-schicht-pg2-tuere', OBJECT, 'product' ) ) {
-	$cat   = get_term_by( 'slug', 'massivholzfronten', 'product_cat' );
-	$cat   = $cat ? $cat->term_id : wp_insert_term( 'Massivholzfronten', 'product_cat', [ 'parent' => (int) get_term_by( 'slug', kf24_opt( 'front_cat' ), 'product_cat' )->term_id ] )['term_id'];
-	$attrs = [ 'Holzart' => [ 'Birke', 'Ahorn', 'Eiche', 'Esche' ], 'Breite' => [ '200', '300', '400', '600' ], 'Höhe' => [ '400', '600', '800', '1000', '1200', '1400', '2000' ], 'Anschlagsart' => [ 'links', 'rechts' ], 'Grifffräsung' => [ 'keine', 'oben', 'unten' ] ];
+/* ---------- Beispiele: je Metod-Familie ein Produkt mit Varianten (live kommen alle Teile aus dem alten Shop) ---------- */
+$front_cat = get_term_by( 'slug', kf24_opt( 'front_cat' ), 'product_cat' );
+$front_cat = $front_cat ? $front_cat->term_id : wp_insert_term( 'Fronten für Metod', 'product_cat', [ 'slug' => kf24_opt( 'front_cat' ) ] )['term_id'];
+$families  = [
+	[ 'Massivholzfronten', 'massivholzfronten', 'Massivholzfront 3-Schicht PG2, Türe', 'massivholzfront-3-schicht-pg2-tuere', [ 'Birke', 'Ahorn', 'Eiche', 'Esche' ], 'eiche', [ 160, 184, 184, 218, 207, 253 ] ],
+	[ 'Echtholzfronten furniert', 'echtholzfronten-furniert', 'Echtholzfront Eiche furniert, Türe', 'echtholzfront-eiche-furniert-tuere', [ 'Eiche', 'Esche natur', 'Amerikanischer Nussbaum' ], 'furnier-eiche', [ 138, 158, 158, 189, 178, 219 ] ],
+	[ 'Dekorfronten', 'dekorfronten', 'Dekorfront matt, Türe', 'dekorfront-matt-tuere', [ 'Weiß', 'Kaschmir', 'Grau' ], 'weiss', [ 69, 79, 79, 95, 89, 110 ] ],
+	[ 'Lackfronten Mattlack', 'lackfronten-mattlack', 'Lackfront matt, Türe', 'lackfront-matt-tuere', [ 'Weiß', 'RAL nach Wahl' ], 'salbei', [ 149, 172, 172, 205, 193, 238 ] ],
+	[ 'Lackfronten Hochglanz', 'lackfronten-hochglanz', 'Lackfront Hochglanz, Türe', 'lackfront-hochglanz-tuere', [ 'Weiß', 'RAL nach Wahl' ], 'hochglanz', [ 199, 229, 229, 274, 258, 318 ] ],
+	[ 'Fenix NTM', 'fenix-ntm', 'Fenix NTM Front, Türe', 'fenix-ntm-front-tuere', [ 'Nero Ingo', 'Bianco Kos', 'Grigio Londra' ], 'fenix', [ 219, 252, 252, 302, 284, 350 ] ],
+];
+foreach ( $families as [ $cname, $cslug, $pname, $pslug, $woods, $sw, $prices ] ) {
+	$t   = get_term_by( 'slug', $cslug, 'product_cat' );
+	$cid = $t ? $t->term_id : wp_insert_term( $cname, 'product_cat', [ 'slug' => $cslug, 'parent' => $front_cat ] )['term_id'];
+	if ( get_page_by_path( $pslug, OBJECT, 'product' ) ) {
+		continue;
+	}
+	$attrs = [ 'Ausführung' => $woods, 'Breite' => [ '400', '600' ], 'Höhe' => [ '400', '600', '800' ], 'Anschlagsart' => [ 'links', 'rechts' ], 'Grifffräsung' => [ 'keine', 'oben', 'unten' ] ];
 	$p     = new WC_Product_Variable();
-	$p->set_name( 'Massivholzfront 3-Schicht PG2, Türe' );
-	$p->set_slug( 'massivholzfront-3-schicht-pg2-tuere' );
+	$p->set_name( $pname );
+	$p->set_slug( $pslug );
 	$p->set_status( 'publish' );
-	$p->set_category_ids( [ $cat ] );
-	$p->set_short_description( 'Passend für IKEA Metod. Mit Bohrungen für Topfbänder, auf Wunsch mit angefräster Griffmulde.' );
+	$p->set_category_ids( [ $cid ] );
+	$p->set_short_description( 'Passend für IKEA Metod. Mit Bohrungen für die IKEA-Beschläge. (Beispielprodukt der Testversion – im Live-Shop stehen hier alle Teile aus dem bisherigen Shop.)' );
 	$list = [];
 	foreach ( $attrs as $n => $opts ) {
 		$a = new WC_Product_Attribute();
@@ -136,47 +152,62 @@ if ( ! get_page_by_path( 'massivholzfront-3-schicht-pg2-tuere', OBJECT, 'product
 	}
 	$p->set_attributes( $list );
 	$pid = $p->save();
-	update_post_meta( $pid, '_kf24_swatch', 'eiche' );
+	update_post_meta( $pid, '_kf24_swatch', $sw );
 	update_post_meta( $pid, '_kf24_lz', 'ca. 6–8 Wochen' );
-	foreach ( [ [ 400, 400, 160 ], [ 600, 400, 184 ], [ 400, 600, 184 ], [ 600, 600, 218 ], [ 400, 800, 207 ], [ 600, 800, 253 ] ] as [ $w, $h, $price ] ) {
+	foreach ( [ [ 400, 400 ], [ 600, 400 ], [ 400, 600 ], [ 600, 600 ], [ 400, 800 ], [ 600, 800 ] ] as $i => [ $w, $h ] ) {
 		$v = new WC_Product_Variation();
 		$v->set_parent_id( $pid );
 		$v->set_attributes( [ 'breite' => (string) $w, 'hohe' => (string) $h ] );
-		$v->set_regular_price( $price );
+		$v->set_regular_price( $prices[ $i ] );
 		$v->set_weight( round( $w * $h / 1e6 * 12, 1 ) );
 		$v->save();
 	}
 	WC_Product_Variable::sync( $pid );
-	$log( 'Metod-Beispielprodukt angelegt' );
 }
+$log( 'Metod-Beispielprodukte angelegt' );
 
-/* ---------- Referenzen mit Kundenfotos ---------- */
+/* ---------- Referenzen (über den gleichen Weg wie in „Mein Shop“) ---------- */
 require_once ABSPATH . 'wp-admin/includes/file.php';
 require_once ABSPATH . 'wp-admin/includes/media.php';
 require_once ABSPATH . 'wp-admin/includes/image.php';
-$ref = get_term_by( 'slug', 'referenzen', 'category' );
-$ref = $ref ? $ref->term_id : wp_insert_term( 'Referenzen', 'category', [ 'slug' => 'referenzen' ] )['term_id'];
-$posts = [
-	[ 'ad10.jpg', 'Vorher, nachher: neue Fronten statt neuer Küche', 'Dieselbe Küche, nur die Fronten getauscht: aus grauer Betonoptik wird warme Eiche.' ],
-	[ 'ad11.jpg', 'Eichenfronten mit angefräster Griffmulde', 'Zwei Küchenzeilen auf Metod-Korpussen. Fronten aus geölter Eiche, Arbeitsplatten aus massiver Eiche.' ],
-	[ 'ad00.jpg', 'Hängesideboard auf Basis Metod', 'Wildeiche 3-Schicht massiv, geölt, mit angefräster Griffmulde. Abdeckplatte aus astiger Eiche, 305 cm lang.' ],
-];
-foreach ( $posts as $i => [ $file, $title, $text ] ) {
-	if ( get_posts( [ 'title' => $title, 'post_type' => 'post', 'fields' => 'ids' ] ) ) {
-		continue;
+$done = [];
+$att  = function ( $file, $title ) use ( &$done ) {
+	if ( isset( $done[ $file ] ) ) {
+		return $done[ $file ];
 	}
 	$src = '/tmp/kf24/' . $file;
-	$att = 0;
-	if ( is_readable( $src ) ) {
-		$tmp = wp_tempnam( $file );
-		copy( $src, $tmp );
-		$att = media_handle_sideload( [ 'name' => $file, 'tmp_name' => $tmp ], 0, $title );
-		$att = is_wp_error( $att ) ? 0 : $att;
+	if ( ! is_readable( $src ) ) {
+		return 0;
 	}
-	$img = $att ? '<!-- wp:image {"id":' . $att . ',"sizeSlug":"large"} --><figure class="wp-block-image size-large">' . wp_get_attachment_image( $att, 'large', false, [ 'class' => 'wp-image-' . $att ] ) . '</figure><!-- /wp:image -->' : '';
-	$id  = wp_insert_post( [ 'post_type' => 'post', 'post_status' => 'publish', 'post_title' => $title, 'post_content' => '<!-- wp:paragraph --><p>' . esc_html( $text ) . '</p><!-- /wp:paragraph -->' . $img, 'post_category' => [ $ref ], 'post_date' => gmdate( 'Y-m-d H:i:s', time() - ( $i + 1 ) * 9 * DAY_IN_SECONDS ) ] );
-	if ( $att ) {
-		set_post_thumbnail( $id, $att );
+	$tmp = wp_tempnam( $file );
+	copy( $src, $tmp );
+	$id = media_handle_sideload( [ 'name' => $file, 'tmp_name' => $tmp ], 0, $title );
+	return $done[ $file ] = is_wp_error( $id ) ? 0 : $id;
+};
+$refs = [
+	[ 'Vorher, nachher: neue Fronten statt neuer Küche', 'Dieselbe Küche, nur die Fronten getauscht: aus grauer Betonoptik wird warme Eiche.', "Die Korpusse waren noch top, nur die grauen Fronten passten nicht mehr. Statt die Küche abzureißen, haben wir alle Fronten in massiver Eiche neu gefertigt.\n\nZiehen Sie den Regler im Bild hin und her: links vorher, rechts nachher.", 'vorher-nachher', 'ad10.jpg', 'ad11.jpg', '', 'Massivholz Eiche, geölt', 'IKEA Metod', 'München', 26 ],
+	[ 'Eichenfronten mit angefräster Griffmulde', 'Zwei Küchenzeilen auf Metod-Korpussen. Fronten aus geölter Eiche, Arbeitsplatten aus massiver Eiche.', 'Grifflos, ruhig und warm: Die Griffmulde ist direkt in die 3-Schicht-Eiche gefräst. So bleibt die Front flächig, und trotzdem greift man sicher zu.', 'einzelbild', '', '', 'ad11.jpg', 'Massivholz Eiche mit Grifffräsung', 'IKEA Metod', '', 18 ],
+	[ 'Hängesideboard auf Basis Metod', 'Wildeiche 3-Schicht massiv, geölt, mit angefräster Griffmulde. Abdeckplatte aus astiger Eiche, 305 cm lang.', "Aus vier Metod-Korpussen wird ein schwebendes Sideboard fürs Wohnzimmer. Die Fronten sind aus Wildeiche mit Griffmulde, die Abdeckplatte aus astiger Eiche mit 305 cm Länge.\n\nDas Bild ist eine Illustration. Das Foto des fertigen Sideboards folgt.", 'einzelbild', '', '', 'sideboard.jpg', 'Wildeiche massiv, Griffmulde', 'IKEA Metod (Wandmontage)', '', 9 ],
+];
+foreach ( $refs as [ $title, $excerpt, $text, $layout, $b, $a, $cover, $front, $kitchen, $place, $days ] ) {
+	$old = get_posts( [ 'title' => $title, 'post_type' => 'post', 'post_status' => 'any', 'fields' => 'ids', 'posts_per_page' => 1 ] );
+	$id  = kf24_ref_save( [
+		'title'   => $title,
+		'excerpt' => $excerpt,
+		'text'    => $text,
+		'layout'  => $layout,
+		'before'  => $b ? $att( $b, 'Vorher' ) : 0,
+		'after'   => $a ? $att( $a, 'Nachher' ) : 0,
+		'cover'   => $cover ? $att( $cover, $title ) : 0,
+		'gallery' => [],
+		'front'   => $front,
+		'kitchen' => $kitchen,
+		'place'   => $place,
+		'online'  => true,
+	], $old ? $old[0] : 0 );
+	if ( ! is_wp_error( $id ) ) {
+		$date = gmdate( 'Y-m-d H:i:s', time() - $days * DAY_IN_SECONDS );
+		wp_update_post( [ 'ID' => $id, 'post_date' => $date, 'post_date_gmt' => $date ] );
 	}
 }
 $log( 'Referenzen angelegt' );

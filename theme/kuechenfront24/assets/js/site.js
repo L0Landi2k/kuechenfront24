@@ -146,3 +146,23 @@ if (hs && SW.length) {
 	$('#swName').textContent = SW[0].n; $('#swPrice').textContent = SW[0].p;
 }
 })();
+
+/* FAQ search */
+(function () {
+	var q = document.querySelector('.kf24-faq-search');
+	if (!q) return;
+	q.addEventListener('input', function () {
+		var v = q.value.toLowerCase().trim(), any = false;
+		document.querySelectorAll('.kf24-faq-sec').forEach(function (sec) {
+			var hits = 0;
+			sec.querySelectorAll('details.kf24-faq-q').forEach(function (d) {
+				var hit = !v || d.textContent.toLowerCase().indexOf(v) >= 0;
+				d.hidden = !hit; d.classList.toggle('kf24-faq-hit', !!v && hit);
+				if (v && hit && d.querySelector('summary').textContent.toLowerCase().indexOf(v) < 0) d.open = true;
+				if (hit) hits++;
+			});
+			sec.hidden = !hits; any = any || hits > 0;
+		});
+		document.querySelector('.kf24-faq-none').hidden = any;
+	});
+})();

@@ -72,8 +72,10 @@ function kf24_demo_assets() {
 	$steps = [
 		[ 'Shop', 'Startseite ansehen – auch auf dem Handy', home_url( '/' ), 'Gefällt dir Optik, Text und Bilder? Tipp: Fenster schmal ziehen = Handy-Ansicht.' ],
 		[ 'Shop', 'Eine Front konfigurieren und in den Warenkorb legen', $front ? $front . '#kf24-konfigurator' : wc_get_page_permalink( 'shop' ), 'Material wählen, Maße, Topfbänder, Griff – Zeichnung und Preis laufen live mit.' ],
-		[ 'Shop', 'Preisrechner ausprobieren', $page( 'preisrechner' ), 'Mehrere Fronten auf einmal durchrechnen.' ],
-		[ 'Shop', 'Muster in den Warenkorb legen', $page( 'muster' ), '' ],
+		[ 'Shop', 'Aufmaß-Tabelle ausfüllen (z. B. mit Faktum-Bestellhilfe)', add_query_arg( 'system', 'faktum', $page( 'aufmass' ) ), 'Teile antippen, Maße eintragen, eine Zeile im Konfigurator öffnen, drucken.' ],
+		[ 'Shop', 'Preisrechner ausprobieren', $page( 'preisrechner' ), 'Teile aus der Liste wählen, z. B. „Apothekerfront“.' ],
+		[ 'Shop', 'Muster mit Farbe oder Holzart in den Warenkorb legen', $page( 'muster' ), 'z. B. Lack matt bunt → Farbe wählen.' ],
+		[ 'Shop', 'Shop-Übersicht ansehen', wc_get_page_permalink( 'shop' ), 'Nach Maß, Metod, Muster – klar getrennt.' ],
 		$metod ? [ 'Shop', 'IKEA-Metod-Front mit Varianten ansehen', get_permalink( $metod ), 'Wie bisher: Größe, Anschlag, Griff aus Listen wählen.' ] : null,
 		[ 'Shop', 'Bestellung abschicken (Vorkasse)', wc_get_cart_url(), 'Fantasiedaten reichen. Es wird nichts bezahlt.' ],
 		[ 'Shop', 'Kontaktformular senden', $page( 'kontakt' ), '' ],
@@ -85,7 +87,7 @@ function kf24_demo_assets() {
 		[ 'Verwaltung', 'Front offline schalten, duplizieren, löschen', admin_url( 'admin.php?page=kf24-fronten' ), '' ],
 		[ 'Verwaltung', 'Preise ändern (z. B. Topfband, Versand)', admin_url( 'admin.php?page=kf24-preise' ), '' ],
 		[ 'Verwaltung', 'Text einer Seite ändern', admin_url( 'edit.php?post_type=page' ), 'z. B. „Über uns“ oder die FAQ.' ],
-		[ 'Verwaltung', 'Referenz-Küche als Beitrag anlegen', admin_url( 'post-new.php' ), 'Titel, Text, Bilder – Kategorie „Referenzen“.' ],
+		[ 'Verwaltung', 'Referenz mit Vorher/Nachher anlegen', admin_url( 'admin.php?page=kf24-referenz' ), 'Layout wählen, Fotos hineinziehen, Text schreiben, speichern.' ],
 		[ 'Verwaltung', 'Menü oder Fußzeile ändern', admin_url( 'nav-menus.php' ), 'Gilt sofort auf allen Seiten.' ],
 	];
 	wp_localize_script( 'kf24-demo', 'KF24DEMO', [

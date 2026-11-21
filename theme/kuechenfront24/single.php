@@ -9,7 +9,7 @@ while ( have_posts() ) {
 		<h1><?php the_title(); ?></h1>
 		<p class="small"><?php echo esc_html( get_the_date() ); ?></p>
 	</div></div>
-	<?php if ( has_post_thumbnail() ) : ?>
+	<?php if ( has_post_thumbnail() && ! get_post_meta( get_the_ID(), '_kf24_ref', true ) ) : ?>
 		<div class="band" style="padding-bottom:0"><div class="wrap single-hero"><?php the_post_thumbnail( 'full', [ 'sizes' => '(max-width:1240px) 100vw, 1240px' ] ); ?></div></div>
 	<?php endif; ?>
 	<div class="entry-content"><?php the_content(); ?>

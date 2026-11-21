@@ -233,6 +233,15 @@
 	});
 	window.addEventListener('resize', function () { draw(state()); });
 	$('.kf24-seal').hidden = true;
+	// values handed over from the Aufmaß table (?kf24_w=…&kf24_h=…)
+	var qs = new URLSearchParams(location.search), took = false;
+	if (/^(tuer|schublade|klappe|blende)$/.test(qs.get('kf24_type') || '')) { setRadio('type', qs.get('kf24_type')); preset(qs.get('kf24_type')); took = true; }
+	['w', 'h'].forEach(function (k) { var v = parseInt(qs.get('kf24_' + k), 10); if (v > 0) { $('#kf24-' + k).value = v; took = true; } });
+	if (/^(links|rechts|oben|keine)$/.test(qs.get('kf24_hinge') || '')) setRadio('hinge', qs.get('kf24_hinge'));
+	var hn = parseInt(qs.get('kf24_hn'), 10); if (hn >= 1 && hn <= 5) $('#kf24-hinges').value = String(hn);
+	if (qs.get('kf24_label')) form.querySelector('[name="kf24[label]"]').value = qs.get('kf24_label').slice(0, 60);
+	var qq = parseInt(qs.get('kf24_qty'), 10); if (qq > 0 && $('#kf24-qty')) $('#kf24-qty').value = qq;
+	if (took) { var note = document.createElement('p'); note.className = 'kf24-took'; note.textContent = 'Maße aus Ihrer Aufmaßtabelle übernommen. Bitte noch Material und Details wählen.'; form.insertBefore(note, form.firstChild); }
 	renderHpos(state(), true);
 	sync();
 })();

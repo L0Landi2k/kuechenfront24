@@ -14,9 +14,9 @@ Unten am Bildschirm gibt es den Knopf **„Testliste & Feedback“**: eine Schri
 
 | Bereich | Inhalt |
 |---|---|
-| Website | Startseite, Frontarten, IKEA Metod/Faktum, Nach Maß, Preisrechner, Muster, Referenzen, Ratgeber, FAQ, Service, Kontakt, Rechtstexte, „Vertrag widerrufen“ |
+| Website | Startseite, Shop-Übersicht, Frontarten, IKEA Metod/Faktum, Nach Maß, Preisrechner, Aufmaß-Tabelle (online, druckbar, mit Faktum-/Metod-Bestellhilfe), RAL-Farben, Muster mit Farb-/Holzauswahl, Referenzen mit Vorher/Nachher, Ratgeber, FAQ, Service, Kontakt, Rechtstexte, „Vertrag widerrufen“ |
 | Konfigurator | Preis je m², Live-Zeichnung mit Material, Topfbänder, Griffbohrungen, Grifffräsung, Plausibilitätsprüfung, Mindermengen- und Längenzuschlag, Versand nach Gewicht, Fertigungsblatt |
-| Mein Shop | Übersicht, Fronten anlegen / duplizieren / ein- und ausschalten / löschen, Materialbibliothek mit Fotos per Drag & Drop, Preise & Versand |
+| Mein Shop | Übersicht, Fronten anlegen / duplizieren / ein- und ausschalten / löschen, Materialbibliothek mit Fotos per Drag & Drop, Referenzen mit festen Layouts, Preise & Versand |
 | Materialien | 371 Materialien: Massivholz, Furnier, Egger-Holz-, Uni- und Materialdekore, alle RAL-Farben, Fenix |
 
 ## Aktuelle Annahmen
@@ -25,6 +25,7 @@ Unten am Bildschirm gibt es den Knopf **„Testliste & Feedback“**: eine Schri
 - Aufsteckdichtung: **2,00 € je lfm (fiktiv)** – wird im Shop mit „fiktiv“ angezeigt, bis der echte Preis feststeht
 - Fertigungsmaß maximal **2.800 × 900 mm**
 - RAL-Farbwerte aus einer offenen Farbtabelle (MIT-Lizenz). Holz-, Furnier-, Fenix- und Dekorbilder sind **einheitlich erzeugte Platzhalter** und werden durch echte Fotos ersetzt (einfach per Drag & Drop in *Materialien & Fotos*).
+- Das Bild „Hängesideboard“ ist eine Illustration, das Über-uns-Bild ein Platzhalter – beide werden durch echte Fotos ersetzt.
 - Rechtstexte werden vor dem Livegang geprüft.
 
 Alle Werte sind in *Mein Shop → Preise & Versand* änderbar.

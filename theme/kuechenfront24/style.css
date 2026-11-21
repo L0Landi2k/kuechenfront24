@@ -2,7 +2,7 @@
 Theme Name: Küchenfront24
 Theme URI: https://www.kuechenfront24.de/
 Description: Theme für Küchenfront24 – Küchenfronten nach Maß. Für WooCommerce und das Plugin „Küchenfront24 Konfigurator“.
-Version: 1.0.0
+Version: 1.2.0
 Requires at least: 6.5
 Requires PHP: 8.0
 Text Domain: kuechenfront24
@@ -191,3 +191,60 @@ input:focus,select:focus,textarea:focus{border-color:var(--acc);outline:none;box
 .woocommerce a.button:not(.alt):hover{background:color-mix(in srgb,var(--acc) 10%,transparent)!important}
 .woocommerce ul.products li.product .kf24-loop-btn{background:var(--acc)!important;color:#fff!important}
 @media(max-width:420px){.logo{font-size:19px;gap:7px}.logo svg{width:28px;height:28px}.tools{gap:6px}.icon-btn{width:40px;height:40px}}
+/* ---- Tooltips & part icons ---- */
+.kf24-tip{position:relative;cursor:help;border-bottom:1px dotted currentColor}
+.kf24-tip abbr{text-decoration:none;border:0}
+.kf24-tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--deep);color:#fff;font-weight:500;font-size:13px;line-height:1.3;padding:7px 10px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:5}
+.kf24-tip:hover::after,.kf24-tip:focus::after{opacity:1}
+.kf24-part{display:inline-flex;align-items:center;gap:10px}
+.kf24-pico{width:26px;height:26px;color:var(--acc);flex:none}
+/* ---- FAQ ---- */
+.kf24-faq-tools{position:sticky;top:76px;z-index:3;background:var(--bg);padding:8px 0 12px}
+.kf24-faq-search{width:100%;max-width:560px;min-height:50px;border:1.5px solid var(--line);border-radius:999px;padding:10px 20px;font:inherit;font-size:17px}
+.kf24-faq-sec{margin:26px 0 8px}
+.kf24-faq-h{display:flex;align-items:center;gap:12px;font-size:clamp(22px,2.4vw,28px)!important;margin:0 0 12px!important}
+.kf24-faq-h::before{content:"";width:10px;height:28px;border-radius:4px;background:var(--acc)}
+details.kf24-faq-q{background:#fff;border:1px solid var(--line);border-radius:14px;margin:0 0 10px;padding:0;transition:box-shadow .15s}
+details.kf24-faq-q[open]{box-shadow:var(--sh);border-color:color-mix(in srgb,var(--acc) 35%,var(--line))}
+details.kf24-faq-q>summary{list-style:none;cursor:pointer;padding:16px 52px 16px 20px;font-weight:600;font-size:17px;position:relative}
+details.kf24-faq-q>summary::-webkit-details-marker{display:none}
+details.kf24-faq-q>summary::after{content:"+";position:absolute;right:18px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-size:20px;color:var(--acc);transition:transform .2s}
+details.kf24-faq-q[open]>summary::after{content:"–"}
+details.kf24-faq-q>:not(summary){margin:0 20px 14px}
+.kf24-faq-also{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);margin-top:6px!important}
+details.kf24-faq-sub{border-left:3px solid var(--panel2);margin:0 20px 8px!important;padding:2px 0 2px 12px}
+details.kf24-faq-sub>summary{cursor:pointer;color:var(--acc);font-weight:600}
+details.kf24-faq-sub p{margin:6px 0}
+.kf24-faq-cta{margin-top:34px;padding:22px;border-radius:14px;background:var(--panel);display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.kf24-faq-cta p{margin:0}
+.kf24-faq-hit summary{background:color-mix(in srgb,var(--acc) 6%,transparent)}
+/* ---- Über uns ---- */
+.kf24-about-hero{gap:clamp(20px,4vw,48px);margin-bottom:36px;align-items:center}
+.kf24-about-hero img{border-radius:14px;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.kf24-about-cols{gap:clamp(20px,4vw,48px)}
+/* ---- Shop overview ---- */
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:14px}
+.path{display:flex;flex-direction:column;gap:6px;padding:22px;border:1.5px solid var(--line);border-radius:16px;background:#fff;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s,box-shadow .15s}
+.path:hover,.path:focus-visible{border-color:var(--acc);transform:translateY(-2px);box-shadow:var(--sh)}
+.path h2{font-size:22px!important;margin:4px 0 0!important}
+.path p{margin:0;color:var(--mute)}
+.path-n{width:34px;height:34px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700}
+.path-go{margin-top:auto;padding-top:8px;font-weight:700;color:var(--acc)}
+.shop-help{color:var(--mute)}
+.shop-g{margin:26px 0 10px}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.shop-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;text-decoration:none;color:var(--ink);transition:box-shadow .15s,border-color .15s}
+.shop-card:hover,.shop-card:focus-visible{box-shadow:var(--sh);border-color:var(--acc)}
+.shop-pic{aspect-ratio:16/10;background-size:cover;background-position:center}
+.shop-b{display:flex;flex-direction:column;gap:4px;padding:12px 14px 14px}
+.shop-b small{color:var(--mute)}
+.shop-price{font-weight:700;color:var(--acc)}
+.shop-cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.shop-cats .card{display:flex;flex-direction:column;gap:2px;text-decoration:none;color:var(--ink)}
+.shop-cats .card small{color:var(--mute)}
+.shop-cats .card:hover{border-color:var(--acc)}
+.shop-landing{padding-bottom:40px}
+.shop-pic.is-collage{display:block}.shop-pic .kf24-collage{aspect-ratio:16/10;border-radius:0;height:100%}
+a.card{text-decoration:none;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+a.card h3{color:var(--acc)}
+a.card:hover,a.card:focus-visible{border-color:var(--acc);box-shadow:var(--sh)}

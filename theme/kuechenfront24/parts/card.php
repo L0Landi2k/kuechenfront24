@@ -1,6 +1,8 @@
 <article <?php post_class( 'post-card' ); ?>>
 	<a class="pic" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
-		<?php if ( has_post_thumbnail() ) {
+		<?php if ( function_exists( 'kf24_ref_card_html' ) && ( $kf24t_split = kf24_ref_card_html( get_the_ID() ) ) ) {
+			echo $kf24t_split; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in kf24_ref_card_html()
+		} elseif ( has_post_thumbnail() ) {
 			the_post_thumbnail( 'kf24-card', [ 'loading' => 'lazy', 'alt' => '' ] );
 		} else {
 			echo '<span data-scene="metod" data-mat="eiche-wild" style="display:block;width:100%;height:100%"></span>';

@@ -126,7 +126,7 @@ function kf24_page_overview() {
 		[ 'admin.php?page=kf24-fronten', 'grid-view', 'Fronten verwalten', 'Ein-/ausschalten, duplizieren, löschen.' ],
 		[ 'admin.php?page=kf24-preise', 'money-alt', 'Preise & Versand', 'Topfbänder, Zuschläge, Versandkosten, Maße.' ],
 		[ 'edit.php?post_type=page', 'admin-page', 'Seiten & Texte', 'Über uns, FAQ, Service, Rechtstexte.' ],
-		[ 'edit.php', 'format-gallery', 'Referenzen & Ratgeber', 'Kundenküchen und Tipps veröffentlichen.' ],
+		[ 'admin.php?page=kf24-referenzen', 'format-gallery', 'Referenzen', 'Kundenküchen mit Fotos und Vorher/Nachher zeigen.' ],
 		[ 'nav-menus.php', 'menu', 'Menü & Fußzeile', 'Einmal ändern – gilt auf allen Seiten.' ],
 		[ 'edit.php?post_type=product', 'products', 'Weitere Produkte', 'Metod-Fronten mit Varianten, Muster, Zubehör.' ],
 		[ 'customize.php', 'admin-appearance', 'Kontaktdaten & Startseite', 'Telefon, E-Mail, Ausstellung, Google Analytics.' ],
@@ -329,7 +329,7 @@ add_action( 'admin_post_kf24_front_save', function () {
 	$p->set_image_id( absint( $in['image_id'] ?? 0 ) );
 	$p->set_sold_individually( false );
 	if ( ! $id ) {
-		$fc = kf24_term( 'Individuell konfigurierbar', 'individuell-konfigurierbar', kf24_term( 'Fronten für Metod', kf24_opt( 'front_cat' ) ) );
+		$fc = kf24_term( 'Fronten nach Maß', 'fronten-nach-mass' );
 		$p->set_category_ids( [ $fc ] );
 	}
 	$id      = $p->save();

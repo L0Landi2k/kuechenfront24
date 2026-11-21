@@ -57,14 +57,6 @@
     },
     {
       "step": "writeFile",
-      "path": "/tmp/kf24/ad00.jpg",
-      "data": {
-        "resource": "url",
-        "url": "https://raw.githubusercontent.com/L0Landi2k/kuechenfront24/main/playground/img/ad00.jpg"
-      }
-    },
-    {
-      "step": "writeFile",
       "path": "/tmp/kf24/ad10.jpg",
       "data": {
         "resource": "url",
@@ -77,6 +69,14 @@
       "data": {
         "resource": "url",
         "url": "https://raw.githubusercontent.com/L0Landi2k/kuechenfront24/main/playground/img/ad11.jpg"
+      }
+    },
+    {
+      "step": "writeFile",
+      "path": "/tmp/kf24/sideboard.jpg",
+      "data": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/L0Landi2k/kuechenfront24/main/playground/img/sideboard.jpg"
       }
     },
     {
