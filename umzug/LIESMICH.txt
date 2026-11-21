@@ -1,0 +1,24 @@
+Küchenfront24 – Relaunch-Paket (Stand November 2026)
+
+Inhalt
+- kf24-konfigurator.zip       WordPress-Plugin: Konfigurator, Preise, Zuschläge, Versand, Fertigungsblatt,
+                              Preisrechner, Muster, Kontakt, Widerrufsfunktion (§ 356a BGB)
+- kuechenfront24-theme.zip    WordPress-Theme im neuen Design, inkl. Seiten-Einrichtung per Klick
+- umzug/                      Weiterleitungen (.htaccess-Snippets und CSV für das Plugin "Redirection")
+
+Voraussetzungen
+- WordPress ab 6.5, WooCommerce ab 9.0, PHP 8.0 oder neuer
+- Getestet mit WordPress 7.1.5, WooCommerce 11.3.0, PHP 8.3
+
+Kurzablauf (Details in der Umzugsanleitung)
+1. Staging-Kopie der Shop-Installation anlegen, Backup!
+2. Plugin und Theme installieren und aktivieren
+3. WooCommerce -> Küchenfront24 -> "Konfigurator-Produkte einrichten"
+4. Darstellung -> Küchenfront24 einrichten
+5. Versandzone Deutschland/Schweiz: Methode "Küchenfront24 Versand" hinzufügen
+6. Altes Konfigurator-Plugin deaktivieren, testen, Inhalte der Hauptseite importieren
+7. Shop auf www.kuechenfront24.de umziehen, Weiterleitungen aktivieren
+
+WP-CLI (optional)
+  wp kf24 setup [--overwrite]
+  wp kf24 theme-setup [--overwrite] [--overwrite-legal]

@@ -1,0 +1,12 @@
+# Küchenfront24 – alte Shop-Subdomain passend-fuer-metod.kuechenfront24.de
+# Nach dem Umzug zeigt die Subdomain auf ein leeres Verzeichnis mit NUR dieser .htaccess
+# (oder der Hoster richtet eine Domain-Weiterleitung mit Pfad ein).
+# Produkte, Kategorien, Warenkorb, Kasse und Konto behalten ihre Pfade – alles geht 1:1 auf die Hauptdomain.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^so-funktionierts/?$ https://www.kuechenfront24.de/ikea-metod/ [R=301,L]
+RewriteRule ^so-funktionierts-individuell/?$ https://www.kuechenfront24.de/nach-mass/ [R=301,L]
+RewriteRule ^bezahlmoeglichkeiten/?$ https://www.kuechenfront24.de/versand/ [R=301,L]
+RewriteRule ^widerruf(-formular)?/?$ https://www.kuechenfront24.de/widerrufsbelehrung/ [R=301,L]
+RewriteRule ^(.*)$ https://www.kuechenfront24.de/$1 [R=301,L]
+</IfModule>

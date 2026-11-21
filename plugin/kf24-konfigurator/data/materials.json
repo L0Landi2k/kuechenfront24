@@ -1,0 +1,2599 @@
+[
+{
+"group": "Massivholz",
+"name": "MFBK Kernbuche",
+"code": "MFBK",
+"color": "#c69870",
+"tex": "massiv-kernbuche.jpg"
+},
+{
+"group": "Massivholz",
+"name": "MFBU Buche",
+"code": "MFBU",
+"color": "#d9ae87",
+"tex": "massiv-buche.jpg"
+},
+{
+"group": "Massivholz",
+"name": "MFER Erle",
+"code": "MFER",
+"color": "#c6895d",
+"tex": "massiv-erle.jpg"
+},
+{
+"group": "Massivholz",
+"name": "MFBI Birke",
+"code": "MFBI",
+"color": "#e4cea8",
+"tex": "massiv-birke.jpg"
+},
+{
+"group": "Massivholz",
+"name": "MFAH Ahorn",
+"code": "MFAH",
+"color": "#e4d3b6",
+"tex": "massiv-ahorn.jpg"
+},
+{
+"group": "Massivholz",
+"name": "MFEI Eiche",
+"code": "MFEI",
+"color": "#c39f6f",
+"tex": "massiv-eiche.jpg"
+},
+{
+"group": "Massivholz",
+"name": "MFES Esche",
+"code": "MFES",
+"color": "#cfb690",
+"tex": "massiv-esche.jpg"
+},
+{
+"group": "Massivholz",
+"name": "MFKB Kirschbaum",
+"code": "MFKB",
+"color": "#ba7750",
+"tex": "massiv-kirschbaum.jpg"
+},
+{
+"group": "Massivholz",
+"name": "MFNB Nussbaum",
+"code": "MFNB",
+"color": "#715036",
+"tex": "massiv-nussbaum.jpg"
+},
+{
+"group": "Furnier",
+"name": "Birke",
+"code": "",
+"color": "#e6d0a9",
+"tex": "furnier-birke.jpg"
+},
+{
+"group": "Furnier",
+"name": "Buche",
+"code": "",
+"color": "#d9ae87",
+"tex": "furnier-buche.jpg"
+},
+{
+"group": "Furnier",
+"name": "Canadischer Ahorn",
+"code": "",
+"color": "#ecdec4",
+"tex": "furnier-ahorn-kanadisch.jpg"
+},
+{
+"group": "Furnier",
+"name": "Eiche",
+"code": "",
+"color": "#c19d6d",
+"tex": "furnier-eiche.jpg"
+},
+{
+"group": "Furnier",
+"name": "Erle",
+"code": "",
+"color": "#c4875b",
+"tex": "furnier-erle.jpg"
+},
+{
+"group": "Furnier",
+"name": "Esche natur",
+"code": "",
+"color": "#ccb38e",
+"tex": "furnier-esche.jpg"
+},
+{
+"group": "Furnier",
+"name": "Esche weiß",
+"code": "",
+"color": "#e2dccf",
+"tex": "furnier-esche-weiss.jpg"
+},
+{
+"group": "Furnier",
+"name": "Europäischer Ahorn",
+"code": "",
+"color": "#e5d4b7",
+"tex": "furnier-ahorn.jpg"
+},
+{
+"group": "Furnier",
+"name": "Amerikanischer Kirschbaum",
+"code": "",
+"color": "#a7623e",
+"tex": "furnier-kirschbaum-amerikanisch.jpg"
+},
+{
+"group": "Furnier",
+"name": "Amerikanischer Nussbaum",
+"code": "",
+"color": "#634530",
+"tex": "furnier-nussbaum-amerikanisch.jpg"
+},
+{
+"group": "Furnier",
+"name": "Eiche geräuchert",
+"code": "",
+"color": "#6b4d35",
+"tex": "furnier-eiche-geraeuchert.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1154 Bardolino Eiche natur",
+"code": "H1154",
+"color": "#c39f6f",
+"tex": "dekor-h1154.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1176 Halifax Eiche weiß",
+"code": "H1176",
+"color": "#ceb798",
+"tex": "dekor-h1176.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1180 Halifax Eiche natur",
+"code": "H1180",
+"color": "#c19d6d",
+"tex": "dekor-h1180.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1313 Whiteriver Eiche graubraun",
+"code": "H1313",
+"color": "#9d886d",
+"tex": "dekor-h1313.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1318 Wildeiche natur",
+"code": "H1318",
+"color": "#b28c5c",
+"tex": "dekor-h1318.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1336 Halifax Eiche lasiert sandgrau",
+"code": "H1336",
+"color": "#a9957c",
+"tex": "dekor-h1336.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1344 Sherman Eiche cognacbraun",
+"code": "H1344",
+"color": "#9e6636",
+"tex": "dekor-h1344.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1346 Sherman Eiche anthrazit",
+"code": "H1346",
+"color": "#534e48",
+"tex": "dekor-h1346.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1401 Cascina Pine",
+"code": "H1401",
+"color": "#d3b181",
+"tex": "dekor-h1401.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1714 Lincoln Nussbaum",
+"code": "H1714",
+"color": "#6f4e35",
+"tex": "dekor-h1714.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H2033 Hunton Eiche dunkel",
+"code": "H2033",
+"color": "#775836",
+"tex": "dekor-h2033.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3146 Lorenzo Eiche beigegrau",
+"code": "H3146",
+"color": "#a99479",
+"tex": "dekor-h3146.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3157 Vincenza Eiche",
+"code": "H3157",
+"color": "#be9a6a",
+"tex": "dekor-h3157.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3158 Vincenza Eiche grau",
+"code": "H3158",
+"color": "#998c7b",
+"tex": "dekor-h3158.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3176 Halifax Eiche zinn",
+"code": "H3176",
+"color": "#8e8576",
+"tex": "dekor-h3176.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3190 Fineline Metallic anthrazit",
+"code": "H3190",
+"color": "#424244",
+"tex": "dekor-h3190.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3331 Nebraska Eiche natur",
+"code": "H3331",
+"color": "#c09c6c",
+"tex": "dekor-h3331.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3408 Berglärche thermobraun",
+"code": "H3408",
+"color": "#7d512b",
+"tex": "dekor-h3408.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1181 Halifax Eiche tabak",
+"code": "H1181",
+"color": "#8b5e34",
+"tex": "dekor-h1181.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1223 Sevillia Esche",
+"code": "H1223",
+"color": "#d0b892",
+"tex": "dekor-h1223.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1225 Trondheim Esche",
+"code": "H1225",
+"color": "#ccb38d",
+"tex": "dekor-h1225.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1242 Sheffield Akazie naturhell",
+"code": "H1242",
+"color": "#c68259",
+"tex": "dekor-h1242.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1250 Esche Navarra",
+"code": "H1250",
+"color": "#ccb38e",
+"tex": "dekor-h1250.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1277 Lakeland Akazie hell",
+"code": "H1277",
+"color": "#c68259",
+"tex": "dekor-h1277.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1303 Belmont Eiche braun",
+"code": "H1303",
+"color": "#946b41",
+"tex": "dekor-h1303.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1307 Warmia Nussbaum braun",
+"code": "H1307",
+"color": "#573720",
+"tex": "dekor-h1307.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1362 Baronia Eiche hell",
+"code": "H1362",
+"color": "#cfa978",
+"tex": "dekor-h1362.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1367 Casella Eiche naturhell",
+"code": "H1367",
+"color": "#cda574",
+"tex": "dekor-h1367.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1369 Casella Eiche marone",
+"code": "H1369",
+"color": "#7f532f",
+"tex": "dekor-h1369.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1385 Casella Eiche natur",
+"code": "H1385",
+"color": "#c39f6f",
+"tex": "dekor-h1385.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1386 Casella Eiche braun",
+"code": "H1386",
+"color": "#976d43",
+"tex": "dekor-h1386.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1710 Kentucky Chestnut sand",
+"code": "H1710",
+"color": "#c49f72",
+"tex": "dekor-h1710.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1715 Parona Nussbaum",
+"code": "H1715",
+"color": "#714f36",
+"tex": "dekor-h1715.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1732 Sandbirke",
+"code": "H1732",
+"color": "#ead2aa",
+"tex": "dekor-h1732.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H1910 Weidbuche",
+"code": "H1910",
+"color": "#d9ad86",
+"tex": "dekor-h1910.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3003 Norwich Eiche",
+"code": "H3003",
+"color": "#be9a6a",
+"tex": "dekor-h3003.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3043 Eukalyptus dunkelbraun",
+"code": "H3043",
+"color": "#412717",
+"tex": "dekor-h3043.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H305 Tonsberg Eiche natur",
+"code": "H305",
+"color": "#c19d6d",
+"tex": "dekor-h305.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H309 Tonsberg Eiche braun",
+"code": "H309",
+"color": "#966c42",
+"tex": "dekor-h309.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3125 Vincenza Eiche gebleicht",
+"code": "H3125",
+"color": "#cbb18f",
+"tex": "dekor-h3125.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3133 Davos Eiche trüffelbraun",
+"code": "H3133",
+"color": "#754e2d",
+"tex": "dekor-h3133.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3195 Fineline weiß",
+"code": "H3195",
+"color": "#e0dcd4",
+"tex": "dekor-h3195.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3303 Hamilton Eiche natur",
+"code": "H3303",
+"color": "#bd9969",
+"tex": "dekor-h3303.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3309 Gladstone Eiche sandbeige",
+"code": "H3309",
+"color": "#c7a373",
+"tex": "dekor-h3309.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3311 Cuneo Eiche gebleicht",
+"code": "H3311",
+"color": "#c7ad8c",
+"tex": "dekor-h3311.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3317 Cuneo Eiche braun",
+"code": "H3317",
+"color": "#926940",
+"tex": "dekor-h3317.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3325 Gladstone Eiche tabak",
+"code": "H3325",
+"color": "#885d32",
+"tex": "dekor-h3325.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3326 Gladstone Eiche greige",
+"code": "H3326",
+"color": "#ad987c",
+"tex": "dekor-h3326.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3359 Davenport Eiche naturhell",
+"code": "H3359",
+"color": "#cda574",
+"tex": "dekor-h3359.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3395 Corbridge Eiche natur",
+"code": "H3395",
+"color": "#c09c6c",
+"tex": "dekor-h3395.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3406 Berglärche anthrazit",
+"code": "H3406",
+"color": "#4c453f",
+"tex": "dekor-h3406.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3409 Berglärche natur",
+"code": "H3409",
+"color": "#b38d5d",
+"tex": "dekor-h3409.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3710 Carini Nussbaum natur",
+"code": "H3710",
+"color": "#735137",
+"tex": "dekor-h3710.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3730 Hickory natur",
+"code": "H3730",
+"color": "#b18c5c",
+"tex": "dekor-h3730.jpg"
+},
+{
+"group": "Holzdekor",
+"name": "H3734 Dijon Nussbaum natur",
+"code": "H3734",
+"color": "#704f35",
+"tex": "dekor-h3734.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F121 Metal Rock grausilber",
+"code": "F121",
+"color": "#959597",
+"tex": "dekor-f121.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F242 Jura Schiefer anthrazit",
+"code": "F242",
+"color": "#464749",
+"tex": "dekor-f242.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F416 Textil beige",
+"code": "F416",
+"color": "#cebfaa",
+"tex": "dekor-f416.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F417 Textil grau",
+"code": "F417",
+"color": "#949494",
+"tex": "dekor-f417.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F434 Steelbrush cubanit",
+"code": "F434",
+"color": "#646567",
+"tex": "dekor-f434.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F462 Metallic indigoblau",
+"code": "F462",
+"color": "#2b395e",
+"tex": "dekor-f462.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F463 Metallic platingrau",
+"code": "F463",
+"color": "#b1b1af",
+"tex": "dekor-f463.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F500 Inox metallic",
+"code": "F500",
+"color": "#afb0b2",
+"tex": "dekor-f500.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F784 Samtgold gebürstet",
+"code": "F784",
+"color": "#ae955f",
+"tex": "dekor-f784.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F823 Cefalu Beton hell",
+"code": "F823",
+"color": "#c2bfb8",
+"tex": "dekor-f823.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F186 Chicago Concrete hellgrau",
+"code": "F186",
+"color": "#aaa9a5",
+"tex": "dekor-f186.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F187 Chicago Concrete dunkelgrau",
+"code": "F187",
+"color": "#616161",
+"tex": "dekor-f187.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F206 Pietra Grigia schwarz",
+"code": "F206",
+"color": "#2f2f31",
+"tex": "dekor-f206.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F235 Scivaro Schiefer",
+"code": "F235",
+"color": "#525453",
+"tex": "dekor-f235.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F237 Cupria Slate",
+"code": "F237",
+"color": "#59564f",
+"tex": "dekor-f237.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F243 Candela Marmor hellgrau",
+"code": "F243",
+"color": "#d4d4d2",
+"tex": "dekor-f243.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F274 Beton hell",
+"code": "F274",
+"color": "#bbbab6",
+"tex": "dekor-f274.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F302 Ferro bronze",
+"code": "F302",
+"color": "#624b33",
+"tex": "dekor-f302.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F323 Cobra bronze",
+"code": "F323",
+"color": "#775b3d",
+"tex": "dekor-f323.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F509 Aluminium",
+"code": "F509",
+"color": "#c6c7c9",
+"tex": "dekor-f509.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F528 Brushed Metal bronze",
+"code": "F528",
+"color": "#8d7050",
+"tex": "dekor-f528.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F634 Canvas grau",
+"code": "F634",
+"color": "#8b8b89",
+"tex": "dekor-f634.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F635 Canvas anthrazit",
+"code": "F635",
+"color": "#454547",
+"tex": "dekor-f635.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F685 Acapulco",
+"code": "F685",
+"color": "#a58b6a",
+"tex": "dekor-f685.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F765 Silbergrau gebürstet",
+"code": "F765",
+"color": "#a8a9ab",
+"tex": "dekor-f765.jpg"
+},
+{
+"group": "Materialdekor",
+"name": "F800 Kristallmarmor",
+"code": "F800",
+"color": "#eeeeec",
+"tex": "dekor-f800.jpg"
+},
+{
+"group": "Uni",
+"name": "U325 Antikrosa",
+"code": "U325",
+"color": "#c99a95",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U740 Taupe dunkel",
+"code": "U740",
+"color": "#7a6e64",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U780 Monumentgrau",
+"code": "U780",
+"color": "#6f7172",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U968 Karbongrau",
+"code": "U968",
+"color": "#4c4e50",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U115 Caratbeige",
+"code": "U115",
+"color": "#e8dcc2",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U125 Sandbeige",
+"code": "U125",
+"color": "#d8c4a2",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U211 Mandelbeige",
+"code": "U211",
+"color": "#e3d3bd",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U335 Rostrot",
+"code": "U335",
+"color": "#8e3b2e",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U502 Nebelblau",
+"code": "U502",
+"color": "#a6b6c2",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U525 Delftblau",
+"code": "U525",
+"color": "#3e5d86",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U540 Denimblau",
+"code": "U540",
+"color": "#4a5f7c",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U599 Indigoblau",
+"code": "U599",
+"color": "#2c3646",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U604 Eukalyptusgrün",
+"code": "U604",
+"color": "#8fa59a",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U608 Pistaziengrün",
+"code": "U608",
+"color": "#b4c08a",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U636 Fjordgrün",
+"code": "U636",
+"color": "#5f7c78",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U638 Salbeigrün",
+"code": "U638",
+"color": "#9ea88e",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U665 Steingrün",
+"code": "U665",
+"color": "#6e7a67",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U699 Tannengrün",
+"code": "U699",
+"color": "#2e4434",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U705 Angoragrau",
+"code": "U705",
+"color": "#b9b4ab",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U748 Trüffelbraun",
+"code": "U748",
+"color": "#5a4a40",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U830 Nudekaramell",
+"code": "U830",
+"color": "#c79f80",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U104 Alabasterweiß",
+"code": "U104",
+"color": "#f0ebde",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U113 Cottonbeige",
+"code": "U113",
+"color": "#e6dccb",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U114 Brillantgelb",
+"code": "U114",
+"color": "#f2c94c",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U156 Sandbeige",
+"code": "U156",
+"color": "#dccaa6",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U216 Camebeige",
+"code": "U216",
+"color": "#e5d8c2",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U222 Cremabeige",
+"code": "U222",
+"color": "#ede0c8",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U311 Burgundrot",
+"code": "U311",
+"color": "#6e2a2c",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U323 Signalrot",
+"code": "U323",
+"color": "#b8282c",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U504 Alpenseeblau",
+"code": "U504",
+"color": "#6f8fa6",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U630 Limonengrün",
+"code": "U630",
+"color": "#9ab83a",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U702 Kaschmirgrau",
+"code": "U702",
+"color": "#c9c2b6",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U707 Seidengrau",
+"code": "U707",
+"color": "#c7c6c1",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U708 Hellgrau",
+"code": "U708",
+"color": "#cfcfcc",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U727 Steingrau",
+"code": "U727",
+"color": "#9a958c",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U732 Staubgrau",
+"code": "U732",
+"color": "#8a8a86",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U741 Lavagrau",
+"code": "U741",
+"color": "#5b5856",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U750 Lichtgrau",
+"code": "U750",
+"color": "#c4c4c0",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U763 Perlgrau",
+"code": "U763",
+"color": "#a6a6a2",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U767 Cubanitgrau",
+"code": "U767",
+"color": "#6a6c6e",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U775 Weißgrau",
+"code": "U775",
+"color": "#e3e3df",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U788 Arktisgrau",
+"code": "U788",
+"color": "#b8bcbd",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U899 Kosmosgrau",
+"code": "U899",
+"color": "#3f4144",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U960 Onyxgrau",
+"code": "U960",
+"color": "#4a4c4e",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U961 Graphitschwarz",
+"code": "U961",
+"color": "#2e3032",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U963 Diamantgrau",
+"code": "U963",
+"color": "#8c8e90",
+"tex": ""
+},
+{
+"group": "Uni",
+"name": "U999 Schwarz",
+"code": "U999",
+"color": "#1f1f20",
+"tex": ""
+},
+{
+"group": "Weiß",
+"name": "W1000 Premiumweiß",
+"code": "W1000",
+"color": "#f4f2ee",
+"tex": ""
+},
+{
+"group": "Weiß",
+"name": "W1100 Alpinweiß",
+"code": "W1100",
+"color": "#f6f6f3",
+"tex": ""
+},
+{
+"group": "Weiß",
+"name": "W1200 Porzellanweiß",
+"code": "W1200",
+"color": "#f1efe8",
+"tex": ""
+},
+{
+"group": "Weiß",
+"name": "W1000 HG Premiumweiß",
+"code": "W1000",
+"color": "#f7f6f3",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 9001 Cremeweiß",
+"code": "RAL 9001",
+"color": "#eee9da",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 9010 Reinweiß",
+"code": "RAL 9010",
+"color": "#f4f4ed",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 9016 Verkehrsweiß",
+"code": "RAL 9016",
+"color": "#f3f6f6",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1000 Grünbeige",
+"code": "RAL 1000",
+"color": "#ccc188",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1001 Beige",
+"code": "RAL 1001",
+"color": "#ceb487",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1002 Sandgelb",
+"code": "RAL 1002",
+"color": "#d0b173",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1003 Signalgelb",
+"code": "RAL 1003",
+"color": "#f2ad00",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1004 Goldgelb",
+"code": "RAL 1004",
+"color": "#e4a700",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1005 Honiggelb",
+"code": "RAL 1005",
+"color": "#c79600",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1006 Maisgelb",
+"code": "RAL 1006",
+"color": "#d99300",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1007 Narzissengelb",
+"code": "RAL 1007",
+"color": "#e69400",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1011 Braunbeige",
+"code": "RAL 1011",
+"color": "#af8552",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1012 Zitronengelb",
+"code": "RAL 1012",
+"color": "#d8ba2e",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1013 Perlweiß",
+"code": "RAL 1013",
+"color": "#e5dfcc",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1014 Elfenbein",
+"code": "RAL 1014",
+"color": "#dfcea1",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1015 Hellelfenbein",
+"code": "RAL 1015",
+"color": "#e6d9bd",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1016 Schwefelgelb",
+"code": "RAL 1016",
+"color": "#ecea41",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1017 Safrangelb",
+"code": "RAL 1017",
+"color": "#f6b256",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1018 Zinkgelb",
+"code": "RAL 1018",
+"color": "#fdda38",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1019 Graubeige",
+"code": "RAL 1019",
+"color": "#a6937b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1020 Olivgelb",
+"code": "RAL 1020",
+"color": "#a09465",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1021 Rapsgelb",
+"code": "RAL 1021",
+"color": "#f2c000",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1023 Verkehrsgelb",
+"code": "RAL 1023",
+"color": "#f2bf00",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1024 Ockergelb",
+"code": "RAL 1024",
+"color": "#b89650",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1027 Currygelb",
+"code": "RAL 1027",
+"color": "#a4861a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1028 Melonengelb",
+"code": "RAL 1028",
+"color": "#ffa600",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1032 Ginstergelb",
+"code": "RAL 1032",
+"color": "#e2ac00",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1033 Dahliengelb",
+"code": "RAL 1033",
+"color": "#f7a11f",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1034 Pastellgelb",
+"code": "RAL 1034",
+"color": "#eba557",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 1037 Sonnengelb",
+"code": "RAL 1037",
+"color": "#eba557",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 2000 Gelborange",
+"code": "RAL 2000",
+"color": "#d97604",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 2001 Rotorange",
+"code": "RAL 2001",
+"color": "#bb4926",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 2002 Blutorange",
+"code": "RAL 2002",
+"color": "#c13524",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 2003 Pastellorange",
+"code": "RAL 2003",
+"color": "#f97a31",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 2004 Reinorange",
+"code": "RAL 2004",
+"color": "#e8540d",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 2008 Hellrotorange",
+"code": "RAL 2008",
+"color": "#f46f29",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 2009 Verkehrsorange",
+"code": "RAL 2009",
+"color": "#db5316",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 2010 Signalorange",
+"code": "RAL 2010",
+"color": "#d55d23",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 2011 Tieforange",
+"code": "RAL 2011",
+"color": "#ea7625",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 2012 Lachsorange",
+"code": "RAL 2012",
+"color": "#d6654e",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3000 Feuerrot",
+"code": "RAL 3000",
+"color": "#a02725",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3001 Signalrot",
+"code": "RAL 3001",
+"color": "#a0001c",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3002 Karminrot",
+"code": "RAL 3002",
+"color": "#991424",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3003 Rubinrot",
+"code": "RAL 3003",
+"color": "#870a24",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3004 Purpurrot",
+"code": "RAL 3004",
+"color": "#6c1b2a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3005 Weinrot",
+"code": "RAL 3005",
+"color": "#581e29",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3007 Schwarzrot",
+"code": "RAL 3007",
+"color": "#402226",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3009 Oxidrot",
+"code": "RAL 3009",
+"color": "#6d312b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3011 Braunrot",
+"code": "RAL 3011",
+"color": "#791f24",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3012 Beigerot",
+"code": "RAL 3012",
+"color": "#c68873",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3013 Tomatenrot",
+"code": "RAL 3013",
+"color": "#992a28",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3014 Altrosa",
+"code": "RAL 3014",
+"color": "#cf7278",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3015 Hellrosa",
+"code": "RAL 3015",
+"color": "#e3a0ac",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3016 Korallenrot",
+"code": "RAL 3016",
+"color": "#ab392d",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3017 Rosé",
+"code": "RAL 3017",
+"color": "#cc515e",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3018 Erdbeerrot",
+"code": "RAL 3018",
+"color": "#ca3f51",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3020 Verkehrsrot",
+"code": "RAL 3020",
+"color": "#bf111b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3022 Lachsrot",
+"code": "RAL 3022",
+"color": "#d36b56",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3027 Himbeerrot",
+"code": "RAL 3027",
+"color": "#b01d42",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3028 Reinrot",
+"code": "RAL 3028",
+"color": "#cccccc",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 3031 Orientrot",
+"code": "RAL 3031",
+"color": "#a7323e",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 4001 Rotlila",
+"code": "RAL 4001",
+"color": "#865d86",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 4002 Rotviolett",
+"code": "RAL 4002",
+"color": "#8f3f51",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 4003 Erikaviolett",
+"code": "RAL 4003",
+"color": "#ca5b91",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 4004 Bordeauxviolett",
+"code": "RAL 4004",
+"color": "#69193b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 4005 Blaulila",
+"code": "RAL 4005",
+"color": "#7e63a1",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 4006 Verkehrspurpur",
+"code": "RAL 4006",
+"color": "#d0b173",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 4007 Purpurviolett",
+"code": "RAL 4007",
+"color": "#47243c",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 4008 Signalviolett",
+"code": "RAL 4008",
+"color": "#853d7d",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 4009 Pastellviolett",
+"code": "RAL 4009",
+"color": "#9d8493",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 4010 Telemagenta",
+"code": "RAL 4010",
+"color": "#cccccc",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5000 Violettblau",
+"code": "RAL 5000",
+"color": "#2f4a71",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5001 Grünblau",
+"code": "RAL 5001",
+"color": "#0e4666",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5002 Ultramarinblau",
+"code": "RAL 5002",
+"color": "#162e7b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5003 Saphirblau",
+"code": "RAL 5003",
+"color": "#193058",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5004 Schwarzblau",
+"code": "RAL 5004",
+"color": "#1a1d2a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5005 Signalblau",
+"code": "RAL 5005",
+"color": "#004389",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5007 Brillantblau",
+"code": "RAL 5007",
+"color": "#38618c",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5008 Graublau",
+"code": "RAL 5008",
+"color": "#2d3944",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5009 Azurblau",
+"code": "RAL 5009",
+"color": "#245878",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5010 Enzianblau",
+"code": "RAL 5010",
+"color": "#00427f",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5011 Stahlblau",
+"code": "RAL 5011",
+"color": "#1a2740",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5012 Lichtblau",
+"code": "RAL 5012",
+"color": "#2781bb",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5013 Kobaltblau",
+"code": "RAL 5013",
+"color": "#202e53",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5014 Taubenblau",
+"code": "RAL 5014",
+"color": "#667b9a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5015 Himmelblau",
+"code": "RAL 5015",
+"color": "#0071b5",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5017 Verkehrsblau",
+"code": "RAL 5017",
+"color": "#004c91",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5018 Türkisblau",
+"code": "RAL 5018",
+"color": "#138992",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5019 Capriblau",
+"code": "RAL 5019",
+"color": "#005688",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5020 Ozeanblau",
+"code": "RAL 5020",
+"color": "#00747d",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5021 Wasserblau",
+"code": "RAL 5021",
+"color": "#00747d",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5022 Nachtblau",
+"code": "RAL 5022",
+"color": "#28275a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5023 Fernblau",
+"code": "RAL 5023",
+"color": "#486591",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 5024 Pastellblau",
+"code": "RAL 5024",
+"color": "#6391b0",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6000 Patinagrün",
+"code": "RAL 6000",
+"color": "#327663",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6001 Smaragdgrün",
+"code": "RAL 6001",
+"color": "#266d3b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6002 Laubgrün",
+"code": "RAL 6002",
+"color": "#276230",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6003 Olivgrün",
+"code": "RAL 6003",
+"color": "#4e553d",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6004 Blaugrün",
+"code": "RAL 6004",
+"color": "#024442",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6005 Moosgrün",
+"code": "RAL 6005",
+"color": "#0e4438",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6006 Grauoliv",
+"code": "RAL 6006",
+"color": "#3b3d33",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6007 Flaschengrün",
+"code": "RAL 6007",
+"color": "#2b3626",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6008 Braungrün",
+"code": "RAL 6008",
+"color": "#302f22",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6009 Tannengrün",
+"code": "RAL 6009",
+"color": "#213529",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6010 Grasgrün",
+"code": "RAL 6010",
+"color": "#426e38",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6011 Resedagrün",
+"code": "RAL 6011",
+"color": "#68825f",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6012 Schwarzgrün",
+"code": "RAL 6012",
+"color": "#293a37",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6013 Schilfgrün",
+"code": "RAL 6013",
+"color": "#76785b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6014 Gelboliv",
+"code": "RAL 6014",
+"color": "#443f31",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6015 Schwarzoliv",
+"code": "RAL 6015",
+"color": "#383b34",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6016 Türkisgrün",
+"code": "RAL 6016",
+"color": "#00664f",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6017 Maigrün",
+"code": "RAL 6017",
+"color": "#4d8542",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6018 Gelbgrün",
+"code": "RAL 6018",
+"color": "#4b9b3e",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6019 Weißgrün",
+"code": "RAL 6019",
+"color": "#b2d8b4",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6020 Chromoxidgrün",
+"code": "RAL 6020",
+"color": "#394937",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6021 Blassgrün",
+"code": "RAL 6021",
+"color": "#87a180",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6022 Braunoliv",
+"code": "RAL 6022",
+"color": "#3c372a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6024 Verkehrsgrün",
+"code": "RAL 6024",
+"color": "#008455",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6025 Farngrün",
+"code": "RAL 6025",
+"color": "#56723d",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6026 Opalgrün",
+"code": "RAL 6026",
+"color": "#005c54",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6027 Lichtgrün",
+"code": "RAL 6027",
+"color": "#77bbbd",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6028 Kieferngrün",
+"code": "RAL 6028",
+"color": "#2e554b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6029 Minzgrün",
+"code": "RAL 6029",
+"color": "#006f43",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6032 Signalgrün",
+"code": "RAL 6032",
+"color": "#00855a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6033 Minttürkis",
+"code": "RAL 6033",
+"color": "#3f8884",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6034 Pastelltürkis",
+"code": "RAL 6034",
+"color": "#75adb1",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6037 Reingrün",
+"code": "RAL 6037",
+"color": "#cccccc",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 6038 Leuchtgrün",
+"code": "RAL 6038",
+"color": "#cccccc",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7000 Fehgrau",
+"code": "RAL 7000",
+"color": "#798790",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7001 Silbergrau",
+"code": "RAL 7001",
+"color": "#8c969f",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7002 Olivgrau",
+"code": "RAL 7002",
+"color": "#827d67",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7003 Moosgrau",
+"code": "RAL 7003",
+"color": "#79796c",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7004 Signalgrau",
+"code": "RAL 7004",
+"color": "#999a9f",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7005 Mausgrau",
+"code": "RAL 7005",
+"color": "#6d7270",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7006 Beigegrau",
+"code": "RAL 7006",
+"color": "#766a5d",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7008 Khakigrau",
+"code": "RAL 7008",
+"color": "#756444",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7009 Grüngrau",
+"code": "RAL 7009",
+"color": "#585e55",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7010 Zeltgrau",
+"code": "RAL 7010",
+"color": "#565957",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7011 Eisengrau",
+"code": "RAL 7011",
+"color": "#525a60",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7012 Basaltgrau",
+"code": "RAL 7012",
+"color": "#575e62",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7013 Braungrau",
+"code": "RAL 7013",
+"color": "#585346",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7015 Schiefergrau",
+"code": "RAL 7015",
+"color": "#4c5057",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7016 Anthrazitgrau",
+"code": "RAL 7016",
+"color": "#363d43",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7021 Schwarzgrau",
+"code": "RAL 7021",
+"color": "#2e3236",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7022 Umbragrau",
+"code": "RAL 7022",
+"color": "#d0b173",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7023 Betongrau",
+"code": "RAL 7023",
+"color": "#7f8279",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7024 Graphitgrau",
+"code": "RAL 7024",
+"color": "#484b52",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7026 Granitgrau",
+"code": "RAL 7026",
+"color": "#354044",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7030 Steingrau",
+"code": "RAL 7030",
+"color": "#919089",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7031 Blaugrau",
+"code": "RAL 7031",
+"color": "#5b686f",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7032 Kieselgrau",
+"code": "RAL 7032",
+"color": "#b5b5a7",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7033 Zementgrau",
+"code": "RAL 7033",
+"color": "#7a8376",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7034 Gelbgrau",
+"code": "RAL 7034",
+"color": "#928d75",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7035 Lichtgrau",
+"code": "RAL 7035",
+"color": "#c4caca",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7036 Platingrau",
+"code": "RAL 7036",
+"color": "#949294",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7037 Staubgrau",
+"code": "RAL 7037",
+"color": "#7e8082",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7038 Achatgrau",
+"code": "RAL 7038",
+"color": "#b0b3af",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7039 Quarzgrau",
+"code": "RAL 7039",
+"color": "#6d6b64",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7040 Fenstergrau",
+"code": "RAL 7040",
+"color": "#9aa0a7",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7042 Verkehrsgrau A",
+"code": "RAL 7042",
+"color": "#929899",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7043 Verkehrsgrau B",
+"code": "RAL 7043",
+"color": "#505455",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7044 Seidengrau",
+"code": "RAL 7044",
+"color": "#cccccc",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7045 Telegrau 1",
+"code": "RAL 7045",
+"color": "#cccccc",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7046 Telegrau 2",
+"code": "RAL 7046",
+"color": "#cccccc",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 7047 Telegrau 4",
+"code": "RAL 7047",
+"color": "#cccccc",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8000 Grünbraun",
+"code": "RAL 8000",
+"color": "#8b7045",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8001 Ockerbraun",
+"code": "RAL 8001",
+"color": "#9c6935",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8002 Signalbraun",
+"code": "RAL 8002",
+"color": "#774c3b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8003 Lehmbraun",
+"code": "RAL 8003",
+"color": "#815333",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8004 Kupferbraun",
+"code": "RAL 8004",
+"color": "#904e3b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8007 Rehbraun",
+"code": "RAL 8007",
+"color": "#6b442a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8008 Olivbraun",
+"code": "RAL 8008",
+"color": "#735230",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8011 Nussbraun",
+"code": "RAL 8011",
+"color": "#5b3927",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8012 Rotbraun",
+"code": "RAL 8012",
+"color": "#64312a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8014 Sepiabraun",
+"code": "RAL 8014",
+"color": "#49372a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8015 Kastanienbraun",
+"code": "RAL 8015",
+"color": "#5a2e2a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8016 Mahagonibraun",
+"code": "RAL 8016",
+"color": "#4f3128",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8019 Graubraun",
+"code": "RAL 8019",
+"color": "#3b3332",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8022 Schwarzbraun",
+"code": "RAL 8022",
+"color": "#1e1a1a",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8023 Orangebraun",
+"code": "RAL 8023",
+"color": "#a45c32",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8024 Beigebraun",
+"code": "RAL 8024",
+"color": "#7b5741",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8025 Blassbraun",
+"code": "RAL 8025",
+"color": "#765d4d",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 8028 Terrabraun",
+"code": "RAL 8028",
+"color": "#4f3b2b",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 9002 Grauweiß",
+"code": "RAL 9002",
+"color": "#dadbd5",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 9003 Signalweiß",
+"code": "RAL 9003",
+"color": "#f8f9fb",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 9004 Signalschwarz",
+"code": "RAL 9004",
+"color": "#252427",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 9005 Tiefschwarz",
+"code": "RAL 9005",
+"color": "#151619",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 9011 Graphitschwarz",
+"code": "RAL 9011",
+"color": "#1f2126",
+"tex": ""
+},
+{
+"group": "Lack RAL",
+"name": "RAL 9018 Papyrusweiß",
+"code": "RAL 9018",
+"color": "#cbd2d0",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "ARPA 0717 Castoro Ottawa",
+"code": "ARPA 0717",
+"color": "#5b4e43",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "ARPA 0718 Grigio Londra",
+"code": "ARPA 0718",
+"color": "#5f6164",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "ARPA 0719 Beige Luxor",
+"code": "ARPA 0719",
+"color": "#cbbfae",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "ARPA 0720 Nero Ingo",
+"code": "ARPA 0720",
+"color": "#2b2b2c",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "ARPA 2628 Zinco Doha",
+"code": "ARPA 2628",
+"color": "#7d7f80",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "ARPA 2629 Bronzo Doha",
+"code": "ARPA 2629",
+"color": "#7a6448",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "ARPA 2630 Piombo Doha",
+"code": "ARPA 2630",
+"color": "#4e5153",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0029 Bianco Male",
+"code": "FENIX 0029",
+"color": "#f3f1ec",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0030 Bianco Alaska",
+"code": "FENIX 0030",
+"color": "#e9ece9",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0032 Bianco Kos",
+"code": "FENIX 0032",
+"color": "#efeee8",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0724 Grigio Bromo",
+"code": "FENIX 0724",
+"color": "#8b8c8b",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0725 Grigio Efeso",
+"code": "FENIX 0725",
+"color": "#b9b8b2",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0748 Beige Arizona",
+"code": "FENIX 0748",
+"color": "#c9b79c",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0749 Cacao Orinoco",
+"code": "FENIX 0749",
+"color": "#5c4636",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0750 Verde Comodoro",
+"code": "FENIX 0750",
+"color": "#4b5747",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0751 Rosso Jaipur",
+"code": "FENIX 0751",
+"color": "#9b3a34",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0752 Grigio Antrim",
+"code": "FENIX 0752",
+"color": "#585a5b",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0754 Blu Fes",
+"code": "FENIX 0754",
+"color": "#2e3c55",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0757 Bianco Dover",
+"code": "FENIX 0757",
+"color": "#e6e3dc",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 2638 Doha Titanio",
+"code": "FENIX 2638",
+"color": "#5a5752",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0770 Rosso Askja",
+"code": "FENIX 0770",
+"color": "#b5503f",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0771 Azzurro Naxos",
+"code": "FENIX 0771",
+"color": "#7c97ad",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0772 Giallo Kashmir",
+"code": "FENIX 0772",
+"color": "#d4a84a",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0773 Verde Brac",
+"code": "FENIX 0773",
+"color": "#8a9474",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0789 Rosso Namib",
+"code": "FENIX 0789",
+"color": "#a4573e",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0790 Viola Orissa",
+"code": "FENIX 0790",
+"color": "#6b4f73",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0791 Giallo Evora",
+"code": "FENIX 0791",
+"color": "#c58f3f",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0792 Blu Shaba",
+"code": "FENIX 0792",
+"color": "#35577a",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0793 Grigio Aragona",
+"code": "FENIX 0793",
+"color": "#a3a39d",
+"tex": ""
+},
+{
+"group": "Fenix",
+"name": "FENIX 0794 Verde Kitami",
+"code": "FENIX 0794",
+"color": "#6f7b62",
+"tex": ""
+}
+]

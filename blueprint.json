@@ -1,0 +1,100 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "meta": {
+    "title": "Küchenfront24 – Testversion",
+    "description": "Kompletter Testshop: Website, Konfigurator, WooCommerce und die Verwaltung „Mein Shop“.",
+    "author": "L0Landi2k",
+    "categories": [
+      "WooCommerce"
+    ]
+  },
+  "landingPage": "/",
+  "preferredVersions": {
+    "php": "8.3",
+    "wp": "latest"
+  },
+  "features": {
+    "networking": true
+  },
+  "steps": [
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "wordpress.org/plugins",
+        "slug": "woocommerce"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/L0Landi2k/kuechenfront24/main/dist/kf24-konfigurator.zip"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "installTheme",
+      "themeData": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/L0Landi2k/kuechenfront24/main/dist/kuechenfront24.zip"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "setSiteLanguage",
+      "language": "de_DE"
+    },
+    {
+      "step": "mkdir",
+      "path": "/tmp/kf24"
+    },
+    {
+      "step": "writeFile",
+      "path": "/tmp/kf24/ad00.jpg",
+      "data": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/L0Landi2k/kuechenfront24/main/playground/img/ad00.jpg"
+      }
+    },
+    {
+      "step": "writeFile",
+      "path": "/tmp/kf24/ad10.jpg",
+      "data": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/L0Landi2k/kuechenfront24/main/playground/img/ad10.jpg"
+      }
+    },
+    {
+      "step": "writeFile",
+      "path": "/tmp/kf24/ad11.jpg",
+      "data": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/L0Landi2k/kuechenfront24/main/playground/img/ad11.jpg"
+      }
+    },
+    {
+      "step": "writeFile",
+      "path": "/tmp/kf24/demo-setup.php",
+      "data": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/L0Landi2k/kuechenfront24/main/playground/demo-setup.php"
+      }
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require_once '/wordpress/wp-load.php'; require '/tmp/kf24/demo-setup.php';"
+    },
+    {
+      "step": "login",
+      "username": "michi",
+      "password": "kuechenfront24"
+    }
+  ]
+}

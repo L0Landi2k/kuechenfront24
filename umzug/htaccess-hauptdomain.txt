@@ -1,0 +1,22 @@
+# Küchenfront24 – Weiterleitungen alter Adressen der Hauptseite
+# Einfügen in die .htaccess von www.kuechenfront24.de OBERHALB des Blocks "# BEGIN WordPress".
+# Alternative ohne Server-Zugriff: Plugin "Redirection" und Import von weiterleitungen-hauptseite.csv
+<IfModule mod_rewrite.c>
+RewriteEngine On
+# alte Mobil-/Desktop-Umschaltung entfernen
+RewriteCond %{QUERY_STRING} (^|&)switch_theme=(desktop|mobile)(&|$)
+RewriteRule ^(.*)$ /$1? [R=301,L]
+RewriteRule ^uber-uns/?$ /ueber-uns/ [R=301,L]
+RewriteRule ^wissenswertes/?$ /ratgeber/ [R=301,L]
+RewriteRule ^wissenswertes/(fotostory|vorbereitung)/?$ /ratgeber/ [R=301,L]
+RewriteRule ^wissenswertes/(serviceleistungen|zusatzangebote)/?$ /service/ [R=301,L]
+RewriteRule ^wissenswertes/garantie/?$ /faq/ [R=301,L]
+RewriteRule ^wissenswertes/versandkosten/?$ /versand/ [R=301,L]
+RewriteRule ^wissenswertes/faktum/?$ /ikea-faktum/ [R=301,L]
+RewriteRule ^kundenbewertungen/?$ /category/referenzen/ [R=301,L]
+RewriteRule ^wp-content/uploads/AGB_Kuechenfront24\.pdf$ /agb/ [R=301,L]
+RewriteRule ^so-funktionierts/?$ /ikea-metod/ [R=301,L]
+RewriteRule ^so-funktionierts-individuell/?$ /nach-mass/ [R=301,L]
+RewriteRule ^bezahlmoeglichkeiten/?$ /versand/ [R=301,L]
+RewriteRule ^widerruf(-formular)?/?$ /widerrufsbelehrung/ [R=301,L]
+</IfModule>
