@@ -314,4 +314,56 @@
 			});
 		});
 	}
+	/* ---------------- Metod & Faktum: prices, formula, parts ---------------- */
+	var dec = function (v) { var n = parseFloat(String(v).replace(/\./g, '').replace(',', '.')); return isNaN(n) ? 0 : n; };
+	var pf = $('#kf24a-prices');
+	if (pf) {
+		var changed = {};
+		pf.addEventListener('input', function (e) {
+			var t = e.target; if (!t.dataset.f) return;
+			(changed[t.dataset.f] = changed[t.dataset.f] || {})[t.dataset.p] = t.value.trim();
+			t.classList.toggle('is-set', t.value.trim() !== '');
+			var n = Object.keys(changed).reduce(function (a, k) { return a + Object.keys(changed[k]).length; }, 0);
+			$('.kf24a-changed').textContent = n + ' Änderung' + (n === 1 ? '' : 'en') + ' noch nicht gespeichert';
+		});
+		$$('input[data-f]', pf).forEach(function (i) { i.classList.toggle('is-set', i.value.trim() !== ''); });
+		pf.addEventListener('submit', function (e) {
+			e.preventDefault();
+			post('kf24_save_prices', { data: JSON.stringify(changed) }).then(function () { changed = {}; $('.kf24a-changed').textContent = ''; toast('Preise gespeichert. Im Shop sofort aktiv.'); }).catch(function (er) { toast(er.message, true); });
+		});
+	}
+	var ff = $('#kf24a-formula');
+	if (ff) {
+		var ex = function (tr) {
+			var g = function (n) { return dec($('[name=' + n + ']', tr).value); };
+			var w = 597, h = 797, area = w * h / 1e6, calc = area * g('m2') + 2 * (w + h) / 1000 * g('edge') + g('piece'), v = Math.max(calc, g('minprice'));
+			$('.kf24a-ex', tr).innerHTML = '<b>' + v.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) + '</b><small> = ' + area.toFixed(3).replace('.', ',') + ' m² × ' + g('m2') + (g('edge') ? ' + 2,79 lfm × ' + g('edge') : '') + (g('piece') ? ' + ' + g('piece') : '') + (g('minprice') > calc ? ' → Mindestpreis' : '') + '</small>';
+		};
+		$$('tbody tr', ff).forEach(ex);
+		ff.addEventListener('input', function (e) { ex(e.target.closest('tr')); });
+		ff.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var data = {};
+			$$('tbody tr', ff).forEach(function (tr) { var o = {}; $$('input', tr).forEach(function (i) { o[i.name] = i.value; }); data[tr.dataset.id] = o; });
+			post('kf24_save_formula', { data: JSON.stringify(data) }).then(function () { toast('Formeln gespeichert. Die Preise im Shop rechnen ab sofort damit.'); }).catch(function (er) { toast(er.message, true); });
+		});
+	}
+	var pt = $('#kf24a-parts');
+	if (pt) {
+		var rows = JSON.parse($('#kf24a-parts-data').textContent || '[]');
+		var TY = { tuer: 'Tür', schublade: 'Schublade', klappe: 'Klappe', blende: 'Blende', sonstig: 'Sonstiges' }, AN = { links: 'links', rechts: 'rechts', oben: 'oben', keine: 'keine' };
+		var opt = function (map, v) { return Object.keys(map).map(function (k) { return '<option value="' + k + '"' + (k === v ? ' selected' : '') + '>' + map[k] + '</option>'; }).join(''); };
+		var rowHtml = function (r) {
+			return '<tr data-id="' + esc(r.id || '') + '"><td><input name="group" value="' + esc(r.group || '') + '"></td><td><input name="name" value="' + esc(r.name || '') + '"></td><td><input name="w" inputmode="decimal" value="' + esc(r.w || '') + '"></td><td><input name="h" inputmode="decimal" value="' + esc(r.h || '') + '"></td><td><select name="type">' + opt(TY, r.type || 'tuer') + '</select></td><td><select name="hinge">' + opt(AN, r.hinge || 'keine') + '</select></td><td><input name="hinges" type="number" min="0" max="5" value="' + esc(r.hinges || 0) + '"></td><td><input name="hraw" value="' + esc((r.hraw || []).join(', ')) + '" placeholder="z. B. 59, 59"></td><td><input name="hlast" type="checkbox"' + (r.hlast === 'ende' ? ' checked' : '') + '></td><td><input name="note" value="' + esc(r.note || '') + '"></td><td><button type="button" class="button-link kf24a-part-del" aria-label="Teil löschen">×</button></td></tr>';
+		};
+		var tb = $('tbody', pt);
+		tb.innerHTML = rows.map(rowHtml).join('');
+		$('.kf24a-part-add', pt).addEventListener('click', function () { tb.insertAdjacentHTML('beforeend', rowHtml({ group: 'Türen', type: 'tuer', hinge: 'links', hinges: 2 })); tb.lastElementChild.querySelector('[name=name]').focus(); });
+		tb.addEventListener('click', function (e) { var b = e.target.closest('.kf24a-part-del'); if (b) b.closest('tr').remove(); });
+		pt.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var data = $$('tr', tb).map(function (tr) { var o = { id: tr.dataset.id }; $$('input,select', tr).forEach(function (i) { o[i.name] = i.type === 'checkbox' ? i.checked : i.value; }); return o; });
+			post('kf24_save_parts', { sys: pt.dataset.sys, data: JSON.stringify(data) }).then(function () { toast('Teileliste gespeichert.'); }).catch(function (er) { toast(er.message, true); });
+		});
+	}
 })();

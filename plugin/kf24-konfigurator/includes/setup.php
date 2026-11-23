@@ -17,6 +17,7 @@ function kf24_term( $name, $slug, $parent = 0 ) {
 function kf24_run_setup( $overwrite = false ) {
 	$data = json_decode( file_get_contents( KF24_DIR . 'data/products.json' ), true );
 	$log  = [];
+	kf24_import_catalog();
 	$n    = kf24_import_materials();
 	$log[] = $n . ' Materialien in die Materialbibliothek übernommen';
 	$fc   = kf24_term( 'Fronten für Metod', kf24_opt( 'front_cat' ) );

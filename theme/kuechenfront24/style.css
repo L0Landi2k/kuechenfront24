@@ -250,3 +250,4 @@ details.kf24-faq-sub p{margin:6px 0}
 a.card{text-decoration:none;color:var(--ink);transition:border-color .15s,box-shadow .15s}
 a.card h3{color:var(--acc)}
 a.card:hover,a.card:focus-visible{border-color:var(--acc);box-shadow:var(--sh)}
+.shop-b-links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}

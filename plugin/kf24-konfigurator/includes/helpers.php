@@ -69,6 +69,11 @@ function kf24_product_cfg( $product_id ) {
 		'kgm2'      => kf24_num( get_post_meta( $product_id, '_kf24_kgm2', true ) ) ?: (float) kf24_opt( 'kgm2_default' ),
 		'sample'    => get_post_meta( $product_id, '_kf24_sample', true ),
 		'swatch'    => get_post_meta( $product_id, '_kf24_swatch', true ),
+		// price formula (all optional, 0 = not used)
+		'piece'     => kf24_num( get_post_meta( $product_id, '_kf24_piece', true ) ),
+		'edge'      => kf24_num( get_post_meta( $product_id, '_kf24_edge', true ) ),
+		'minprice'  => kf24_num( get_post_meta( $product_id, '_kf24_minprice', true ) ),
+		'overrides' => array_map( 'floatval', (array) ( get_post_meta( $product_id, '_kf24_overrides', true ) ?: [] ) ),
 	];
 }
 
@@ -215,6 +220,7 @@ function kf24_sanitize_config( $raw, $pcfg ) {
 		'mill'     => in_array( $s( 'mill' ), [ 'keine', 'oben', 'unten' ], true ) ? $s( 'mill' ) : 'keine',
 		'seal'     => $s( 'seal' ) === 'yes' ? 'yes' : 'no',
 		'note'     => mb_substr( sanitize_textarea_field( wp_unslash( $raw['note'] ?? '' ) ), 0, 400 ),
+		'part'     => isset( $raw['part'] ) && function_exists( 'kf24_catalog_part' ) && kf24_catalog_part( sanitize_key( $raw['part'] ) ) ? sanitize_key( $raw['part'] ) : '',
 	];
 	if ( ! $pcfg['milling'] ) {
 		$cfg['mill'] = 'keine';
@@ -224,6 +230,15 @@ function kf24_sanitize_config( $raw, $pcfg ) {
 	}
 	if ( $cfg['type'] === 'blende' ) {
 		$cfg['grain'] = 'laengs'; // Blenden und Sockel: Maserung immer längs
+	}
+	if ( in_array( $cfg['type'], [ 'schublade', 'klappe' ], true ) ) {
+		$cfg['gpos'] = 'mitte'; // Schubladen und Klappen: Griff immer horizontal mittig, nur Höhe (A) frei
+	}
+	if ( $cfg['part'] ) { // catalog part only while the size is unchanged
+		$pt = kf24_catalog_part( $cfg['part'] );
+		if ( ! $pt || abs( $pt['w'] - $cfg['w'] ) > 0.5 || abs( $pt['h'] - $cfg['h'] ) > 0.5 ) {
+			$cfg['part'] = '';
+		}
 	}
 	for ( $i = 0; $i < $cfg['hinges']; $i++ ) {
 		$cfg['hpos'][] = isset( $raw['hpos'][ $i ] ) ? round( kf24_num( wp_unslash( $raw['hpos'][ $i ] ) ), 1 ) : 0;
@@ -341,17 +356,39 @@ function kf24_grip_holes( $cfg ) {
 	return $holes;
 }
 
+/**
+ * Base price of one part without extras.
+ * Formula: max( Mindestpreis, Fläche × m²-Preis + Umfang × Kantenpreis + Stückpauschale ).
+ * A fixed price for a catalog part (Metod/Faktum) replaces the formula when the size matches the catalog.
+ */
+function kf24_base_price( $cfg, $pcfg, &$how = null ) {
+	$area = max( $cfg['w'] * $cfg['h'] / 1e6, (float) kf24_opt( 'min_area' ) );
+	if ( ! empty( $cfg['part'] ) && isset( $pcfg['overrides'][ $cfg['part'] ] ) && $pcfg['overrides'][ $cfg['part'] ] > 0 ) {
+		$part = kf24_catalog_part( $cfg['part'] );
+		if ( $part && abs( $part['w'] - $cfg['w'] ) < 0.6 && abs( $part['h'] - $cfg['h'] ) < 0.6 ) {
+			$how = 'fest';
+			return [ 'area' => $area, 'base' => round( $pcfg['overrides'][ $cfg['part'] ], 2 ) ];
+		}
+	}
+	$lfm  = 2 * ( $cfg['w'] + $cfg['h'] ) / 1000;
+	$calc = $area * $pcfg['m2'] + $lfm * ( $pcfg['edge'] ?? 0 ) + ( $pcfg['piece'] ?? 0 );
+	$how  = ( $pcfg['minprice'] ?? 0 ) > $calc ? 'mindest' : 'formel';
+	return [ 'area' => $area, 'base' => round( max( $calc, (float) ( $pcfg['minprice'] ?? 0 ) ), 2 ) ];
+}
+
 /** Unit price (gross) and breakdown. */
 function kf24_price( $cfg, $pcfg ) {
-	$area     = max( $cfg['w'] * $cfg['h'] / 1e6, (float) kf24_opt( 'min_area' ) );
-	$base     = $area * $pcfg['m2'];
+	$b        = kf24_base_price( $cfg, $pcfg, $how );
+	$area     = $b['area'];
+	$base     = $b['base'];
 	$mill     = ( $pcfg['milling'] && $cfg['mill'] !== 'keine' ) ? (float) kf24_opt( 'milling_price' ) : 0;
 	$hinges   = $cfg['deliver'] === 'yes' ? $cfg['hinges'] * (float) kf24_opt( 'hinge_price' ) : 0;
 	$seal     = $cfg['seal'] === 'yes' ? ( $cfg['w'] / 1000 ) * (float) kf24_opt( 'seal_price_lfm' ) : 0;
 	$unit     = round( $base + $mill + $hinges + $seal, 2 );
 	return [
 		'area'   => $area,
-		'base'   => round( $base, 2 ),
+		'base'   => $base,
+		'how'    => $how,
 		'mill'   => $mill,
 		'hinges' => round( $hinges, 2 ),
 		'seal'   => round( $seal, 2 ),
@@ -367,6 +404,9 @@ function kf24_spec_lines( $cfg, $pcfg = null ) {
 	$l     = [];
 	if ( $cfg['label'] ) {
 		$l['Bezeichnung'] = $cfg['label'];
+	}
+	if ( ! empty( $cfg['part'] ) && function_exists( 'kf24_catalog_part' ) && ( $pt = kf24_catalog_part( $cfg['part'] ) ) ) {
+		$l['Systemteil'] = 'IKEA ' . ucfirst( $pt['system'] ) . ': ' . $pt['name'];
 	}
 	$l['Frontart']   = $types[ $cfg['type'] ] ?? $cfg['type'];
 	$l['Dekor/Holz'] = $cfg['decor'];

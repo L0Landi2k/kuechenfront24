@@ -27,26 +27,12 @@ function kf24_front_terms_flat() {
 	return $out;
 }
 
-/** Nominal part lists for the order helpers (cm, width × height). The exact mm are measured on the old front. */
-function kf24_system_parts() {
-	return [
-		'faktum' => [
-			[ 'Tür', 30, 70 ], [ 'Tür', 40, 70 ], [ 'Tür', 50, 70 ], [ 'Tür', 60, 70 ], [ 'Tür', 40, 92 ], [ 'Tür', 60, 92 ], [ 'Tür', 40, 125 ], [ 'Tür', 60, 57 ],
-			[ 'Klappe (Oberschrank)', 60, 35 ], [ 'Schubladenfront flach', 40, 13 ], [ 'Schubladenfront flach', 60, 13 ], [ 'Schubladenfront flach', 80, 13 ], [ 'Schubladenfront', 60, 25 ], [ 'Schubladenfront', 80, 25 ], [ 'Geschirrspülerfront', 60, 70 ],
-		],
-		'metod'  => [
-			[ 'Tür', 20, 80 ], [ 'Tür', 30, 80 ], [ 'Tür', 40, 80 ], [ 'Tür', 60, 80 ], [ 'Tür', 40, 60 ], [ 'Tür', 60, 60 ], [ 'Tür', 40, 40 ], [ 'Hochschrank-Tür', 60, 140 ], [ 'Hochschrank-Tür', 60, 200 ],
-			[ 'Klappe (Oberschrank)', 60, 40 ], [ 'Klappe (Oberschrank)', 80, 40 ], [ 'Schubladenfront flach', 60, 20 ], [ 'Schubladenfront', 60, 40 ], [ 'Schubladenfront', 80, 40 ], [ 'Geschirrspülerfront', 60, 80 ],
-		],
-	];
-}
-
 function kf24_enqueue_aufmass() {
 	kf24_enqueue_tools();
 	wp_enqueue_script( 'kf24-aufmass', KF24_URL . 'assets/kf24-aufmass.js', [], KF24_VERSION, true );
 	wp_localize_script( 'kf24-aufmass', 'KF24A', [
 		'terms'   => kf24_front_terms_flat(),
-		'systems' => kf24_system_parts(),
+		'catalog' => kf24_catalog_js(),
 		'ajax'    => admin_url( 'admin-ajax.php' ),
 		'nonce'   => wp_create_nonce( 'kf24_aufmass' ),
 		'calc'    => ( $p = get_page_by_path( 'preisrechner' ) ) ? get_permalink( $p ) : home_url( '/preisrechner/' ),

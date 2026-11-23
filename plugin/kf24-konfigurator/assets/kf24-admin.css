@@ -154,3 +154,25 @@ a.kf24a-stat:hover{border-color:var(--acc)}
 .kf24a-gal-i button{border:0;border-radius:6px;background:rgba(255,255,255,.92);cursor:pointer;width:26px;height:26px;font-size:14px}
 .kf24a-gal-i button[data-rm]{color:var(--bad)}
 @media (max-width:700px){.kf24a-ref-ba{grid-template-columns:1fr}}
+/* Metod & Faktum */
+.kf24a-tabs{margin-bottom:12px}
+.kf24a-sys{margin:0 0 12px;display:flex;gap:6px}
+.kf24a-scroll{overflow:auto;max-height:70vh;border:1px solid var(--line);border-radius:10px;background:#fff}
+.kf24a-prices{border:0;border-collapse:separate;border-spacing:0}
+.kf24a-prices th,.kf24a-prices td{padding:4px 6px;white-space:nowrap;border-bottom:1px solid #f0ebe4}
+.kf24a-prices thead th{position:sticky;top:0;background:#fff;z-index:2;font-size:12px;max-width:110px;white-space:normal;vertical-align:bottom}
+.kf24a-sticky-c{position:sticky;left:0;background:#fff;z-index:1;text-align:left}
+.kf24a-prices thead .kf24a-sticky-c{z-index:3}
+.kf24a-prices input{width:78px;min-height:32px;border:1px solid #d9d2c8;border-radius:6px;text-align:right;padding:2px 6px}
+.kf24a-prices input::placeholder{color:#b0a79b}
+.kf24a-prices input.is-set{border-color:var(--acc);background:#f6efe6;font-weight:700}
+.kf24a-grp th,.kf24a-grp td{background:#f6f2ec!important;font-weight:700}
+.kf24a-dim{color:var(--mut);font-size:12px}
+.kf24a-savebar{position:sticky;bottom:0;background:var(--bg);padding:10px 0;display:flex;gap:12px;align-items:center}
+.kf24a-changed{color:#8a5a00;font-weight:600}
+.kf24a-formula input{width:100px;min-height:36px;border-radius:6px;border:1px solid #c9c2b8;text-align:right}
+.kf24a-ex small{display:block;color:var(--mut)}
+.kf24a-parts input,.kf24a-parts select{width:100%;min-height:32px;font-size:13px}
+.kf24a-parts input[name=w],.kf24a-parts input[name=h],.kf24a-parts input[name=hinges]{width:70px}
+.kf24a-parts input[name=hlast]{width:auto}
+.kf24a-part-del{color:var(--bad);font-size:18px}

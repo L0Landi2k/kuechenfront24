@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'KF24T_VER', '1.3.0' );
+define( 'KF24T_VER', '1.4.0' );
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );

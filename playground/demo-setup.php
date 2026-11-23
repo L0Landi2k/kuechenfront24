@@ -212,6 +212,13 @@ foreach ( $refs as [ $title, $excerpt, $text, $layout, $b, $a, $cover, $front, $
 }
 $log( 'Referenzen angelegt' );
 
+/* ---------- Variante B: Teileliste neu laden, zwei Beispiel-Festpreise ---------- */
+kf24_import_catalog( true );
+$mpg2 = get_page_by_path( 'massivholzfront-3-schicht-pg2-individuell-konfigurierbar', OBJECT, 'product' );
+if ( $mpg2 && ! get_post_meta( $mpg2->ID, '_kf24_overrides', true ) ) {
+	update_post_meta( $mpg2->ID, '_kf24_overrides', [ 'metod-tuer60x80' => 189.0, 'metod-schublade60x20' => 79.0 ] );
+}
+
 /* ---------- Michi als Shop-Inhaber ---------- */
 if ( function_exists( 'kf24_add_owner_role' ) ) {
 	kf24_add_owner_role();

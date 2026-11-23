@@ -33,7 +33,7 @@
 			w: num($('#kf24-w').value), h: num($('#kf24-h').value), grain: type === 'blende' ? 'laengs' : $('#kf24-grain').value,
 			label: $('#kf24-label').value.trim(), note: (form.querySelector('[name="kf24[note]"]') || {}).value || '',
 			body: (form.querySelector('[name="kf24[body]"]') || {}).value || '19',
-			hlast: radio('hlast') === 'ende' ? 'ende' : 'start', hraw: [],
+			hlast: radio('hlast') === 'ende' ? 'ende' : 'start', hraw: [], part: $('#kf24-part-id').value,
 			hinge: hinge, hinges: hinge === 'keine' ? 0 : parseInt($('#kf24-hinges').value, 10),
 			deliver: $('input[name="kf24[deliver]"]').checked ? 'yes' : 'no',
 			grip: radio('grip') || '0', gpos: $('#kf24-gpos').value,
@@ -108,14 +108,21 @@
 		return { err: err.filter(function (v, i, a) { return a.indexOf(v) === i; }), warn: warn };
 	}
 
+	function catPart(id) { return (D.catalog || []).filter(function (p) { return p.id === id; })[0]; }
+	function basePrice(c, area) { // identical to kf24_base_price() on the server
+		var cp = c.part && catPart(c.part), ov = P.overrides || {};
+		if (cp && ov[c.part] > 0 && Math.abs(cp.w - c.w) < 0.6 && Math.abs(cp.h - c.h) < 0.6) return { v: +ov[c.part], how: 'fest' };
+		var calc = area * P.m2 + 2 * (c.w + c.h) / 1000 * (P.edge || 0) + (P.piece || 0);
+		return { v: Math.round(Math.max(calc, P.minprice || 0) * 100) / 100, how: (P.minprice || 0) > calc ? 'mindest' : 'formel' };
+	}
 	function price(c) {
 		var area = Math.max(c.w * c.h / 1e6, S.min_area);
-		var base = area * P.m2;
+		var bp = basePrice(c, area), base = bp.v;
 		var mill = P.milling && c.mill !== 'keine' ? S.milling_price : 0;
 		var hin = c.deliver === 'yes' ? c.hinges * S.hinge_price : 0;
 		var seal = c.seal === 'yes' ? (c.w / 1000) * S.seal_price_lfm : 0;
 		var unit = Math.round((base + mill + hin + seal) * 100) / 100;
-		return { area: area, base: base, mill: mill, hin: hin, seal: seal, unit: unit, total: unit * c.qty };
+		return { area: area, base: base, how: bp.how, mill: mill, hin: hin, seal: seal, unit: unit, total: unit * c.qty };
 	}
 
 	function draw(c) {
@@ -182,10 +189,15 @@
 		c = state();
 		var r = check(c), p = price(c);
 		form.classList.toggle('kf24-is-blende', c.type === 'blende');
+		var fixedGrip = c.type === 'schublade' || c.type === 'klappe';
+		if (fixedGrip && $('#kf24-gpos').value !== 'mitte') { $('#kf24-gpos').value = 'mitte'; }
+		$('#kf24-gpos').closest('label').hidden = fixedGrip;
+		if (fixedGrip) $('.kf24-ga-l').textContent = 'Höhe der Griffmitte von oben (A, leer = Mitte)';
 		$('.kf24-grain-l').hidden = c.type === 'blende'; $('.kf24-grain-fix').hidden = c.type !== 'blende';
 		$('.kf24-label-t').innerHTML = c.type === 'sonstig' ? 'Bezeichnung <small>(Pflicht, z. B. „Regalboden“ oder „Wandpaneel“)</small>' : 'Eigene Bezeichnung <small>(optional, z. B. „Spüle links“)</small>';
 		$('#kf24-msgs').innerHTML = r.err.map(function (m) { return '<li class="kf24-err">' + m + '</li>'; }).join('') + r.warn.map(function (m) { return '<li class="kf24-warn">' + m + '</li>'; }).join('');
-		var rows = '<tr><td>' + p.area.toLocaleString('de-DE', { maximumFractionDigits: 3 }) + ' m² × ' + eur(P.m2) + '</td><td>' + eur(p.base) + '</td></tr>';
+		var cpn = c.part && catPart(c.part);
+		var rows = '<tr><td>' + (p.how === 'fest' ? 'Festpreis ' + cpn.n : p.how === 'mindest' ? 'Mindestpreis je Teil' : p.area.toLocaleString('de-DE', { maximumFractionDigits: 3 }) + ' m² × ' + eur(P.m2) + ((P.edge || P.piece) ? ' + Kante/Pauschale' : '')) + '</td><td>' + eur(p.base) + '</td></tr>';
 		if (p.mill) rows += '<tr><td>Grifffräsung</td><td>' + eur(p.mill) + '</td></tr>';
 		if (p.hin) rows += '<tr><td>' + c.hinges + ' Topfbänder</td><td>' + eur(p.hin) + '</td></tr>';
 		if (p.seal) rows += '<tr><td>Aufsteckdichtung' + (S.seal_note ? ' (' + S.seal_note + ')' : '') + '</td><td>' + eur(p.seal) + '</td></tr>';
@@ -270,6 +282,41 @@
 	renderHpos(state(), true);
 	sync();
 
+	/* ---------- Teil aus Küchensystem (Metod / Faktum) ---------- */
+	var sysSel = $('#kf24-sys'), partSel = $('#kf24-part'), partId = $('#kf24-part-id');
+	function fillParts(sys, cur) {
+		var g = '', h = '<option value="">– Teil wählen –</option>';
+		(D.catalog || []).filter(function (p) { return p.s === sys; }).forEach(function (p) {
+			if (p.g !== g) { h += (g ? '</optgroup>' : '') + '<optgroup label="' + p.g + '">'; g = p.g; }
+			h += '<option value="' + p.id + '"' + (p.id === cur ? ' selected' : '') + '>' + p.n + ' – ' + fmt(p.w) + ' × ' + fmt(p.h) + '</option>';
+		});
+		partSel.innerHTML = h + (g ? '</optgroup>' : '');
+		partSel.closest('label').hidden = !sys;
+	}
+	function applyPart(cp) {
+		setRadio('type', cp.t); preset(cp.t);
+		$('#kf24-w').value = cp.w; $('#kf24-h').value = cp.h;
+		setRadio('hinge', cp.a); if (cp.b) $('#kf24-hinges').value = String(cp.b);
+		var note = form.querySelector('[name="kf24[note]"]'); if (note && (!note.value || note.dataset.auto)) { note.value = cp.x || ''; note.dataset.auto = '1'; }
+		if (!$('#kf24-label').value || $('#kf24-label').dataset.auto) { $('#kf24-label').value = cp.n; $('#kf24-label').dataset.auto = '1'; }
+		partId.value = cp.id;
+		hposDirty = cp.hr && cp.hr.length === cp.b;
+		renderHpos(state(), true, hposDirty ? cp.hr.slice() : null, cp.hl);
+		sync();
+	}
+	sysSel.addEventListener('change', function () { fillParts(sysSel.value, ''); if (!sysSel.value) partId.value = ''; sync(); });
+	partSel.addEventListener('change', function () { var cp = catPart(partSel.value); if (cp) applyPart(cp); else { partId.value = ''; sync(); } });
+	form.addEventListener('input', function (e) {
+		if ((e.target.id === 'kf24-w' || e.target.id === 'kf24-h') && partId.value) {
+			var cp = catPart(partId.value);
+			if (cp && (num($('#kf24-w').value) !== cp.w || num($('#kf24-h').value) !== cp.h)) { partId.value = ''; partSel.value = ''; sync(); }
+		}
+		if (e.target.id === 'kf24-label') delete e.target.dataset.auto;
+		if (e.target.name === 'kf24[note]') delete e.target.dataset.auto;
+	}, true);
+	var qsys = new URLSearchParams(location.search).get('system');
+	if (qsys && /^(metod|faktum)$/.test(qsys)) { sysSel.value = qsys; fillParts(qsys, ''); }
+
 	/* ---------- Frontenliste: mehrere Fronten planen, ein Klick in den Warenkorb ---------- */
 	var LKEY = 'kf24_list_' + P.id, list = [], active = -1;
 	var TYPES = { tuer: 'Tür', schublade: 'Schublade', klappe: 'Klappe', blende: 'Blende', sonstig: 'Sonstiges' };
@@ -288,6 +335,8 @@
 		setVal('#kf24-ga', c.ga || ''); setVal('#kf24-gb', c.gb || 40); setVal('#kf24-gd', c.gd || 128);
 		setRadio('mill', c.mill || 'keine'); var se = $('input[name="kf24[seal]"]'); if (se) se.checked = c.seal === 'yes';
 		setVal('#kf24-qty', c.qty || 1);
+		var cpp = c.part && catPart(c.part); partId.value = cpp ? c.part : '';
+		if (cpp) { sysSel.value = cpp.s; fillParts(cpp.s, cpp.id); } else if (partSel.value) { partSel.value = ''; }
 		var hasRaw = c.hraw && c.hraw.length === (c.hinge === 'keine' ? 0 : c.hinges) && c.hraw.length > 0;
 		hposDirty = !!hasRaw; gaDirty = !!c.ga;
 		renderHpos(state(), true, hasRaw ? c.hraw.slice() : null, c.hlast);
@@ -374,7 +423,12 @@
 				c.hinge = r.a || 'keine'; c.hinges = c.hinge === 'keine' ? 0 : Math.max(1, Math.min(5, +r.b || 2));
 				c.grain = c.type === 'blende' ? 'laengs' : 'aufrecht'; c.hraw = []; c.hlast = 'start'; c.hpos = [];
 				c.grip = '0'; c.mill = 'keine'; c.seal = 'no'; c.note = ''; c.decor = base.decor || '';
-				var len = c.hinge === 'oben' ? c.w : c.h; c.hraw = defaultPositions(len, c.hinges); c.hpos = c.hraw.slice();
+				var len = c.hinge === 'oben' ? c.w : c.h; c.hraw = defaultPositions(len, c.hinges); c.hpos = c.hraw.slice(); c.part = '';
+				var cp = r.pid && catPart(r.pid);
+				if (cp && cp.w === c.w && cp.h === c.h) {
+					c.part = cp.id; c.note = cp.x || '';
+					if (cp.hr && cp.hr.length === c.hinges) { c.hraw = cp.hr.slice(); c.hlast = cp.hl || 'start'; c.hpos = c.hraw.map(function (v, i) { return c.hlast === 'ende' && i === c.hraw.length - 1 ? len - v : v; }); }
+				}
 				return c;
 			});
 			save();

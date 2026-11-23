@@ -43,7 +43,7 @@
 		var bad = function (v) { v = +v; return v && (v < A.max[2] || v > A.max[0]); };
 		return '<tr data-i="' + i + '">' +
 			'<td class="am-n">' + (i + 1) + '</td>' +
-			'<td class="am-name" data-l="Bezeichnung"><select data-k="nsel" aria-label="Bezeichnung">' + to.html + '</select><input data-k="n" value="' + esc(r.n) + '" placeholder="eigene Bezeichnung"' + (to.known ? ' hidden' : '') + '><span class="am-print">' + esc(r.n) + '</span></td>' +
+			'<td class="am-name" data-l="Bezeichnung">' + (r.pid ? '<b class="am-sys">' + esc(r.n) + '</b><small class="am-sys-t">' + (r.pid.indexOf('faktum') === 0 ? 'IKEA Faktum' : 'IKEA Metod') + '</small>' : '<select data-k="nsel" aria-label="Bezeichnung">' + to.html + '</select><input data-k="n" value="' + esc(r.n) + '" placeholder="eigene Bezeichnung"' + (to.known ? ' hidden' : '') + '>') + '<span class="am-print">' + esc(r.n) + '</span></td>' +
 			'<td data-l="Art">' + sel('t', TYPES) + '<span class="am-print">' + TYPES[r.t] + '</span></td>' +
 			'<td data-l="Breite mm"><input type="number" inputmode="numeric" data-k="w" value="' + esc(r.w) + '" placeholder="mm"' + (bad(r.w) ? ' aria-invalid="true"' : '') + '><span class="am-print">' + esc(r.w) + '</span></td>' +
 			'<td data-l="Höhe mm"><input type="number" inputmode="numeric" data-k="h" value="' + esc(r.h) + '" placeholder="mm"' + (bad(r.h) ? ' aria-invalid="true"' : '') + '><span class="am-print">' + esc(r.h) + '</span></td>' +
@@ -57,10 +57,15 @@
 
 	function front() { return (T.products || []).filter(function (x) { return String(x.id) === String(st.front); })[0]; }
 	function eur(v) { return v.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }); }
+	function unit(r, p) { // same formula as the server: max(Mindestpreis, m² × Preis + Umfang × Kante + Pauschale) or fixed price
+		if (r.pid && p.ov && p.ov[r.pid] > 0) return +p.ov[r.pid];
+		var area = Math.max(r.w * r.h / 1e6, (T.s && T.s.ma) || 0), lfm = 2 * (+r.w + +r.h) / 1000;
+		return Math.round(Math.max(area * p.p + lfm * (p.e || 0) + (p.pc || 0), p.mp || 0) * 100) / 100;
+	}
 	function rowPrice(r) {
 		var p = front(); if (!p || !(+r.w && +r.h)) return '–';
 		if (Math.max(+r.w, +r.h) > A.max[0] || Math.min(+r.w, +r.h) > A.max[1]) return '<small>auf Anfrage</small>';
-		return eur(Math.max(r.w * r.h / 1e6, 0) * p.p * Math.max(1, +r.q || 1));
+		return eur(unit(r, p) * Math.max(1, +r.q || 1));
 	}
 	function cfgUrl(r) {
 		var p = (T.products || []).filter(function (x) { return String(x.id) === String(st.front); })[0];
@@ -84,18 +89,18 @@
 	}
 	function links() { root.querySelectorAll('#am-rows tr').forEach(function (tr) { var c = tr.querySelector('.am-price'); if (c) c.innerHTML = rowPrice(st.rows[+tr.dataset.i]); }); }
 	function sum() {
-		var n = 0, area = 0, miss = 0, big = 0, long = false, s = T.s || {}, p = front();
+		var n = 0, area = 0, miss = 0, big = 0, long = false, s = T.s || {}, p = front(), goods = 0;
 		st.rows.forEach(function (r) {
 			var q = Math.max(1, +r.q || 1); n += q;
 			if (!(+r.w && +r.h)) { miss++; return; }
 			if (Math.max(+r.w, +r.h) > A.max[0] || Math.min(+r.w, +r.h) > A.max[1]) { big++; return; }
-			area += r.w * r.h / 1e6 * q; if (Math.max(+r.w, +r.h) > s.len_l) long = true;
+			area += r.w * r.h / 1e6 * q; if (p) goods += unit(r, p) * q; if (Math.max(+r.w, +r.h) > s.len_l) long = true;
 		});
 		var html = '<b>' + n + ' Teile</b> · ' + area.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m²';
 		if (p && area) {
-			var goods = area * p.p, weight = area * p.kg, min = goods < s.min_t ? s.min_f : 0, len = long && weight < s.len_w ? s.len_f : 0;
+			var weight = area * p.kg, min = goods < s.min_t ? s.min_f : 0, len = long && weight < s.len_w ? s.len_f : 0;
 			var ship = weight < 10 ? s.t1 : weight < 20 ? s.t2 : weight < 50 ? s.t3 : s.t4;
-			html = '<table class="am-calc"><tr><td>' + n + ' Teile · ' + area.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m² × ' + eur(p.p) + '</td><td>' + eur(goods) + '</td></tr>' +
+			html = '<table class="am-calc"><tr><td>' + n + ' Teile · ' + area.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m² · ' + esc(p.n.replace(/\s+–\s+individuell konfigurierbar$/, '')) + '</td><td>' + eur(goods) + '</td></tr>' +
 				(min ? '<tr><td>Mindermengenzuschlag (unter ' + eur(s.min_t) + ')</td><td>' + eur(min) + '</td></tr>' : '') +
 				(len ? '<tr><td>Längenzuschlag</td><td>' + eur(len) + '</td></tr>' : '') +
 				'<tr><td>Versand Deutschland, ca. ' + Math.round(weight) + ' kg</td><td>' + eur(ship) + '</td></tr>' +
@@ -106,23 +111,28 @@
 		$('#am-sum').innerHTML = html;
 		var go = $('#am-go'); if (go) { go.disabled = !p; go.textContent = p ? 'Weiter: Material wählen & bestellen' : 'Erst oben die Front wählen'; }
 	}
+	function catParts(sys) { return (A.catalog || []).filter(function (p) { return p.s === sys; }); }
 	function helper() {
-		var box = root.querySelector('.kf24-am-helper'), parts = (A.systems || {})[st.sys];
-		box.hidden = !parts;
-		if (!parts) return;
+		var box = root.querySelector('.kf24-am-helper'), parts = catParts(st.sys);
+		box.hidden = !parts.length;
+		if (!parts.length) return;
 		root.querySelector('.kf24-am-helper-t').textContent = st.sys === 'faktum' ? 'Faktum-Bestellhilfe:' : 'Metod-Bestellhilfe:';
-		root.querySelector('.kf24-am-chips').innerHTML = parts.map(function (p, i) { return '<button type="button" data-part="' + i + '">+ ' + esc(p[0]) + ' ' + p[1] + '×' + p[2] + '</button>'; }).join('') +
-			(st.sys === 'metod' ? '<p class="kf24-hint">Metod-Fronten in Standardmaßen finden Sie fertig im <a href="' + esc((window.location.origin) + '/produkt-kategorie/fronten-fuer-metod/') + '">Metod-Shop</a>. Die Tabelle brauchen Sie für Sondermaße.</p>' : '');
+		var g = '', html = '';
+		parts.forEach(function (p) {
+			if (p.g !== g) { g = p.g; html += '<h4>' + esc(g) + '</h4>'; }
+			html += '<button type="button" data-part="' + esc(p.id) + '" title="' + esc(p.w + ' × ' + p.h + ' mm' + (p.x ? ' – ' + p.x : '')) + '">+ ' + esc(p.n) + '</button>';
+		});
+		root.querySelector('.kf24-am-chips').innerHTML = html + '<p class="kf24-hint">Die Maße sind schon eingetragen (' + (st.sys === 'faktum' ? 'so wie Faktum-Fronten tatsächlich gefertigt werden' : 'Metod-Rastermaß minus 3 mm') + '). Bitte trotzdem kurz an der alten Front nachmessen.</p>';
 	}
 
 	root.addEventListener('click', function (e) {
 		var b = e.target.closest('button'); if (!b) return;
 		if (b.dataset.part != null) {
-			var p = A.systems[st.sys][+b.dataset.part];
-			var r = blank(p[0], (st.sys === 'faktum' ? 'Faktum ' : 'Metod ') + p[1] + '×' + p[2] + ' cm');
+			var p = (A.catalog || []).filter(function (x) { return x.id === b.dataset.part; })[0]; if (!p) return;
+			var r = { n: p.n, t: p.t, w: p.w, h: p.h, a: p.a, b: p.b, q: 1, r: '', pid: p.id };
 			if (st.rows.length === 1 && !st.rows[0].w && !st.rows[0].h && !st.rows[0].r) st.rows = [];
 			st.rows.push(r); save(); render();
-			var last = root.querySelector('#am-rows tr:last-child input[data-k=w]'); if (last) last.focus();
+			var last = root.querySelector('#am-rows tr:last-child input[data-k=q]'); if (last) last.focus();
 			return;
 		}
 		var tr = b.closest('tr');
@@ -149,6 +159,7 @@
 		var t = e.target, tr = t.closest('#am-rows tr'); if (!tr || !t.dataset.k || t.tagName === 'SELECT') return;
 		var r = st.rows[+tr.dataset.i];
 		r[t.dataset.k] = t.type === 'number' ? (t.value === '' ? '' : +t.value) : t.value;
+		if (r.pid && (t.dataset.k === 'w' || t.dataset.k === 'h')) { var cp = (A.catalog || []).filter(function (x) { return x.id === r.pid; })[0]; if (cp && (+r.w !== cp.w || +r.h !== cp.h)) { r.pid = ''; } }
 		if (t.type === 'number' && (t.dataset.k === 'w' || t.dataset.k === 'h')) { var v = +t.value; t.setAttribute('aria-invalid', v && (v < A.max[2] || v > A.max[0]) ? 'true' : 'false'); }
 		save(); sum(); links();
 	});

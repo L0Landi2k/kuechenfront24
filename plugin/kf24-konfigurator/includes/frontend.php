@@ -53,6 +53,7 @@ function kf24_render_configurator() {
 		'color'    => kf24_product_look( $c['id'] )['color'],
 		'mats'     => array_combine( $c['options'], array_map( 'kf24_material_look', $c['options'] ) ) ?: new stdClass(),
 		'bulk'     => WC_AJAX::get_endpoint( 'kf24_bulk_add' ),
+		'catalog'  => kf24_catalog_js(),
 		'cart'     => wc_get_cart_url(),
 		'contact'  => home_url( '/kontakt/' ),
 		'settings' => [
@@ -98,6 +99,11 @@ function kf24_render_configurator() {
 
 		<fieldset class="kf24-step">
 			<legend><span class="kf24-n">3</span> Maße</legend>
+			<div class="kf24-sysrow">
+				<label>Küchensystem <select id="kf24-sys"><option value="">eigene Maße</option><?php foreach ( kf24_catalog_systems() as $k => $l ) { echo '<option value="' . esc_attr( $k ) . '">' . esc_html( $l ) . '</option>'; } ?></select></label>
+				<label class="kf24-partl" hidden>Teil <select id="kf24-part"></select></label>
+				<input type="hidden" name="kf24[part]" id="kf24-part-id" value="">
+			</div>
 			<div class="kf24-row3">
 				<label>Breite <span>mm</span><input type="number" inputmode="decimal" name="kf24[w]" id="kf24-w" min="1" step="0.5" value="597" required></label>
 				<label>Höhe <span>mm</span><input type="number" inputmode="decimal" name="kf24[h]" id="kf24-h" min="1" step="0.5" value="797" required></label>

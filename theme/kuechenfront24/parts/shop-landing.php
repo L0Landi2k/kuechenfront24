@@ -55,5 +55,14 @@ kf24t_pagehead( 'Shop', 'Drei Wege zu Ihren neuen Fronten. Wählen Sie, was zu I
 		</div>
 	<?php endif; ?>
 
-	<div class="note" style="margin-top:40px"><b>IKEA Faktum?</b> Faktum-Fronten fertigen wir nach Maß (Weg 1). Die <a href="<?php echo esc_url( add_query_arg( 'system', 'faktum', $page( 'aufmass' ) ) ); ?>">Faktum-Bestellhilfe</a> listet alle typischen Teile.</div>
+	<div class="note shop-b-test" style="margin-top:24px"><b>Test – Variante B:</b> Metod-Teile direkt bei der Front wählen. Eine Front, alle Rastermaße, Preis über Formel oder Festpreis.
+		<p class="shop-b-links"><?php
+		$seen = [];
+		foreach ( $cfg as $c ) {
+			if ( isset( $seen[ $c['group'] ] ) ) { continue; }
+			$seen[ $c['group'] ] = 1;
+			echo '<a class="btn ghost" href="' . esc_url( add_query_arg( 'system', 'metod', $c['url'] ) . '#kf24-konfigurator' ) . '">' . esc_html( $groups[ $c['group'] ] ?? $c['group'] ) . '</a> ';
+		}
+		?></p></div>
+	<div class="note" style="margin-top:24px"><b>IKEA Faktum?</b> Faktum-Fronten fertigen wir nach Maß (Weg 1). Die <a href="<?php echo esc_url( add_query_arg( 'system', 'faktum', $page( 'aufmass' ) ) ); ?>">Faktum-Bestellhilfe</a> listet alle typischen Teile.</div>
 </div>

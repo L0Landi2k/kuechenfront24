@@ -125,6 +125,7 @@ function kf24_page_overview() {
 		[ kf24_orders_url(), 'cart', 'Bestellungen', 'Bestellungen ansehen, Fertigungsblatt drucken.' ],
 		[ 'admin.php?page=kf24-fronten', 'grid-view', 'Fronten verwalten', 'Ein-/ausschalten, duplizieren, löschen.' ],
 		[ 'admin.php?page=kf24-preise', 'money-alt', 'Preise & Versand', 'Topfbänder, Zuschläge, Versandkosten, Maße.' ],
+		[ 'admin.php?page=kf24-systeme', 'calculator', 'Metod & Faktum (Test B)', 'Eine Teileliste, Preisformel, Festpreise – statt hunderter Produkte.' ],
 		[ 'edit.php?post_type=page', 'admin-page', 'Seiten & Texte', 'Über uns, FAQ, Service, Rechtstexte.' ],
 		[ 'admin.php?page=kf24-referenzen', 'format-gallery', 'Referenzen', 'Kundenküchen mit Fotos und Vorher/Nachher zeigen.' ],
 		[ 'nav-menus.php', 'menu', 'Menü & Fußzeile', 'Einmal ändern – gilt auf allen Seiten.' ],
