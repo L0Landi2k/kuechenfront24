@@ -52,6 +52,9 @@ function kf24_render_configurator() {
 		'tex'      => kf24_product_look( $c['id'] )['img'],
 		'color'    => kf24_product_look( $c['id'] )['color'],
 		'mats'     => array_combine( $c['options'], array_map( 'kf24_material_look', $c['options'] ) ) ?: new stdClass(),
+		'bulk'     => WC_AJAX::get_endpoint( 'kf24_bulk_add' ),
+		'cart'     => wc_get_cart_url(),
+		'contact'  => home_url( '/kontakt/' ),
 		'settings' => [
 			'hinge_price'    => (float) kf24_opt( 'hinge_price' ),
 			'seal_price_lfm' => (float) kf24_opt( 'seal_price_lfm' ),
@@ -73,7 +76,7 @@ function kf24_render_configurator() {
 		<fieldset class="kf24-step">
 			<legend><span class="kf24-n">1</span> Was möchten Sie bestellen?</legend>
 			<div class="kf24-types" role="radiogroup">
-				<?php foreach ( [ 'tuer' => [ 'Tür', 'mit Topfbändern' ], 'schublade' => [ 'Schubladenfront', 'ohne Topfbänder' ], 'klappe' => [ 'Klappe', 'Anschlag oben' ], 'blende' => [ 'Blende / Sockel', 'ohne Bohrungen' ] ] as $k => $t ) : ?>
+				<?php foreach ( [ 'tuer' => [ 'Tür', 'mit Topfbändern' ], 'schublade' => [ 'Schubladenfront', 'ohne Topfbänder' ], 'klappe' => [ 'Klappe', 'Anschlag oben' ], 'blende' => [ 'Blende / Sockel', 'Maserung längs' ], 'sonstig' => [ 'Sonstiges', 'frei benennen' ] ] as $k => $t ) : ?>
 					<label class="kf24-type"><input type="radio" name="kf24[type]" value="<?php echo $f( $k ); ?>" <?php checked( $k, 'tuer' ); ?>><span class="kf24-type-ico" data-type="<?php echo $f( $k ); ?>"></span><b><?php echo esc_html( $t[0] ); ?></b><small><?php echo esc_html( $t[1] ); ?></small></label>
 				<?php endforeach; ?>
 			</div>
@@ -98,12 +101,13 @@ function kf24_render_configurator() {
 			<div class="kf24-row3">
 				<label>Breite <span>mm</span><input type="number" inputmode="decimal" name="kf24[w]" id="kf24-w" min="1" step="0.5" value="597" required></label>
 				<label>Höhe <span>mm</span><input type="number" inputmode="decimal" name="kf24[h]" id="kf24-h" min="1" step="0.5" value="797" required></label>
-				<label>Maserung
+				<label class="kf24-grain-l">Maserung
 					<select name="kf24[grain]" id="kf24-grain"><option value="aufrecht">aufrecht</option><option value="quer">quer (90° gedreht)</option></select>
 				</label>
+				<p class="kf24-grain-fix" hidden>Maserung: <b>längs</b> <small>(bei Blenden und Sockeln immer längs)</small></p>
 			</div>
-			<label class="kf24-block">Eigene Bezeichnung <small>(optional, z. B. „Spüle links“)</small><input type="text" name="kf24[label]" maxlength="60" list="kf24-terms"></label><datalist id="kf24-terms"><?php foreach ( kf24_front_terms_flat() as $t ) { echo '<option value="' . esc_attr( $t['l'] ) . '">'; } ?></datalist>
-			<p class="kf24-hint">Messen Sie die alte Front von Kante zu Kante. Für IKEA Metod: Rastermaß minus 3 mm, z. B. 597 × 797 mm.</p>
+			<label class="kf24-block"><span class="kf24-label-t">Eigene Bezeichnung <small>(optional, z. B. „Spüle links“)</small></span><input type="text" name="kf24[label]" id="kf24-label" maxlength="60" list="kf24-terms"></label><datalist id="kf24-terms"><?php foreach ( kf24_front_terms_flat() as $t ) { echo '<option value="' . esc_attr( $t['l'] ) . '">'; } ?></datalist>
+			<p class="kf24-hint">Messen Sie die alte Front von Kante zu Kante. Für IKEA Metod: Rastermaß minus 3 mm, z. B. 597 × 797 mm. Online bis <?php echo esc_html( wc_format_localized_decimal( kf24_opt( 'max_long' ) ) . ' × ' . wc_format_localized_decimal( kf24_opt( 'max_short' ) ) ); ?> mm – längere Teile <a href="<?php echo esc_url( home_url( '/kontakt/' ) ); ?>">auf Anfrage</a>.</p>
 		</fieldset>
 
 		<fieldset class="kf24-step" id="kf24-step-hinge">
@@ -116,7 +120,6 @@ function kf24_render_configurator() {
 			<div class="kf24-hinge-detail">
 				<div class="kf24-row3">
 					<label>Anzahl <select name="kf24[hinges]" id="kf24-hinges"><?php for ( $i = 1; $i <= 5; $i++ ) { printf( '<option value="%1$d"%2$s>%1$d</option>', (int) $i, selected( $i, 2, false ) ); } ?></select></label>
-					<label>Anschlagart <select name="kf24[twin]"><option value="einzel">Einzelanschlag</option><option value="zwilling">Zwillingsanschlag</option></select></label>
 					<label>Korpus-Wandstärke <select name="kf24[body]"><option value="19">19 mm</option><option value="16">16 mm</option></select></label>
 				</div>
 				<p class="kf24-hint kf24-hint-body">Bei 18-mm-Platten bitte 19 mm wählen.</p>
@@ -134,8 +137,8 @@ function kf24_render_configurator() {
 			</div>
 			<div class="kf24-grip-detail">
 				<div class="kf24-row3">
-					<label>Position <select name="kf24[gpos]" id="kf24-gpos"><option value="mitte">mittig horizontal</option><option value="oben-h">oben horizontal</option><option value="unten-h">unten horizontal</option><option value="oben-v">oben vertikal</option><option value="unten-v">unten vertikal</option></select></label>
-					<label class="kf24-gd">Lochabstand <span>mm</span><select name="kf24[gd]" id="kf24-gd"><?php foreach ( [ 96, 128, 160, 192, 224, 256, 320, 448, 640 ] as $d ) { printf( '<option value="%1$d"%2$s>%1$d</option>', (int) $d, selected( $d, 128, false ) ); } ?></select></label>
+					<label>Position <select name="kf24[gpos]" id="kf24-gpos"><option value="mitte">mittig horizontal</option><option value="mitte-v">mittig vertikal</option><option value="oben-h">oben horizontal</option><option value="unten-h">unten horizontal</option><option value="oben-v">oben vertikal</option><option value="unten-v">unten vertikal</option></select></label>
+					<label class="kf24-gd">Lochabstand <span>mm, Mitte bis Mitte</span><input type="number" inputmode="decimal" step="0.5" min="16" max="2000" name="kf24[gd]" id="kf24-gd" value="128" list="kf24-gd-list"></label><datalist id="kf24-gd-list"><?php foreach ( [ 64, 96, 128, 160, 192, 224, 256, 288, 320, 448, 640 ] as $d ) { echo '<option value="' . (int) $d . '">'; } ?></datalist>
 				</div>
 				<div class="kf24-row3">
 					<label class="kf24-ga"><span class="kf24-ga-l">Abstand von oben (a)</span> <span>mm</span><input type="number" inputmode="decimal" name="kf24[ga]" id="kf24-ga" step="0.5"></label>
@@ -161,6 +164,14 @@ function kf24_render_configurator() {
 	</div>
 
 	<aside class="kf24-side" aria-live="polite">
+		<div class="kf24-list" id="kf24-list" hidden>
+			<div class="kf24-list-h"><b>Ihre Frontenliste</b> <span id="kf24-list-n"></span></div>
+			<ol class="kf24-list-items" id="kf24-list-items"></ol>
+			<div class="kf24-list-sum"><span>Summe</span><b id="kf24-list-total">–</b></div>
+			<button type="button" class="button alt kf24-list-cart" id="kf24-list-cart">Alle in den Warenkorb</button>
+			<div class="kf24-list-tools"><button type="button" class="kf24-link" id="kf24-list-add">+ Front hinzufügen</button><button type="button" class="kf24-link" id="kf24-list-decor">Material für alle übernehmen</button><button type="button" class="kf24-link kf24-danger-l" id="kf24-list-clear">Liste leeren</button></div>
+			<p class="kf24-hint">Klicken Sie auf eine Position, um sie zu bearbeiten. Die Liste bleibt in diesem Browser gespeichert.</p>
+		</div>
 		<div class="kf24-drawing" id="kf24-drawing" role="img" aria-label="Zeichnung der Front"></div>
 		<ul class="kf24-msgs" id="kf24-msgs"></ul>
 		<div class="kf24-pricebox">
@@ -168,6 +179,7 @@ function kf24_render_configurator() {
 			<div class="kf24-total"><span>Gesamt</span><b id="kf24-total">–</b></div>
 			<p class="kf24-legal">inkl. MwSt., zzgl. <a href="<?php echo esc_url( home_url( '/versand/' ) ); ?>">Versand</a> · Lieferzeit <?php echo esc_html( $c['lz'] ); ?></p>
 			<button type="submit" name="add-to-cart" value="<?php echo (int) $product->get_id(); ?>" class="single_add_to_cart_button button alt kf24-submit" id="kf24-submit">In den Warenkorb</button>
+			<button type="button" class="button kf24-ghost kf24-tolist" id="kf24-tolist">Weitere Front planen</button>
 			<p class="kf24-legal">Maßanfertigung: kein Widerrufsrecht. Bitte prüfen Sie Maße und Bohrungen sorgfältig.</p>
 		</div>
 	</aside>

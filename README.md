@@ -23,7 +23,7 @@ Unten am Bildschirm gibt es den Knopf **„Testliste & Feedback“**: eine Schri
 
 - Topfband mitliefern: **4,00 € je Stück**
 - Aufsteckdichtung: **2,00 € je lfm (fiktiv)** – wird im Shop mit „fiktiv“ angezeigt, bis der echte Preis feststeht
-- Fertigungsmaß maximal **2.800 × 900 mm**
+- Online bestellbar bis **2.300 × 900 mm**, längere Teile nur auf Anfrage
 - RAL-Farbwerte aus einer offenen Farbtabelle (MIT-Lizenz). Holz-, Furnier-, Fenix- und Dekorbilder sind **einheitlich erzeugte Platzhalter** und werden durch echte Fotos ersetzt (einfach per Drag & Drop in *Materialien & Fotos*).
 - Das Bild „Hängesideboard“ ist eine Illustration, das Über-uns-Bild ein Platzhalter – beide werden durch echte Fotos ersetzt.
 - Rechtstexte werden vor dem Livegang geprüft.

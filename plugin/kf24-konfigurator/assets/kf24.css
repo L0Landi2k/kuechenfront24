@@ -238,3 +238,49 @@
 .kf24-ba-l{top:auto;bottom:14px}
 .kf24-split i{top:auto;bottom:8px}
 .kf24-sample-pic.is-collage{display:block;overflow:hidden}.kf24-sample-pic .kf24-collage{aspect-ratio:auto;height:100%;border-radius:0}
+/* ---- Runde 2 ---- */
+.kf24-types{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media(max-width:760px){.kf24-types{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:480px){.kf24-types{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kf24-type-ico[data-type=sonstig]{border-style:dashed;width:40px;height:36px;margin-top:4px;margin-bottom:10px}
+.kf24-type-ico[data-type=sonstig]::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font-weight:700;color:var(--k-ink)}
+.kf24-grain-fix{margin:0;align-self:end;padding-bottom:10px}
+.kf24-hpos label{position:relative}
+.kf24-mini{display:inline-flex;margin-top:6px;border:1px solid var(--k-line);border-radius:999px;overflow:hidden;font-size:12.5px;width:max-content}
+.kf24-mini label{margin:0!important;cursor:pointer;display:block}
+.kf24-mini input{position:absolute;opacity:0;width:1px;height:1px}
+.kf24-mini span{display:block;padding:4px 10px;font-weight:600;color:var(--k-mute)}
+.kf24-mini input:checked+span{background:var(--k-acc);color:#fff}
+.kf24-mini input:focus-visible+span{outline:2px solid var(--k-acc)}
+.kf24-ref{font-weight:600}
+/* front list */
+.kf24-list{border:1.5px solid var(--k-acc);border-radius:14px;padding:12px;margin-bottom:14px;background:#fff}
+.kf24-list-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.kf24-list-h span{color:var(--k-mute);font-size:13px}
+.kf24-list-items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;max-height:340px;overflow:auto}
+.kf24-list-items li{display:flex;gap:4px;align-items:stretch}
+.kf24-li{flex:1;display:grid;grid-template-columns:1fr auto;gap:0 8px;text-align:left;border:1px solid var(--k-line);background:var(--k-bg);border-radius:10px;padding:8px 10px;cursor:pointer;font:inherit;color:var(--k-ink)}
+.kf24-li b{font-size:14px}
+.kf24-li small{grid-column:1;color:var(--k-mute);font-size:12.5px}
+.kf24-li-p{grid-row:1/span 2;grid-column:2;align-self:center;font-weight:700;font-size:14px}
+.kf24-li-x{color:#b3261e;font-weight:700;font-size:12.5px}
+.kf24-list-items li.is-active .kf24-li{border-color:var(--k-acc);background:color-mix(in srgb,var(--k-acc) 9%,#fff);box-shadow:inset 3px 0 0 var(--k-acc)}
+.kf24-list-items li.has-err .kf24-li{border-color:#e7b6b2}
+.kf24-li-del{border:0;background:none;color:#b3261e;font-size:20px;cursor:pointer;padding:0 6px}
+.kf24-list-sum{display:flex;justify-content:space-between;margin:10px 2px;font-size:16px}
+.kf24-list-cart{width:100%}
+.kf24-list-tools{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px}
+.kf24-danger-l{color:#b3261e!important}
+.kf24-tolist{width:100%;margin-top:8px}
+.kf24-msgs a{color:inherit;font-weight:700}
+/* planner */
+.am-price{white-space:nowrap;font-weight:600}
+.am-calc{width:100%;max-width:560px;border-collapse:collapse;margin:6px 0}
+.am-calc td{padding:5px 0;border-bottom:1px solid var(--k-line)}
+.am-calc td:last-child{text-align:right;white-space:nowrap}
+.am-calc .am-total td{font-weight:800;font-size:18px;border-bottom:0;padding-top:10px}
+#am-go{font-size:16px}
+.kf24 [hidden]{display:none!important}
+.kf24-list .kf24-list-cart{display:block;float:none!important;width:100%;margin:0}
+.kf24-list-tools{clear:both;width:100%}
+.kf24-list-tools .kf24-link{width:auto;display:inline-block;white-space:nowrap}

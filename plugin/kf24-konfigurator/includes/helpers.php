@@ -14,7 +14,7 @@ function kf24_defaults() {
 		'length_weight_limit'  => 20,
 		'length_fee'           => 21,
 		'min_dim'              => 60,
-		'max_long'             => 2800,
+		'max_long'             => 2300,
 		'max_short'            => 900,
 		'min_area'             => 0,      // abgerechnete Mindestfläche je Front in m²
 		'kgm2_default'         => 13,
@@ -195,23 +195,23 @@ function kf24_sanitize_config( $raw, $pcfg ) {
 	$s   = fn( $k, $d = '' ) => isset( $raw[ $k ] ) ? sanitize_text_field( wp_unslash( $raw[ $k ] ) ) : $d;
 	$n   = fn( $k, $d = 0 ) => isset( $raw[ $k ] ) && $raw[ $k ] !== '' ? round( kf24_num( wp_unslash( $raw[ $k ] ) ), 1 ) : $d;
 	$cfg = [
-		'type'     => in_array( $s( 'type' ), [ 'tuer', 'schublade', 'klappe', 'blende' ], true ) ? $s( 'type' ) : 'tuer',
+		'type'     => in_array( $s( 'type' ), [ 'tuer', 'schublade', 'klappe', 'blende', 'sonstig' ], true ) ? $s( 'type' ) : 'tuer',
 		'label'    => mb_substr( $s( 'label' ), 0, 60 ),
 		'decor'    => $s( 'decor' ),
 		'w'        => $n( 'w' ),
 		'h'        => $n( 'h' ),
 		'grain'    => $s( 'grain' ) === 'quer' ? 'quer' : 'aufrecht',
+		'hlast'    => $s( 'hlast' ) === 'ende' ? 'ende' : 'start',
 		'hinge'    => in_array( $s( 'hinge' ), [ 'links', 'rechts', 'oben', 'keine' ], true ) ? $s( 'hinge' ) : 'keine',
 		'hinges'   => min( 5, max( 0, (int) $n( 'hinges' ) ) ),
 		'hpos'     => [],
-		'twin'     => $s( 'twin' ) === 'zwilling' ? 'zwilling' : 'einzel',
 		'body'     => $s( 'body' ) === '16' ? '16' : '19',
 		'deliver'  => $s( 'deliver' ) === 'yes' ? 'yes' : 'no',
 		'grip'     => in_array( $s( 'grip' ), [ '0', '1', '2' ], true ) ? $s( 'grip' ) : '0',
-		'gpos'     => in_array( $s( 'gpos' ), [ 'mitte', 'oben-h', 'unten-h', 'oben-v', 'unten-v' ], true ) ? $s( 'gpos' ) : 'mitte',
+		'gpos'     => in_array( $s( 'gpos' ), [ 'mitte', 'mitte-v', 'oben-h', 'unten-h', 'oben-v', 'unten-v' ], true ) ? $s( 'gpos' ) : 'mitte',
 		'ga'       => $n( 'ga' ),
 		'gb'       => $n( 'gb' ),
-		'gd'       => $n( 'gd', 128 ),
+		'gd'       => min( 2000, max( 0, $n( 'gd', 128 ) ) ),
 		'mill'     => in_array( $s( 'mill' ), [ 'keine', 'oben', 'unten' ], true ) ? $s( 'mill' ) : 'keine',
 		'seal'     => $s( 'seal' ) === 'yes' ? 'yes' : 'no',
 		'note'     => mb_substr( sanitize_textarea_field( wp_unslash( $raw['note'] ?? '' ) ), 0, 400 ),
@@ -222,8 +222,19 @@ function kf24_sanitize_config( $raw, $pcfg ) {
 	if ( $cfg['hinge'] === 'keine' ) {
 		$cfg['hinges'] = 0;
 	}
+	if ( $cfg['type'] === 'blende' ) {
+		$cfg['grain'] = 'laengs'; // Blenden und Sockel: Maserung immer längs
+	}
 	for ( $i = 0; $i < $cfg['hinges']; $i++ ) {
 		$cfg['hpos'][] = isset( $raw['hpos'][ $i ] ) ? round( kf24_num( wp_unslash( $raw['hpos'][ $i ] ) ), 1 ) : 0;
+	}
+	// The last hinge may be measured from the bottom (or from the right for flaps). Internally all positions are from the top/left.
+	if ( $cfg['hlast'] === 'ende' && $cfg['hinges'] >= 2 ) {
+		$len                 = $cfg['hinge'] === 'oben' ? $cfg['w'] : $cfg['h'];
+		$cfg['hlast_val']    = end( $cfg['hpos'] );
+		$cfg['hpos'][ $cfg['hinges'] - 1 ] = round( $len - $cfg['hlast_val'], 1 );
+	} else {
+		$cfg['hlast'] = 'start';
 	}
 	if ( $cfg['grip'] === '0' ) {
 		$cfg['ga'] = $cfg['gb'] = 0;
@@ -244,7 +255,13 @@ function kf24_validate_config( $cfg, $pcfg ) {
 		$e[] = sprintf( 'Breite und Höhe müssen mindestens %s mm betragen.', $min );
 	}
 	if ( max( $cfg['w'], $cfg['h'] ) > $long || min( $cfg['w'], $cfg['h'] ) > $short ) {
-		$e[] = sprintf( 'Maximalmaß: %s × %s mm.', $long, $short );
+		$e[] = sprintf( 'Online bestellbar bis %s × %s mm. Größere Teile fertigen wir auf Anfrage – bitte kontaktieren Sie uns.', wc_format_localized_decimal( $long ), wc_format_localized_decimal( $short ) );
+	}
+	if ( $cfg['grip'] === '2' && $cfg['gd'] < 16 ) {
+		$e[] = 'Bitte geben Sie den Lochabstand des Griffs an (Mitte Loch bis Mitte Loch).';
+	}
+	if ( $cfg['type'] === 'sonstig' && $cfg['label'] === '' ) {
+		$e[] = 'Bitte geben Sie dem sonstigen Bauteil eine Bezeichnung.';
 	}
 	$len = $cfg['hinge'] === 'oben' ? $cfg['w'] : $cfg['h'];
 	foreach ( $cfg['hpos'] as $p ) {
@@ -303,6 +320,11 @@ function kf24_grip_holes( $cfg ) {
 		$y = $a ?: $h / 2;
 		return $n === 2 ? [ [ $w / 2 - $d / 2, $y ], [ $w / 2 + $d / 2, $y ] ] : [ [ $w / 2, $y ] ];
 	}
+	if ( $cfg['gpos'] === 'mitte-v' ) { // vertical, centred in height, at the opening edge
+		$x = $cfg['hinge'] !== 'rechts' ? $w - $b : $b;
+		$y = $a ?: $h / 2;
+		return $n === 2 ? [ [ $x, $y - $d / 2 ], [ $x, $y + $d / 2 ] ] : [ [ $x, $y ] ];
+	}
 	$top    = str_starts_with( $cfg['gpos'], 'oben' );
 	$vert   = str_ends_with( $cfg['gpos'], '-v' );
 	$fromR  = $cfg['hinge'] !== 'rechts'; // opening side is opposite of the hinge side
@@ -340,8 +362,8 @@ function kf24_price( $cfg, $pcfg ) {
 
 /** Human readable spec lines for cart, order and production sheet. */
 function kf24_spec_lines( $cfg, $pcfg = null ) {
-	$types = [ 'tuer' => 'Tür', 'schublade' => 'Schubladenfront', 'klappe' => 'Klappe', 'blende' => 'Blende/Sockel' ];
-	$gpos  = [ 'mitte' => 'mittig horizontal', 'oben-h' => 'oben horizontal', 'unten-h' => 'unten horizontal', 'oben-v' => 'oben vertikal', 'unten-v' => 'unten vertikal' ];
+	$types = [ 'tuer' => 'Tür', 'schublade' => 'Schubladenfront', 'klappe' => 'Klappe', 'blende' => 'Blende/Sockel', 'sonstig' => 'Sonstiges Bauteil' ];
+	$gpos  = [ 'mitte' => 'mittig horizontal', 'mitte-v' => 'mittig vertikal', 'oben-h' => 'oben horizontal', 'unten-h' => 'unten horizontal', 'oben-v' => 'oben vertikal', 'unten-v' => 'unten vertikal' ];
 	$l     = [];
 	if ( $cfg['label'] ) {
 		$l['Bezeichnung'] = $cfg['label'];
@@ -349,18 +371,24 @@ function kf24_spec_lines( $cfg, $pcfg = null ) {
 	$l['Frontart']   = $types[ $cfg['type'] ] ?? $cfg['type'];
 	$l['Dekor/Holz'] = $cfg['decor'];
 	$l['Maß (B × H)'] = sprintf( '%s × %s mm', wc_format_localized_decimal( $cfg['w'] ), wc_format_localized_decimal( $cfg['h'] ) );
-	$l['Maserung']   = $cfg['grain'] === 'quer' ? 'quer (90° gedreht)' : 'aufrecht';
+	$l['Maserung']   = $cfg['grain'] === 'laengs' ? 'längs' : ( $cfg['grain'] === 'quer' ? 'quer (90° gedreht)' : 'aufrecht' );
 	if ( $cfg['hinge'] !== 'keine' && $cfg['hinges'] ) {
-		$l['Anschlag']     = $cfg['hinge'] . ', ' . ( $cfg['twin'] === 'zwilling' ? 'Zwillingsanschlag' : 'Einzelanschlag' ) . ', Korpus ' . $cfg['body'] . ' mm';
+		$l['Anschlag']     = $cfg['hinge'] . ( ( $cfg['twin'] ?? '' ) === 'zwilling' ? ', Zwillingsanschlag' : '' ) . ', Korpus ' . $cfg['body'] . ' mm';
 		$ref               = $cfg['hinge'] === 'oben' ? 'von links' : 'von oben';
-		$l['Topfbänder']   = $cfg['hinges'] . ' Bohrungen Ø35 bei ' . implode( ' / ', array_map( 'wc_format_localized_decimal', $cfg['hpos'] ) ) . ' mm ' . $ref;
+		$pos               = $cfg['hpos'];
+		$txt               = '';
+		if ( ( $cfg['hlast'] ?? '' ) === 'ende' && count( $pos ) >= 2 ) {
+			array_pop( $pos );
+			$txt = ', letzte ' . wc_format_localized_decimal( $cfg['hlast_val'] ) . ' mm ' . ( $cfg['hinge'] === 'oben' ? 'von rechts' : 'von unten' );
+		}
+		$l['Topfbänder']   = $cfg['hinges'] . ' Bohrungen Ø35 bei ' . implode( ' / ', array_map( 'wc_format_localized_decimal', $pos ) ) . ' mm ' . $ref . $txt;
 		$l['Topfbänder mitliefern'] = $cfg['deliver'] === 'yes' ? 'ja (' . $cfg['hinges'] . ' Stück)' : 'nein';
 	} else {
 		$l['Anschlag'] = 'keine Topfbandbohrung';
 	}
 	if ( $cfg['grip'] !== '0' ) {
 		$g = $cfg['grip'] === '1' ? '1 Bohrung (Knopf)' : '2 Bohrungen (Bügel), Lochabstand ' . wc_format_localized_decimal( $cfg['gd'] ) . ' mm';
-		$l['Griffbohrung'] = $g . ', ' . ( $gpos[ $cfg['gpos'] ] ?? '' ) . ( $cfg['gpos'] === 'mitte' ? ', ' . wc_format_localized_decimal( $cfg['ga'] ?: $cfg['h'] / 2 ) . ' mm von oben' : ', a = ' . wc_format_localized_decimal( $cfg['ga'] ) . ' mm, b = ' . wc_format_localized_decimal( $cfg['gb'] ) . ' mm' );
+		$l['Griffbohrung'] = $g . ', ' . ( $gpos[ $cfg['gpos'] ] ?? '' ) . ( $cfg['gpos'] === 'mitte' ? ', ' . wc_format_localized_decimal( $cfg['ga'] ?: $cfg['h'] / 2 ) . ' mm von oben' : ( $cfg['gpos'] === 'mitte-v' ? ', Mitte ' . wc_format_localized_decimal( $cfg['ga'] ?: $cfg['h'] / 2 ) . ' mm von oben, b = ' . wc_format_localized_decimal( $cfg['gb'] ) . ' mm' : ', a = ' . wc_format_localized_decimal( $cfg['ga'] ) . ' mm, b = ' . wc_format_localized_decimal( $cfg['gb'] ) . ' mm' ) );
 	}
 	if ( $cfg['mill'] !== 'keine' ) {
 		$l['Grifffräsung'] = $cfg['mill'];
@@ -387,7 +415,7 @@ function kf24_svg( $cfg, $fill = '#d9c8ad', $maxw = 260, $maxh = 300 ) {
 	$o .= sprintf( '<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" fill="%s" stroke="#3b2a1e" stroke-width="1.5"/>', $ox, $oy, $fw, $fh, esc_attr( $fill ) );
 	// grain
 	for ( $i = 1; $i < 7; $i++ ) {
-		if ( $cfg['grain'] === 'quer' ) {
+		if ( $cfg['grain'] === 'quer' || ( $cfg['grain'] === 'laengs' && $w > $h ) ) {
 			$y = $oy + $fh * $i / 7;
 			$o .= sprintf( '<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="#3b2a1e" stroke-opacity=".12"/>', $ox + 4, $y, $ox + $fw - 4, $y );
 		} else {

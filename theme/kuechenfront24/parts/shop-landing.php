@@ -16,7 +16,7 @@ kf24t_pagehead( 'Shop', 'Drei Wege zu Ihren neuen Fronten. Wählen Sie, was zu I
 		<?php if ( $metod ) : ?><a class="path" href="<?php echo esc_url( get_term_link( $metod ) ); ?>"><span class="path-n">2</span><h2>Passend für IKEA Metod</h2><p>Fertige Teile in allen Metod-Rastermaßen. Einfach Teil aus dem Küchenplan auswählen.</p><span class="path-go">Zu den Metod-Fronten →</span></a><?php endif; ?>
 		<a class="path" href="<?php echo esc_url( $page( 'muster' ) ); ?>"><span class="path-n">3</span><h2>Erst Muster bestellen</h2><p>Farbe und Holz in die Hand nehmen, bevor Sie bestellen. Ab 0,50 €.</p><span class="path-go">Zu den Mustern →</span></a>
 	</div>
-	<p class="shop-help">Unsicher? Die <a href="<?php echo esc_url( $page( 'aufmass' ) ); ?>">Aufmaß-Tabelle</a> sammelt alle Fronten Ihrer Küche, der <a href="<?php echo esc_url( $page( 'preisrechner' ) ); ?>">Preisrechner</a> zeigt den Richtpreis. Oder rufen Sie uns an: <a href="tel:+498946205236">089 462 05 236</a>.</p>
+	<p class="shop-help">Mehrere Fronten? In <a href="<?php echo esc_url( $page( 'aufmass' ) ); ?>">Planen &amp; Preis</a> tragen Sie alle Fronten Ihrer Küche ein, sehen sofort den Preis und legen am Ende alles mit einem Klick in den Warenkorb. Oder rufen Sie uns an: <a href="tel:+498946205236">089 462 05 236</a>.</p>
 
 	<h2 id="nach-mass">Fronten nach Maß konfigurieren</h2>
 	<p>Jede Front fertigen wir millimetergenau, mit Bohrungen für Topfbänder und Griffe. Preis je m², inkl. MwSt., zzgl. Versand.</p>

@@ -7,7 +7,7 @@ $u = fn( $s ) => esc_url( home_url( '/' . $s . '/' ) );
 		<div>
 			<h1>Neue Fronten.<br>Ihre Küche bleibt.</h1>
 			<p class="lead">Küchenfronten nach Maß aus der Schreinerei: passend für IKEA Metod, Faktum und jeden anderen Korpus. Fertig gebohrt geliefert, in wenigen Stunden selbst montiert.</p>
-			<div class="row"><a class="btn" href="<?php echo $u( 'preisrechner' ); ?>">Preis berechnen</a><a class="btn ghost" href="<?php echo $u( 'muster' ); ?>">Muster ab 0,50 €</a></div>
+			<div class="row"><a class="btn" href="<?php echo $u( 'aufmass' ); ?>">Fronten planen &amp; Preis</a><a class="btn ghost" href="<?php echo $u( 'muster' ); ?>">Muster ab 0,50 €</a></div>
 		</div>
 		<ul>
 			<li><?php echo kf24t_icon_check(); ?><span><b>Über 120 Oberflächen</b> von Dekor über Lack bis Massivholz und Fenix NTM</span></li>

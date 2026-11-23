@@ -13,7 +13,7 @@ while ( have_posts() ) {
 		<div class="band" style="padding-bottom:0"><div class="wrap single-hero"><?php the_post_thumbnail( 'full', [ 'sizes' => '(max-width:1240px) 100vw, 1240px' ] ); ?></div></div>
 	<?php endif; ?>
 	<div class="entry-content"><?php the_content(); ?>
-		<div class="note" style="margin-top:32px"><b>Ihre Küche als Nächstes?</b> <a href="<?php echo esc_url( home_url( '/preisrechner/' ) ); ?>">Preis berechnen</a> oder <a href="<?php echo esc_url( home_url( '/muster/' ) ); ?>">Muster bestellen</a>.</div>
+		<div class="note" style="margin-top:32px"><b>Ihre Küche als Nächstes?</b> <a href="<?php echo esc_url( home_url( '/aufmass/' ) ); ?>">Preis berechnen</a> oder <a href="<?php echo esc_url( home_url( '/muster/' ) ); ?>">Muster bestellen</a>.</div>
 	</div>
 	<?php
 }

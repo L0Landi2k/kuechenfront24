@@ -12,6 +12,7 @@ function kf24_front_terms() {
 		'Schubladen'     => [ 'Schubladenfront' => 'schublade', 'Schubladenfront flach' => 'schublade', 'Auszugfront hoch (Topfschublade)' => 'schublade', 'Apothekerfront (Apothekerauszug)' => 'schublade', 'Mülleimer-Auszugfront' => 'schublade' ],
 		'Klappen'        => [ 'Klappe (Oberschrank)' => 'klappe', 'Klappe über Hochschrank' => 'klappe', 'Dunstabzug-Klappe' => 'klappe' ],
 		'Blenden & Teile' => [ 'Geschirrspülerfront' => 'blende', 'Backofen-Blende' => 'blende', 'Passblende' => 'blende', 'Sockelblende' => 'blende', 'Seitenwange / Abdeckseite' => 'blende', 'Kranzblende' => 'blende' ],
+		'Sonstiges'      => [ 'Sonstiges Bauteil' => 'sonstig' ],
 	];
 }
 
@@ -53,6 +54,14 @@ function kf24_enqueue_aufmass() {
 	] );
 }
 
+/** Old Preisrechner address → Planen & Preis. */
+add_action( 'template_redirect', function () {
+	if ( is_404() && trim( (string) wp_parse_url( isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '', PHP_URL_PATH ), '/' ) === 'preisrechner' ) {
+		wp_safe_redirect( home_url( '/aufmass/' ), 301 );
+		exit;
+	}
+} );
+
 /** [kf24_aufmass system="faktum|metod"] */
 add_shortcode( 'kf24_aufmass', function ( $atts ) {
 	$a = shortcode_atts( [ 'system' => '' ], $atts );
@@ -67,7 +76,7 @@ add_shortcode( 'kf24_aufmass', function ( $atts ) {
 				<label><input type="radio" name="am_sys" value="andere" checked> andere Küche</label>
 			</fieldset>
 			<label class="kf24-am-f">Korpus-Wandstärke<select id="am-body"><option value="">weiß ich nicht</option><option>16 mm</option><option>19 mm</option><option>18 mm</option></select></label>
-			<label class="kf24-am-f kf24-am-wide">Gewünschte Front (optional)<select id="am-front"><option value="">noch offen</option></select></label>
+			<label class="kf24-am-f kf24-am-wide">Ihre Front <small>(für Preis und Bestellung)</small><select id="am-front"><option value="">bitte wählen</option></select></label>
 		</div>
 
 		<div class="kf24-am-helper kf24-noprint" hidden>
@@ -81,19 +90,19 @@ add_shortcode( 'kf24_aufmass', function ( $atts ) {
 		</div>
 
 		<div class="kf24-scroll"><table class="kf24-am-table">
-			<thead><tr><th>#</th><th>Bezeichnung</th><th>Art</th><th>Breite<br><small>mm</small></th><th>Höhe<br><small>mm</small></th><th>Anschlag</th><th>Topf&shy;bänder</th><th>Stück</th><th>Bemerkung</th><th class="kf24-noprint"><span class="screen-reader-text">Aktionen</span></th></tr></thead>
+			<thead><tr><th>#</th><th>Bezeichnung</th><th>Art</th><th>Breite<br><small>mm</small></th><th>Höhe<br><small>mm</small></th><th>Anschlag</th><th>Topf&shy;bänder</th><th>Stück</th><th>Bemerkung</th><th class="kf24-noprint">Preis</th><th class="kf24-noprint"><span class="screen-reader-text">Aktionen</span></th></tr></thead>
 			<tbody id="am-rows"></tbody>
 		</table></div>
 		<p class="kf24-noprint"><button type="button" class="button" id="am-add">+ Frontteil hinzufügen</button></p>
 		<p class="kf24-am-sum" id="am-sum" aria-live="polite"></p>
 
 		<div class="kf24-am-actions kf24-noprint">
-			<button type="button" class="button alt" id="am-calc">In den Preisrechner übernehmen</button>
+			<button type="button" class="button alt" id="am-go">Weiter: Material wählen &amp; bestellen</button>
 			<button type="button" class="button" id="am-print">Drucken / als PDF speichern</button>
 			<button type="button" class="button kf24-ghost" id="am-blank">Leere Vorlage drucken</button>
 			<button type="button" class="button kf24-ghost" id="am-reset">Tabelle leeren</button>
 		</div>
-		<p class="kf24-hint kf24-noprint">Ihre Eingaben bleiben in diesem Browser gespeichert. Messen Sie immer die alte Front, nicht den Korpus.</p>
+		<p class="kf24-hint kf24-noprint">Im nächsten Schritt wählen Sie das Material und können jede Front im Detail anpassen (Topfbandpositionen, Griffe). Danach legen Sie alle Positionen mit einem Klick in den Warenkorb. Ihre Eingaben bleiben in diesem Browser gespeichert.</p>
 
 		<form class="kf24-am-send kf24-noprint" id="am-send">
 			<h3>Aufmaß an uns schicken</h3>

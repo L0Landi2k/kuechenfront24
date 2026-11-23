@@ -7,7 +7,7 @@
 	var $ = function (s) { return root.querySelector(s); };
 	var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
 	var store = { get: function (k, d) { try { var v = localStorage.getItem('kf24_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set: function (k, v) { try { localStorage.setItem('kf24_' + k, JSON.stringify(v)); } catch (e) { /* ignore */ } } };
-	var TYPES = { tuer: 'Tür', schublade: 'Schublade', klappe: 'Klappe', blende: 'Blende' };
+	var TYPES = { tuer: 'Tür', schublade: 'Schublade', klappe: 'Klappe', blende: 'Blende', sonstig: 'Sonstiges' };
 	var HINGE = { links: 'links', rechts: 'rechts', oben: 'oben', keine: 'keine' };
 	var typeOf = {}; (A.terms || []).forEach(function (t) { typeOf[t.l] = t.t; });
 
@@ -51,9 +51,17 @@
 			'<td data-l="Topfbänder"><input type="number" min="0" max="5" inputmode="numeric" data-k="b" value="' + esc(r.b) + '"><span class="am-print">' + esc(r.b) + '</span></td>' +
 			'<td data-l="Stück"><input type="number" min="1" inputmode="numeric" data-k="q" value="' + esc(r.q) + '"><span class="am-print">' + esc(r.q) + '</span></td>' +
 			'<td data-l="Bemerkung"><input data-k="r" value="' + esc(r.r) + '" placeholder="z. B. Spüle links"><span class="am-print">' + esc(r.r) + '</span></td>' +
-			'<td class="kf24-noprint am-act"><a class="am-cfg" href="#" title="Diese Front im Konfigurator öffnen">konfigurieren ↗</a><button type="button" data-act="dup" title="Zeile kopieren" aria-label="Zeile kopieren">⧉</button><button type="button" data-act="del" title="Zeile löschen" aria-label="Zeile löschen">×</button></td></tr>';
+			'<td data-l="Preis" class="am-price kf24-noprint">' + rowPrice(r) + '</td>' +
+			'<td class="kf24-noprint am-act"><button type="button" data-act="dup" title="Zeile kopieren" aria-label="Zeile kopieren">⧉</button><button type="button" data-act="del" title="Zeile löschen" aria-label="Zeile löschen">×</button></td></tr>';
 	}
 
+	function front() { return (T.products || []).filter(function (x) { return String(x.id) === String(st.front); })[0]; }
+	function eur(v) { return v.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }); }
+	function rowPrice(r) {
+		var p = front(); if (!p || !(+r.w && +r.h)) return '–';
+		if (Math.max(+r.w, +r.h) > A.max[0] || Math.min(+r.w, +r.h) > A.max[1]) return '<small>auf Anfrage</small>';
+		return eur(Math.max(r.w * r.h / 1e6, 0) * p.p * Math.max(1, +r.q || 1));
+	}
 	function cfgUrl(r) {
 		var p = (T.products || []).filter(function (x) { return String(x.id) === String(st.front); })[0];
 		var base = p ? p.u : (T.products[0] || {}).u;
@@ -74,12 +82,29 @@
 		root.querySelector('.am-p-body').textContent = st.body || '';
 		helper(); sum(); links();
 	}
-	function links() { root.querySelectorAll('#am-rows tr').forEach(function (tr) { tr.querySelector('.am-cfg').href = cfgUrl(st.rows[+tr.dataset.i]); }); }
+	function links() { root.querySelectorAll('#am-rows tr').forEach(function (tr) { var c = tr.querySelector('.am-price'); if (c) c.innerHTML = rowPrice(st.rows[+tr.dataset.i]); }); }
 	function sum() {
-		var n = 0, area = 0, miss = 0;
-		st.rows.forEach(function (r) { var q = Math.max(1, +r.q || 1); n += q; if (+r.w && +r.h) area += r.w * r.h / 1e6 * q; else miss++; });
-		var p = (T.products || []).filter(function (x) { return String(x.id) === String(st.front); })[0];
-		$('#am-sum').innerHTML = '<b>' + n + ' Teile</b> · ' + area.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m²' + (p && area ? ' · Richtpreis Fronten ca. <b>' + (area * p.p).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) + '</b> (ohne Bohrungen und Versand)' : '') + (miss ? ' · <span class="am-miss">' + miss + ' Zeile(n) noch ohne Maße</span>' : '');
+		var n = 0, area = 0, miss = 0, big = 0, long = false, s = T.s || {}, p = front();
+		st.rows.forEach(function (r) {
+			var q = Math.max(1, +r.q || 1); n += q;
+			if (!(+r.w && +r.h)) { miss++; return; }
+			if (Math.max(+r.w, +r.h) > A.max[0] || Math.min(+r.w, +r.h) > A.max[1]) { big++; return; }
+			area += r.w * r.h / 1e6 * q; if (Math.max(+r.w, +r.h) > s.len_l) long = true;
+		});
+		var html = '<b>' + n + ' Teile</b> · ' + area.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m²';
+		if (p && area) {
+			var goods = area * p.p, weight = area * p.kg, min = goods < s.min_t ? s.min_f : 0, len = long && weight < s.len_w ? s.len_f : 0;
+			var ship = weight < 10 ? s.t1 : weight < 20 ? s.t2 : weight < 50 ? s.t3 : s.t4;
+			html = '<table class="am-calc"><tr><td>' + n + ' Teile · ' + area.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' m² × ' + eur(p.p) + '</td><td>' + eur(goods) + '</td></tr>' +
+				(min ? '<tr><td>Mindermengenzuschlag (unter ' + eur(s.min_t) + ')</td><td>' + eur(min) + '</td></tr>' : '') +
+				(len ? '<tr><td>Längenzuschlag</td><td>' + eur(len) + '</td></tr>' : '') +
+				'<tr><td>Versand Deutschland, ca. ' + Math.round(weight) + ' kg</td><td>' + eur(ship) + '</td></tr>' +
+				'<tr class="am-total"><td>Richtpreis gesamt</td><td>' + eur(goods + min + len + ship) + '</td></tr></table><p class="kf24-hint">inkl. MwSt. Topfbänder (' + eur(T.s.hp || 4) + ' je Stück), Grifffräsung und Dichtungen wählen Sie im nächsten Schritt.</p>';
+		} else if (!p) html += ' · <span class="am-miss">Wählen Sie oben Ihre Front, dann sehen Sie den Preis.</span>';
+		if (miss) html += '<p class="am-miss">' + miss + ' Zeile(n) noch ohne Maße.</p>';
+		if (big) html += '<p class="am-miss">' + big + ' Teil(e) größer als ' + A.max[0] + ' × ' + A.max[1] + ' mm: nur auf Anfrage, nicht online bestellbar.</p>';
+		$('#am-sum').innerHTML = html;
+		var go = $('#am-go'); if (go) { go.disabled = !p; go.textContent = p ? 'Weiter: Material wählen & bestellen' : 'Erst oben die Front wählen'; }
 	}
 	function helper() {
 		var box = root.querySelector('.kf24-am-helper'), parts = (A.systems || {})[st.sys];
@@ -131,11 +156,12 @@
 	$('#am-reset').addEventListener('click', function () { st.rows = [blank('Tür')]; save(); render(); });
 	$('#am-print').addEventListener('click', function () { document.body.classList.remove('kf24-am-blank'); window.print(); });
 	$('#am-blank').addEventListener('click', function () { document.body.classList.add('kf24-am-blank'); window.print(); setTimeout(function () { document.body.classList.remove('kf24-am-blank'); }, 500); });
-	$('#am-calc').addEventListener('click', function () {
-		var parts = st.rows.filter(function (r) { return +r.w && +r.h; }).map(function (r) { return { n: r.n + (r.r ? ' (' + r.r + ')' : ''), w: +r.w, h: +r.h, q: Math.max(1, +r.q || 1) }; });
-		if (!parts.length) { $('#am-sum').innerHTML += ' · <span class="am-miss">Bitte zuerst Maße eintragen.</span>'; return; }
-		store.set('parts', parts); if (st.front) store.set('type', +st.front);
-		location.href = A.calc;
+	$('#am-go').addEventListener('click', function () {
+		var p = front(); if (!p) { fsel.focus(); return; }
+		var rows = st.rows.filter(function (r) { return +r.w && +r.h && Math.max(+r.w, +r.h) <= A.max[0] && Math.min(+r.w, +r.h) <= A.max[1]; });
+		if (!rows.length) { $('#am-sum').insertAdjacentHTML('beforeend', '<p class="am-miss">Bitte zuerst Maße eintragen.</p>'); return; }
+		try { localStorage.setItem('kf24_handover', JSON.stringify(rows)); } catch (e) { /* ignore */ }
+		location.href = p.u + '#kf24-konfigurator';
 	});
 
 	var form = $('#am-send');

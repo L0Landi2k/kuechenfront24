@@ -72,8 +72,8 @@ function kf24_demo_assets() {
 	$steps = [
 		[ 'Shop', 'Startseite ansehen – auch auf dem Handy', home_url( '/' ), 'Gefällt dir Optik, Text und Bilder? Tipp: Fenster schmal ziehen = Handy-Ansicht.' ],
 		[ 'Shop', 'Eine Front konfigurieren und in den Warenkorb legen', $front ? $front . '#kf24-konfigurator' : wc_get_page_permalink( 'shop' ), 'Material wählen, Maße, Topfbänder, Griff – Zeichnung und Preis laufen live mit.' ],
-		[ 'Shop', 'Aufmaß-Tabelle ausfüllen (z. B. mit Faktum-Bestellhilfe)', add_query_arg( 'system', 'faktum', $page( 'aufmass' ) ), 'Teile antippen, Maße eintragen, eine Zeile im Konfigurator öffnen, drucken.' ],
-		[ 'Shop', 'Preisrechner ausprobieren', $page( 'preisrechner' ), 'Teile aus der Liste wählen, z. B. „Apothekerfront“.' ],
+		[ 'Shop', 'Ganze Küche planen: Planen & Preis (z. B. Faktum)', add_query_arg( 'system', 'faktum', $page( 'aufmass' ) ), 'Teile antippen, Maße eintragen, Front wählen, Preis sehen, „Weiter“.' ],
+		[ 'Shop', 'Frontenliste fertig machen und alles in den Warenkorb', $page( 'aufmass' ), 'Material wählen, Positionen anklicken und anpassen, „Alle in den Warenkorb“.' ],
 		[ 'Shop', 'Muster mit Farbe oder Holzart in den Warenkorb legen', $page( 'muster' ), 'z. B. Lack matt bunt → Farbe wählen.' ],
 		[ 'Shop', 'Shop-Übersicht ansehen', wc_get_page_permalink( 'shop' ), 'Nach Maß, Metod, Muster – klar getrennt.' ],
 		$metod ? [ 'Shop', 'IKEA-Metod-Front mit Varianten ansehen', get_permalink( $metod ), 'Wie bisher: Größe, Anschlag, Griff aus Listen wählen.' ] : null,

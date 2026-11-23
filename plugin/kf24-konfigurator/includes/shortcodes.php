@@ -18,7 +18,7 @@ function kf24_tools_data() {
 		's'        => [
 			'min_t' => (float) kf24_opt( 'min_order_threshold' ), 'min_f' => (float) kf24_opt( 'min_order_fee' ),
 			'len_l' => (float) kf24_opt( 'length_limit' ), 'len_w' => (float) kf24_opt( 'length_weight_limit' ), 'len_f' => (float) kf24_opt( 'length_fee' ),
-			't1' => (float) kf24_opt( 'ship_t1' ), 't2' => (float) kf24_opt( 'ship_t2' ), 't3' => (float) kf24_opt( 'ship_t3' ), 't4' => (float) kf24_opt( 'ship_t4' ),
+			't1' => (float) kf24_opt( 'ship_t1' ), 't2' => (float) kf24_opt( 'ship_t2' ), 't3' => (float) kf24_opt( 'ship_t3' ), 't4' => (float) kf24_opt( 'ship_t4' ), 'hp' => (float) kf24_opt( 'hinge_price' ),
 		],
 	];
 }

@@ -124,3 +124,42 @@ add_action( 'woocommerce_single_product_summary', function () {
 		echo '<p class="kf24-lz">Lieferzeit: ' . esc_html( $lz ) . ' ab Zahlungseingang</p>';
 	}
 }, 25 );
+
+/**
+ * Bulk add from the front list: ?wc-ajax=kf24_bulk_add (product_id, items = JSON list of configurations).
+ * Every position is sanitized and validated like a single add; nothing is added unless all positions are valid.
+ */
+function kf24_ajax_bulk_add() {
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- same as WooCommerce add-to-cart; values are sanitized and validated
+	$pid   = absint( $_POST['product_id'] ?? 0 );
+	$items = json_decode( wp_unslash( (string) ( $_POST['items'] ?? '' ) ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- decoded, then sanitized per field
+	// phpcs:enable
+	if ( ! $pid || ! kf24_is_cfg_product( $pid ) || ! is_array( $items ) || ! $items || count( $items ) > 60 ) {
+		wp_send_json_error( [ 'errors' => [] ] );
+	}
+	$pcfg   = kf24_product_cfg( $pid );
+	$clean  = [];
+	$errors = [];
+	foreach ( array_values( $items ) as $i => $raw ) {
+		if ( ! is_array( $raw ) ) {
+			$errors[ $i ] = [ 'Ungültige Position.' ];
+			continue;
+		}
+		$raw['hpos'] = isset( $raw['hraw'] ) && is_array( $raw['hraw'] ) ? $raw['hraw'] : ( $raw['hpos'] ?? [] );
+		$cfg         = kf24_sanitize_config( $raw, $pcfg );
+		$e           = kf24_validate_config( $cfg, $pcfg );
+		if ( $e ) {
+			$errors[ $i ] = $e;
+		}
+		$clean[] = [ $cfg, max( 1, min( 99, (int) ( $raw['qty'] ?? 1 ) ) ) ];
+	}
+	if ( $errors ) {
+		wp_send_json_error( [ 'errors' => $errors ] );
+	}
+	foreach ( $clean as [ $cfg, $qty ] ) {
+		WC()->cart->add_to_cart( $pid, $qty, 0, [], [ 'kf24' => $cfg, 'kf24_key' => md5( wp_json_encode( $cfg ) . wp_rand() ) ] );
+	}
+	wc_add_notice( count( $clean ) . ' Positionen liegen im Warenkorb.', 'success' );
+	wp_send_json_success( [ 'count' => count( $clean ) ] );
+}
+add_action( 'wc_ajax_kf24_bulk_add', 'kf24_ajax_bulk_add' );

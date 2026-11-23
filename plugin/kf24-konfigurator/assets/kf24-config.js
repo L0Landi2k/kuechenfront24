@@ -27,10 +27,13 @@
 	}
 
 	function state() {
-		var hinge = radio('hinge');
+		var hinge = radio('hinge'), type = radio('type');
 		var c = {
-			type: radio('type'), decor: radio('decor') || '',
-			w: num($('#kf24-w').value), h: num($('#kf24-h').value), grain: $('#kf24-grain').value,
+			type: type, decor: radio('decor') || '',
+			w: num($('#kf24-w').value), h: num($('#kf24-h').value), grain: type === 'blende' ? 'laengs' : $('#kf24-grain').value,
+			label: $('#kf24-label').value.trim(), note: (form.querySelector('[name="kf24[note]"]') || {}).value || '',
+			body: (form.querySelector('[name="kf24[body]"]') || {}).value || '19',
+			hlast: radio('hlast') === 'ende' ? 'ende' : 'start', hraw: [],
 			hinge: hinge, hinges: hinge === 'keine' ? 0 : parseInt($('#kf24-hinges').value, 10),
 			deliver: $('input[name="kf24[deliver]"]').checked ? 'yes' : 'no',
 			grip: radio('grip') || '0', gpos: $('#kf24-gpos').value,
@@ -38,20 +41,27 @@
 			mill: radio('mill') || 'keine', seal: $('input[name="kf24[seal]"]').checked ? 'yes' : 'no',
 			qty: Math.max(1, parseInt($('#kf24-qty').value, 10) || 1), hpos: []
 		};
-		$$('#kf24-hpos input').forEach(function (i) { c.hpos.push(num(i.value)); });
+		$$('#kf24-hpos input[type=number]').forEach(function (i) { c.hraw.push(num(i.value)); });
+		var len = hinge === 'oben' ? c.w : c.h;
+		c.hpos = c.hraw.map(function (v, i) { return c.hlast === 'ende' && i === c.hraw.length - 1 && c.hraw.length >= 2 ? Math.round((len - v) * 10) / 10 : v; });
+		if (c.hraw.length < 2) c.hlast = 'start';
 		return c;
 	}
 
-	function renderHpos(c, force) {
+	function renderHpos(c, force, raw, hlast) {
 		var box = $('#kf24-hpos');
 		var len = c.hinge === 'oben' ? c.w : c.h;
-		var inputs = $$('#kf24-hpos input');
-		if (!force && inputs.length === c.hinges && hposDirty) return;
-		var pos = defaultPositions(len, c.hinges);
-		if (hposDirty && inputs.length === c.hinges && !force) pos = inputs.map(function (i) { return num(i.value); });
-		var ref = c.hinge === 'oben' ? 'von links' : 'von oben';
+		var inputs = $$('#kf24-hpos input[type=number]');
+		if (!force && !raw && inputs.length === c.hinges && hposDirty) return;
+		var last = hlast || (radio('hlast') === 'ende' ? 'ende' : 'start');
+		var pos = raw || defaultPositions(len, c.hinges);
+		if (!raw && last === 'ende' && pos.length >= 2) pos[pos.length - 1] = Math.round((len - pos[pos.length - 1]) * 10) / 10;
+		var a = c.hinge === 'oben' ? 'von links' : 'von oben', b = c.hinge === 'oben' ? 'von rechts' : 'von unten';
 		box.innerHTML = pos.map(function (p, i) {
-			return '<label>Topfband ' + (i + 1) + ' <span>mm ' + ref + '</span><input type="number" step="0.5" inputmode="decimal" name="kf24[hpos][' + i + ']" value="' + p + '"></label>';
+			var isLast = i === pos.length - 1 && pos.length >= 2;
+			var ref = isLast && last === 'ende' ? b : a;
+			return '<label>Topfband ' + (i + 1) + ' <span class="kf24-ref">mm ' + ref + '</span><input type="number" step="0.5" inputmode="decimal" name="kf24[hpos][' + i + ']" value="' + p + '">' +
+				(isLast ? '<span class="kf24-mini" role="radiogroup" aria-label="Topfband ' + (i + 1) + ' bemaßen"><label><input type="radio" name="kf24[hlast]" value="start"' + (last !== 'ende' ? ' checked' : '') + '><span>' + a + '</span></label><label><input type="radio" name="kf24[hlast]" value="ende"' + (last === 'ende' ? ' checked' : '') + '><span>' + b + '</span></label></span>' : '') + '</label>';
 		}).join('') + '<button type="button" class="kf24-link" id="kf24-hpos-reset">Standardpositionen</button>';
 	}
 
@@ -59,6 +69,7 @@
 		var n = parseInt(c.grip, 10); if (!n) return [];
 		var w = c.w, h = c.h, a = c.ga, b = c.gb, d = n === 2 ? c.gd : 0;
 		if (c.gpos === 'mitte') { var y0 = a || h / 2; return n === 2 ? [[w / 2 - d / 2, y0], [w / 2 + d / 2, y0]] : [[w / 2, y0]]; }
+		if (c.gpos === 'mitte-v') { var x0 = c.hinge !== 'rechts' ? w - b : b, y1 = a || h / 2; return n === 2 ? [[x0, y1 - d / 2], [x0, y1 + d / 2]] : [[x0, y1]]; }
 		var top = c.gpos.indexOf('oben') === 0, vert = /-v$/.test(c.gpos), fromR = c.hinge !== 'rechts';
 		var x = fromR ? w - b : b, y = top ? a : h - a, out = [[x, y]];
 		if (n === 2) out.push(vert ? [x, top ? y + d : y - d] : [fromR ? x - d : x + d, y]);
@@ -74,7 +85,9 @@
 		var err = [], warn = [];
 		if (!c.decor) err.push('Bitte wählen Sie ' + P.field + '.');
 		if (c.w < S.min_dim || c.h < S.min_dim) err.push('Breite und Höhe müssen mindestens ' + S.min_dim + ' mm betragen.');
-		if (Math.max(c.w, c.h) > S.max_long || Math.min(c.w, c.h) > S.max_short) err.push('Maximalmaß ' + S.max_long + ' × ' + S.max_short + ' mm. Größere Fronten bitte anfragen.');
+		if (Math.max(c.w, c.h) > S.max_long || Math.min(c.w, c.h) > S.max_short) err.push('Online bestellbar bis ' + fmt(S.max_long) + ' × ' + fmt(S.max_short) + ' mm. Größere Teile fertigen wir <a href="' + D.contact + '">auf Anfrage</a>.');
+		if (c.type === 'sonstig' && !c.label) err.push('Bitte geben Sie dem sonstigen Bauteil eine Bezeichnung.');
+		if (c.grip === '2' && c.gd < 16) err.push('Bitte den Lochabstand des Griffs eintragen (Mitte bis Mitte).');
 		var len = c.hinge === 'oben' ? c.w : c.h;
 		if (c.hinges) {
 			var rec = recommend(len);
@@ -83,7 +96,7 @@
 			if (c.hpos.some(function (p) { return p < 50 || p > len - 50; })) err.push('Topfbänder müssen mindestens 50 mm vom Rand entfernt sein.');
 			var s = c.hpos.slice().sort(function (a, b) { return a - b; });
 			for (var i = 1; i < s.length; i++) if (s[i] - s[i - 1] < 80) { err.push('Topfbänder brauchen mindestens 80 mm Abstand zueinander.'); break; }
-			if (c.hinge !== 'oben' && c.w > 600) warn.push('Türen über 600 mm Breite werden schwer. Prüfen Sie zwei Türen oder einen Zwillingsanschlag.');
+			if (c.hinge !== 'oben' && c.w > 600) warn.push('Türen über 600 mm Breite werden schwer. Prüfen Sie, ob zwei Türen besser sind.');
 		}
 		if (c.type === 'tuer' && c.hinge === 'keine') warn.push('Tür ohne Topfbandbohrung? Dann bohren Sie selbst.');
 		gripHoles(c).forEach(function (p, i) {
@@ -115,12 +128,12 @@
 		var look = (c.decor && D.mats && D.mats[c.decor]) || { img: D.tex, color: D.color };
 		var tex = look.img, fill = tex ? 'url(#kf24tex)' : look.color;
 		var o = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" xmlns="http://www.w3.org/2000/svg">';
-		o += '<defs>' + (tex ? '<pattern id="kf24tex" patternUnits="userSpaceOnUse" width="520" height="520"' + (c.grain === 'quer' ? ' patternTransform="rotate(90)"' : '') + '><image href="' + tex + '" width="520" height="520" preserveAspectRatio="none"/></pattern>' : '') +
+		o += '<defs>' + (tex ? '<pattern id="kf24tex" patternUnits="userSpaceOnUse" width="520" height="520"' + (c.grain === 'quer' || (c.grain === 'laengs' && c.w > c.h) ? ' patternTransform="rotate(90)"' : '') + '><image href="' + tex + '" width="520" height="520" preserveAspectRatio="none"/></pattern>' : '') +
 			'<marker id="kf24a" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5d554c"/></marker></defs>';
 		o += '<rect x="' + (ox + 4) + '" y="' + (oy + 6) + '" width="' + fw + '" height="' + fh + '" fill="#000" opacity=".08" rx="2"/>';
 		o += '<rect x="' + ox + '" y="' + oy + '" width="' + fw + '" height="' + fh + '" fill="' + fill + '" stroke="#3b2a1e" stroke-width="1.5" rx="2"/>';
 		if (!tex) for (var i = 1; i < 8; i++) {
-			if (c.grain === 'quer') o += '<line x1="' + (ox + 6) + '" x2="' + (ox + fw - 6) + '" y1="' + (oy + fh * i / 8) + '" y2="' + (oy + fh * i / 8) + '" stroke="#3b2a1e" stroke-opacity=".08"/>';
+			if (c.grain === 'quer' || (c.grain === 'laengs' && c.w > c.h)) o += '<line x1="' + (ox + 6) + '" x2="' + (ox + fw - 6) + '" y1="' + (oy + fh * i / 8) + '" y2="' + (oy + fh * i / 8) + '" stroke="#3b2a1e" stroke-opacity=".08"/>';
 			else o += '<line y1="' + (oy + 6) + '" y2="' + (oy + fh - 6) + '" x1="' + (ox + fw * i / 8) + '" x2="' + (ox + fw * i / 8) + '" stroke="#3b2a1e" stroke-opacity=".08"/>';
 		}
 		if (c.mill !== 'keine' && P.milling) o += '<rect x="' + ox + '" y="' + (c.mill === 'oben' ? oy : oy + fh - Math.max(5, 25 * s)) + '" width="' + fw + '" height="' + Math.max(5, 25 * s) + '" fill="#2a2019" fill-opacity=".55"/>';
@@ -135,8 +148,10 @@
 			var cx = ox + p[0] * s, cy = oy + p[1] * s, r = Math.max(4, 17.5 * s);
 			o += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="#fbfaf7" stroke="#0d5a5f" stroke-width="2"/>';
 			var lx = c.hinge === 'rechts' ? ox + fw + 10 : c.hinge === 'links' ? ox - 10 : cx;
-			if (c.hinge === 'oben') o += '<text x="' + cx + '" y="' + (oy - 10) + '" text-anchor="middle" class="kf24-t">' + fmt(c.hpos[idx]) + '</text>';
-			else o += '<text x="' + lx + '" y="' + (cy + 4) + '" text-anchor="' + (c.hinge === 'rechts' ? 'start' : 'end') + '" class="kf24-t">' + fmt(c.hpos[idx]) + '</text>';
+			var fromEnd = c.hlast === 'ende' && idx === c.hpos.length - 1;
+			var lab = fromEnd ? fmt(c.hraw[idx]) + (c.hinge === 'oben' ? ' v. r.' : ' v. u.') : fmt(c.hpos[idx]);
+			if (c.hinge === 'oben') o += '<text x="' + cx + '" y="' + (oy - 10) + '" text-anchor="middle" class="kf24-t">' + lab + '</text>';
+			else o += '<text x="' + lx + '" y="' + (cy + 4) + '" text-anchor="' + (c.hinge === 'rechts' ? 'start' : 'end') + '" class="kf24-t">' + lab + '</text>';
 		});
 		gripHoles(c).forEach(function (p) {
 			o += '<circle cx="' + (ox + p[0] * s) + '" cy="' + (oy + p[1] * s) + '" r="3.5" fill="#b3261e" stroke="#fff" stroke-width="1"/>';
@@ -160,12 +175,15 @@
 		form.classList.toggle('kf24-no-grip', c.grip === '0');
 		form.classList.toggle('kf24-grip1', c.grip === '1');
 		form.classList.toggle('kf24-mitte', c.gpos === 'mitte');
-		$('.kf24-ga-l').textContent = c.gpos === 'mitte' ? 'Höhe von oben (leer = Mitte)' : (c.gpos.indexOf('oben') === 0 ? 'Abstand von oben (a)' : 'Abstand von unten (a)');
-		if (!gaDirty && c.gpos !== 'mitte' && !$('#kf24-ga').value) $('#kf24-ga').value = 40;
+		$('.kf24-ga-l').textContent = c.gpos === 'mitte' ? 'Höhe von oben (leer = Mitte)' : c.gpos === 'mitte-v' ? 'Griffmitte von oben (leer = Mitte)' : (c.gpos.indexOf('oben') === 0 ? 'Abstand von oben (a)' : 'Abstand von unten (a)');
+		if (!gaDirty && c.gpos !== 'mitte' && c.gpos !== 'mitte-v' && !$('#kf24-ga').value) $('#kf24-ga').value = 40;
 		var len = c.hinge === 'oben' ? c.w : c.h;
-		if ($$('#kf24-hpos input').length !== c.hinges) renderHpos(c, false);
+		if ($$('#kf24-hpos input[type=number]').length !== c.hinges) renderHpos(c, false);
 		c = state();
 		var r = check(c), p = price(c);
+		form.classList.toggle('kf24-is-blende', c.type === 'blende');
+		$('.kf24-grain-l').hidden = c.type === 'blende'; $('.kf24-grain-fix').hidden = c.type !== 'blende';
+		$('.kf24-label-t').innerHTML = c.type === 'sonstig' ? 'Bezeichnung <small>(Pflicht, z. B. „Regalboden“ oder „Wandpaneel“)</small>' : 'Eigene Bezeichnung <small>(optional, z. B. „Spüle links“)</small>';
 		$('#kf24-msgs').innerHTML = r.err.map(function (m) { return '<li class="kf24-err">' + m + '</li>'; }).join('') + r.warn.map(function (m) { return '<li class="kf24-warn">' + m + '</li>'; }).join('');
 		var rows = '<tr><td>' + p.area.toLocaleString('de-DE', { maximumFractionDigits: 3 }) + ' m² × ' + eur(P.m2) + '</td><td>' + eur(p.base) + '</td></tr>';
 		if (p.mill) rows += '<tr><td>Grifffräsung</td><td>' + eur(p.mill) + '</td></tr>';
@@ -191,6 +209,7 @@
 		if (t === 'schublade') { setRadio('hinge', 'keine'); $('#kf24-h').value = 197; $('#kf24-gpos').value = 'mitte'; }
 		if (t === 'klappe') { setRadio('hinge', 'oben'); $('#kf24-h').value = 397; $('#kf24-hinges').value = 2; }
 		if (t === 'blende') { setRadio('hinge', 'keine'); setRadio('grip', '0'); $('#kf24-h').value = 80; $('#kf24-w').value = 597; }
+		if (t === 'sonstig') { setRadio('hinge', 'keine'); setRadio('grip', '0'); setTimeout(function () { $('#kf24-label').focus(); }, 50); }
 		$('.kf24-seal').hidden = t !== 'blende';
 		hposDirty = false;
 		var c = state(); var len = c.hinge === 'oben' ? c.w : c.h;
@@ -200,7 +219,7 @@
 	}
 
 	form.addEventListener('input', function (e) {
-		if (e.target.closest('#kf24-hpos')) hposDirty = true;
+		if (e.target.closest('#kf24-hpos') && e.target.type === 'number') hposDirty = true;
 		if (e.target.id === 'kf24-ga') gaDirty = true;
 		if (e.target.id === 'kf24-h' || e.target.id === 'kf24-w') {
 			if (!hposDirty) { var c = state(); renderHpos(c, true); }
@@ -210,6 +229,12 @@
 	form.addEventListener('change', function (e) {
 		var n = e.target.name || '';
 		if (n === 'kf24[type]') return preset(e.target.value);
+		if (n === 'kf24[hlast]') { // switch reference of the last hinge and convert the value
+			var cc = state(), L = cc.hinge === 'oben' ? cc.w : cc.h, inp = $$('#kf24-hpos input[type=number]').pop();
+			if (inp) inp.value = Math.round((L - num(inp.value)) * 10) / 10;
+			renderHpos(state(), false, $$('#kf24-hpos input[type=number]').map(function (i) { return num(i.value); }), e.target.value);
+			hposDirty = true; sync(); return;
+		}
 		if (n === 'kf24[hinge]' || e.target.id === 'kf24-hinges') {
 			var c = state();
 			if (n === 'kf24[hinge]' && c.hinge !== 'keine') { var len = c.hinge === 'oben' ? c.w : c.h; $('#kf24-hinges').value = String(Math.min(5, recommend(len))); }
@@ -235,7 +260,7 @@
 	$('.kf24-seal').hidden = true;
 	// values handed over from the Aufmaß table (?kf24_w=…&kf24_h=…)
 	var qs = new URLSearchParams(location.search), took = false;
-	if (/^(tuer|schublade|klappe|blende)$/.test(qs.get('kf24_type') || '')) { setRadio('type', qs.get('kf24_type')); preset(qs.get('kf24_type')); took = true; }
+	if (/^(tuer|schublade|klappe|blende|sonstig)$/.test(qs.get('kf24_type') || '')) { setRadio('type', qs.get('kf24_type')); preset(qs.get('kf24_type')); took = true; }
 	['w', 'h'].forEach(function (k) { var v = parseInt(qs.get('kf24_' + k), 10); if (v > 0) { $('#kf24-' + k).value = v; took = true; } });
 	if (/^(links|rechts|oben|keine)$/.test(qs.get('kf24_hinge') || '')) setRadio('hinge', qs.get('kf24_hinge'));
 	var hn = parseInt(qs.get('kf24_hn'), 10); if (hn >= 1 && hn <= 5) $('#kf24-hinges').value = String(hn);
@@ -244,4 +269,117 @@
 	if (took) { var note = document.createElement('p'); note.className = 'kf24-took'; note.textContent = 'Maße aus Ihrer Aufmaßtabelle übernommen. Bitte noch Material und Details wählen.'; form.insertBefore(note, form.firstChild); }
 	renderHpos(state(), true);
 	sync();
+
+	/* ---------- Frontenliste: mehrere Fronten planen, ein Klick in den Warenkorb ---------- */
+	var LKEY = 'kf24_list_' + P.id, list = [], active = -1;
+	var TYPES = { tuer: 'Tür', schublade: 'Schublade', klappe: 'Klappe', blende: 'Blende', sonstig: 'Sonstiges' };
+	try { list = JSON.parse(localStorage.getItem(LKEY)) || []; } catch (e) { list = []; }
+	function save() { try { localStorage.setItem(LKEY, JSON.stringify(list)); } catch (e) { /* private mode */ } }
+	function setVal(sel, v) { var el = form.querySelector(sel); if (el && v != null) el.value = v; }
+	function toForm(c) {
+		setRadio('type', c.type || 'tuer');
+		form.querySelectorAll('input[name="kf24[decor]"]').forEach(function (r) { r.checked = r.value === c.decor; });
+		setVal('#kf24-w', c.w || ''); setVal('#kf24-h', c.h || '');
+		if (c.grain && c.grain !== 'laengs') setVal('#kf24-grain', c.grain);
+		setVal('#kf24-label', c.label || ''); setVal('[name="kf24[note]"]', c.note || ''); setVal('[name="kf24[body]"]', c.body || '19');
+		setRadio('hinge', c.hinge || 'keine'); setVal('#kf24-hinges', String(c.hinges || 2));
+		$('input[name="kf24[deliver]"]').checked = c.deliver === 'yes';
+		setRadio('grip', c.grip || '0'); setVal('#kf24-gpos', c.gpos || 'mitte');
+		setVal('#kf24-ga', c.ga || ''); setVal('#kf24-gb', c.gb || 40); setVal('#kf24-gd', c.gd || 128);
+		setRadio('mill', c.mill || 'keine'); var se = $('input[name="kf24[seal]"]'); if (se) se.checked = c.seal === 'yes';
+		setVal('#kf24-qty', c.qty || 1);
+		var hasRaw = c.hraw && c.hraw.length === (c.hinge === 'keine' ? 0 : c.hinges) && c.hraw.length > 0;
+		hposDirty = !!hasRaw; gaDirty = !!c.ga;
+		renderHpos(state(), true, hasRaw ? c.hraw.slice() : null, c.hlast);
+		$('.kf24-seal').hidden = (c.type || 'tuer') !== 'blende';
+		sync();
+	}
+	function short(n) { return n.length > 22 ? n.slice(0, 21) + '…' : n; }
+	function renderList() {
+		var box = document.getElementById('kf24-list');
+		box.hidden = list.length === 0;
+		form.classList.toggle('kf24-has-list', list.length > 0);
+		if (!list.length) return;
+		var total = 0, bad = 0;
+		document.getElementById('kf24-list-items').innerHTML = list.map(function (c, i) {
+			var r = check(c), p = price(c); total += p.total; if (r.err.length) bad++;
+			return '<li class="' + (i === active ? 'is-active ' : '') + (r.err.length ? 'has-err' : 'is-ok') + '"><button type="button" class="kf24-li" data-i="' + i + '"><b>' + (i + 1) + '. ' + (c.label ? c.label.replace(/</g, '&lt;') : TYPES[c.type] || 'Front') + '</b><small>' + fmt(c.w) + ' × ' + fmt(c.h) + ' mm' + (c.qty > 1 ? ' · ' + c.qty + ' Stück' : '') + ' · ' + (c.decor ? short(c.decor).replace(/</g, '&lt;') : '<em>Material fehlt</em>') + '</small><span class="kf24-li-p">' + (r.err.length ? '<span class="kf24-li-x">' + r.err.length + ' offen</span>' : eur(p.total)) + '</span></button><button type="button" class="kf24-li-del" data-del="' + i + '" aria-label="Position ' + (i + 1) + ' entfernen">×</button></li>';
+		}).join('');
+		document.getElementById('kf24-list-n').textContent = list.length + (list.length === 1 ? ' Position' : ' Positionen');
+		document.getElementById('kf24-list-total').textContent = eur(total);
+		var btn = document.getElementById('kf24-list-cart');
+		btn.disabled = bad > 0;
+		btn.textContent = bad ? bad + ' Position' + (bad > 1 ? 'en' : '') + ' noch unvollständig' : 'Alle ' + list.length + ' in den Warenkorb';
+		$('#kf24-submit').hidden = true; $('#kf24-tolist').hidden = true;
+		$('#kf24-mtotal').textContent = eur(total);
+		$('#kf24-msubmit').textContent = bad ? 'Liste prüfen' : 'Alle ' + list.length + ' in den Warenkorb';
+		$('#kf24-msubmit').disabled = false;
+	}
+	$('#kf24-msubmit').addEventListener('click', function (e) {
+		if (!list.length) return;
+		e.preventDefault();
+		var b = document.getElementById('kf24-list-cart');
+		if (b.disabled) document.getElementById('kf24-list').scrollIntoView({ behavior: 'smooth' }); else b.click();
+	});
+	function select(i) { active = i; toForm(list[i]); renderList(); form.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+	function blankFrom(c) { var n = JSON.parse(JSON.stringify(c)); n.label = ''; n.note = ''; n.qty = 1; return n; }
+
+	// edits in the form update the active position
+	['input', 'change'].forEach(function (ev) {
+		form.addEventListener(ev, function () { if (active >= 0 && list[active]) { list[active] = state(); save(); renderList(); } });
+	});
+	document.getElementById('kf24-tolist').addEventListener('click', function () {
+		list.push(state()); list.push(blankFrom(state())); active = list.length - 1; save(); toForm(list[active]); renderList();
+	});
+	document.getElementById('kf24-list').addEventListener('click', function (e) {
+		var b = e.target.closest('button'); if (!b) return;
+		if (b.dataset.i != null) return select(+b.dataset.i);
+		if (b.dataset.del != null) {
+			list.splice(+b.dataset.del, 1);
+			if (active >= list.length) active = list.length - 1;
+			save();
+			if (list.length) toForm(list[active]); else { active = -1; $('#kf24-submit').hidden = false; $('#kf24-tolist').hidden = false; }
+			renderList(); return;
+		}
+		if (b.id === 'kf24-list-add') { list.push(blankFrom(state())); active = list.length - 1; save(); toForm(list[active]); renderList(); return; }
+		if (b.id === 'kf24-list-decor') { var d = radio('decor'); if (!d) return; list.forEach(function (c) { c.decor = d; }); save(); renderList(); return; }
+		if (b.id === 'kf24-list-clear') {
+			if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Wirklich leeren?'; setTimeout(function () { delete b.dataset.sure; b.textContent = 'Liste leeren'; }, 3000); return; }
+			list = []; active = -1; save(); $('#kf24-submit').hidden = false; $('#kf24-tolist').hidden = false; renderList(); return;
+		}
+		if (b.id === 'kf24-list-cart') {
+			b.disabled = true; b.textContent = 'Wird in den Warenkorb gelegt …';
+			var fd = new FormData(); fd.append('product_id', P.id); fd.append('items', JSON.stringify(list));
+			fetch(D.bulk, { method: 'POST', body: fd, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
+				if (j && j.success) { list = []; save(); location.href = D.cart; return; }
+				var errs = (j && j.data && j.data.errors) || {};
+				var first = Object.keys(errs)[0];
+				$('#kf24-msgs').innerHTML = Object.keys(errs).map(function (k) { return '<li class="kf24-err">Position ' + (+k + 1) + ': ' + errs[k].join(' ') + '</li>'; }).join('') || '<li class="kf24-err">Das hat nicht geklappt. Bitte erneut versuchen.</li>';
+				if (first != null) select(+first);
+				renderList();
+			}).catch(function () { $('#kf24-msgs').innerHTML = '<li class="kf24-err">Keine Verbindung. Ihre Liste ist gespeichert – bitte erneut versuchen.</li>'; renderList(); });
+		}
+	});
+
+	// list handed over from the Aufmaß table
+	try {
+		var hand = JSON.parse(localStorage.getItem('kf24_handover') || 'null');
+		if (hand && hand.length) {
+			localStorage.removeItem('kf24_handover');
+			var base = state();
+			list = hand.map(function (r) {
+				var c = JSON.parse(JSON.stringify(base));
+				c.type = r.t || 'tuer'; c.w = +r.w || 0; c.h = +r.h || 0; c.qty = Math.max(1, +r.q || 1);
+				c.label = ((r.n || '') + (r.r ? ' – ' + r.r : '')).slice(0, 60);
+				c.hinge = r.a || 'keine'; c.hinges = c.hinge === 'keine' ? 0 : Math.max(1, Math.min(5, +r.b || 2));
+				c.grain = c.type === 'blende' ? 'laengs' : 'aufrecht'; c.hraw = []; c.hlast = 'start'; c.hpos = [];
+				c.grip = '0'; c.mill = 'keine'; c.seal = 'no'; c.note = ''; c.decor = base.decor || '';
+				var len = c.hinge === 'oben' ? c.w : c.h; c.hraw = defaultPositions(len, c.hinges); c.hpos = c.hraw.slice();
+				return c;
+			});
+			save();
+		}
+	} catch (e) { /* ignore */ }
+	if (list.length) { active = 0; toForm(list[0]); }
+	renderList();
 })();
