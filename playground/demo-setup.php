@@ -117,56 +117,6 @@ if ( function_exists( 'kf24t_run_setup' ) ) {
 	}
 }
 
-/* ---------- Beispiele: je Metod-Familie ein Produkt mit Varianten (live kommen alle Teile aus dem alten Shop) ---------- */
-$front_cat = get_term_by( 'slug', kf24_opt( 'front_cat' ), 'product_cat' );
-$front_cat = $front_cat ? $front_cat->term_id : wp_insert_term( 'Fronten für Metod', 'product_cat', [ 'slug' => kf24_opt( 'front_cat' ) ] )['term_id'];
-$families  = [
-	[ 'Massivholzfronten', 'massivholzfronten', 'Massivholzfront 3-Schicht PG2, Türe', 'massivholzfront-3-schicht-pg2-tuere', [ 'Birke', 'Ahorn', 'Eiche', 'Esche' ], 'eiche', [ 160, 184, 184, 218, 207, 253 ] ],
-	[ 'Echtholzfronten furniert', 'echtholzfronten-furniert', 'Echtholzfront Eiche furniert, Türe', 'echtholzfront-eiche-furniert-tuere', [ 'Eiche', 'Esche natur', 'Amerikanischer Nussbaum' ], 'furnier-eiche', [ 138, 158, 158, 189, 178, 219 ] ],
-	[ 'Dekorfronten', 'dekorfronten', 'Dekorfront matt, Türe', 'dekorfront-matt-tuere', [ 'Weiß', 'Kaschmir', 'Grau' ], 'weiss', [ 69, 79, 79, 95, 89, 110 ] ],
-	[ 'Lackfronten Mattlack', 'lackfronten-mattlack', 'Lackfront matt, Türe', 'lackfront-matt-tuere', [ 'Weiß', 'RAL nach Wahl' ], 'salbei', [ 149, 172, 172, 205, 193, 238 ] ],
-	[ 'Lackfronten Hochglanz', 'lackfronten-hochglanz', 'Lackfront Hochglanz, Türe', 'lackfront-hochglanz-tuere', [ 'Weiß', 'RAL nach Wahl' ], 'hochglanz', [ 199, 229, 229, 274, 258, 318 ] ],
-	[ 'Fenix NTM', 'fenix-ntm', 'Fenix NTM Front, Türe', 'fenix-ntm-front-tuere', [ 'Nero Ingo', 'Bianco Kos', 'Grigio Londra' ], 'fenix', [ 219, 252, 252, 302, 284, 350 ] ],
-];
-foreach ( $families as [ $cname, $cslug, $pname, $pslug, $woods, $sw, $prices ] ) {
-	$t   = get_term_by( 'slug', $cslug, 'product_cat' );
-	$cid = $t ? $t->term_id : wp_insert_term( $cname, 'product_cat', [ 'slug' => $cslug, 'parent' => $front_cat ] )['term_id'];
-	if ( get_page_by_path( $pslug, OBJECT, 'product' ) ) {
-		continue;
-	}
-	$attrs = [ 'Ausführung' => $woods, 'Breite' => [ '400', '600' ], 'Höhe' => [ '400', '600', '800' ], 'Anschlagsart' => [ 'links', 'rechts' ], 'Grifffräsung' => [ 'keine', 'oben', 'unten' ] ];
-	$p     = new WC_Product_Variable();
-	$p->set_name( $pname );
-	$p->set_slug( $pslug );
-	$p->set_status( 'publish' );
-	$p->set_category_ids( [ $cid ] );
-	$p->set_catalog_visibility( 'hidden' ); // Variante A: nur zum Vergleich, Kunden bestellen über „Fronten bestellen“
-	$p->set_short_description( 'Passend für IKEA Metod. Mit Bohrungen für die IKEA-Beschläge. (Beispielprodukt der Testversion – im Live-Shop stehen hier alle Teile aus dem bisherigen Shop.)' );
-	$list = [];
-	foreach ( $attrs as $n => $opts ) {
-		$a = new WC_Product_Attribute();
-		$a->set_name( $n );
-		$a->set_options( $opts );
-		$a->set_visible( true );
-		$a->set_variation( true );
-		$list[] = $a;
-	}
-	$p->set_attributes( $list );
-	$pid = $p->save();
-	update_post_meta( $pid, '_kf24_swatch', $sw );
-	update_post_meta( $pid, '_kf24_lz', 'ca. 6–8 Wochen' );
-	foreach ( [ [ 400, 400 ], [ 600, 400 ], [ 400, 600 ], [ 600, 600 ], [ 400, 800 ], [ 600, 800 ] ] as $i => [ $w, $h ] ) {
-		$v = new WC_Product_Variation();
-		$v->set_parent_id( $pid );
-		$v->set_attributes( [ 'breite' => (string) $w, 'hohe' => (string) $h ] );
-		$v->set_regular_price( $prices[ $i ] );
-		$v->set_weight( round( $w * $h / 1e6 * 12, 1 ) );
-		$v->save();
-	}
-	WC_Product_Variable::sync( $pid );
-}
-$log( 'Metod-Beispielprodukte angelegt' );
-
 /* ---------- Referenzen (über den gleichen Weg wie in „Mein Shop“) ---------- */
 require_once ABSPATH . 'wp-admin/includes/file.php';
 require_once ABSPATH . 'wp-admin/includes/media.php';

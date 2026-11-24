@@ -67,7 +67,6 @@ function kf24_demo_assets() {
 			break;
 		}
 	}
-	$metod = get_page_by_path( 'massivholzfront-3-schicht-pg2-tuere', OBJECT, 'product' );
 	$page  = fn( $slug ) => ( $p = get_page_by_path( $slug ) ) ? get_permalink( $p ) : home_url( '/' . $slug . '/' );
 	$steps = [
 		[ 'Shop', 'Startseite ansehen – auch auf dem Handy', home_url( '/' ), 'Gefällt dir Optik, Text und Bilder? Tipp: Fenster schmal ziehen = Handy-Ansicht.' ],
@@ -85,10 +84,9 @@ function kf24_demo_assets() {
 		[ 'Verwaltung', 'Materialfoto per Drag & Drop austauschen', admin_url( 'admin.php?page=kf24-materialien' ), 'Ein Foto vom Rechner direkt auf ein Material ziehen.' ],
 		[ 'Verwaltung', 'Front offline schalten, duplizieren, löschen', admin_url( 'admin.php?page=kf24-fronten' ), '' ],
 		[ 'Verwaltung', 'Preise ändern (z. B. Topfband, Versand)', admin_url( 'admin.php?page=kf24-preise' ), '' ],
-		[ 'Variante B', 'Metod-Preise pflegen: Formel und Festpreise', admin_url( 'admin.php?page=kf24-systeme' ), 'Erst „Preisformel je Front“, dann bei „Preise“ einzelne Festpreise eintragen.' ],
-		[ 'Variante B', 'Im Shop Metod-Teile antippen und Preise prüfen', add_query_arg( 'system', 'metod', $front ?: home_url( '/' ) ) . '#kf24-konfigurator', 'Massivholz PG2: Tür 60×80 und Schublade 60×20 haben Festpreise, der Rest rechnet mit Formel.' ],
-		[ 'Variante B', 'Teileliste ändern (z. B. ein Faktum-Teil ergänzen)', admin_url( 'admin.php?page=kf24-systeme&tab=teile&sys=faktum' ), '' ],
-		$metod ? [ 'Variante B', 'Zum Vergleich: alte Metod-Front mit Variantenlisten (für Kunden ausgeblendet)', get_permalink( $metod ), 'Wie bisher: Größe, Anschlag, Griff aus Listen wählen.' ] : null,
+		[ 'Metod & Faktum', 'Metod-Preise pflegen: Formel und Festpreise', admin_url( 'admin.php?page=kf24-systeme' ), 'Erst „Preisformel je Front“, dann bei „Preise“ einzelne Festpreise eintragen.' ],
+		[ 'Metod & Faktum', 'Im Shop Metod-Teile antippen und Preise prüfen', add_query_arg( 'system', 'metod', $front ?: home_url( '/' ) ) . '#kf24-konfigurator', 'Massivholz PG2: Tür 60×80 und Schublade 60×20 haben Festpreise, der Rest rechnet mit Formel.' ],
+		[ 'Metod & Faktum', 'Teileliste ändern (z. B. ein Faktum-Teil ergänzen)', admin_url( 'admin.php?page=kf24-systeme&tab=teile&sys=faktum' ), '' ],
 		[ 'Verwaltung', 'Text einer Seite ändern', admin_url( 'edit.php?post_type=page' ), 'z. B. „Über uns“ oder die FAQ.' ],
 		[ 'Verwaltung', 'Referenz mit Vorher/Nachher anlegen', admin_url( 'admin.php?page=kf24-referenz' ), 'Layout wählen, Fotos hineinziehen, Text schreiben, speichern.' ],
 		[ 'Verwaltung', 'Menü oder Fußzeile ändern', admin_url( 'nav-menus.php' ), 'Gilt sofort auf allen Seiten.' ],

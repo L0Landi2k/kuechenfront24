@@ -57,7 +57,7 @@
 	function renderSteps() {
 		var html = '', grp = '', n = 0;
 		D.steps.forEach(function (s, i) {
-			if (s[0] !== grp) { grp = s[0]; html += '<h3>' + esc(grp === 'Shop' ? 'Als Kunde im Shop' : grp === 'Variante B' ? 'Test: Metod-Datenbank Variante B' : 'Als Inhaber in der Verwaltung') + '</h3>'; }
+			if (s[0] !== grp) { grp = s[0]; html += '<h3>' + esc(grp === 'Shop' ? 'Als Kunde im Shop' : grp === 'Metod & Faktum' ? 'Metod & Faktum: Teile und Preise pflegen' : 'Als Inhaber in der Verwaltung') + '</h3>'; }
 			var on = !!done[key(s)]; if (on) n++;
 			html += '<div class="kf24d-step' + (on ? ' is-done' : '') + '"><input type="checkbox" id="kf24d-s' + i + '" data-k="' + esc(key(s)) + '"' + (on ? ' checked' : '') + ' aria-label="erledigt"><div><a href="' + esc(s[2]) + '">' + (i + 1) + '. ' + esc(s[1]) + '</a>' + (s[3] ? '<small>' + esc(s[3]) + '</small>' : '') + '</div></div>';
 		});

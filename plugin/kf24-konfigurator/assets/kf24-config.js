@@ -291,6 +291,7 @@
 			h += '<option value="' + p.id + '"' + (p.id === cur ? ' selected' : '') + '>' + p.n + ' – ' + fmt(p.w) + ' × ' + fmt(p.h) + '</option>';
 		});
 		partSel.innerHTML = h + (g ? '</optgroup>' : '');
+		partSel.closest('label').hidden = !sys;
 		renderChips(sys);
 	}
 	function renderChips(sys) {
@@ -312,13 +313,16 @@
 		setRadio('hinge', cp.a); if (cp.b) $('#kf24-hinges').value = String(cp.b);
 		var note = form.querySelector('[name="kf24[note]"]'); if (note && (!note.value || note.dataset.auto)) { note.value = cp.x || ''; note.dataset.auto = '1'; }
 		if (!$('#kf24-label').value || $('#kf24-label').dataset.auto) { $('#kf24-label').value = cp.n; $('#kf24-label').dataset.auto = '1'; }
-		partId.value = cp.id;
+		partId.value = cp.id; partSel.value = cp.id;
 		hposDirty = cp.hr && cp.hr.length === cp.b;
 		renderHpos(state(), true, hposDirty ? cp.hr.slice() : null, cp.hl);
 		sync();
 	}
 	sysSel.addEventListener('change', function () { fillParts(sysSel.value, ''); if (!sysSel.value) partId.value = ''; try { localStorage.setItem('kf24_kueche', sysSel.value || 'andere'); } catch (e) {} sync(); });
-	partSel.addEventListener('change', function () { var cp = catPart(partSel.value); if (cp) applyPart(cp); else { partId.value = ''; sync(); } });
+	partSel.addEventListener('change', function () {
+		var cp = catPart(partSel.value); if (cp) applyPart(cp); else { partId.value = ''; sync(); }
+		if (active >= 0 && list[active]) { list[active] = state(); save(); renderList(); }
+	});
 	form.addEventListener('input', function (e) {
 		if ((e.target.id === 'kf24-w' || e.target.id === 'kf24-h') && partId.value) {
 			var cp = catPart(partId.value);
@@ -366,7 +370,7 @@
 		var total = 0, bad = 0;
 		document.getElementById('kf24-list-items').innerHTML = list.map(function (c, i) {
 			var r = check(c), p = price(c); total += p.total; if (r.err.length) bad++;
-			return '<li class="' + (i === active ? 'is-active ' : '') + (r.err.length ? 'has-err' : 'is-ok') + '"><button type="button" class="kf24-li" data-i="' + i + '"><b>' + (i + 1) + '. ' + (c.label ? c.label.replace(/</g, '&lt;') : TYPES[c.type] || 'Front') + '</b><small>' + fmt(c.w) + ' × ' + fmt(c.h) + ' mm' + (c.qty > 1 ? ' · ' + c.qty + ' Stück' : '') + ' · ' + (c.decor ? short(c.decor).replace(/</g, '&lt;') : '<em>Material fehlt</em>') + '</small><span class="kf24-li-p">' + (r.err.length ? '<span class="kf24-li-x">' + r.err.length + ' offen</span>' : eur(p.total)) + '</span></button><button type="button" class="kf24-li-del" data-del="' + i + '" aria-label="Position ' + (i + 1) + ' entfernen">×</button></li>';
+			return '<li class="' + (i === active ? 'is-active ' : '') + (r.err.length ? 'has-err' : 'is-ok') + '"><button type="button" class="kf24-li" data-i="' + i + '"><b>' + (i + 1) + '. ' + (c.label ? c.label.replace(/</g, '&lt;') : TYPES[c.type] || 'Front') + '</b><small>' + fmt(c.w) + ' × ' + fmt(c.h) + ' mm · ' + (c.decor ? short(c.decor).replace(/</g, '&lt;') : '<em>Material fehlt</em>') + '</small><span class="kf24-li-p">' + (r.err.length ? '<span class="kf24-li-x">' + r.err.length + ' offen</span>' : eur(p.total)) + '</span></button><span class="kf24-li-q"><button type="button" data-q="' + i + '" data-d="-1" aria-label="Eins weniger">−</button><b>' + (c.qty || 1) + '</b><button type="button" data-q="' + i + '" data-d="1" aria-label="Eins mehr">+</button></span><button type="button" class="kf24-li-del" data-del="' + i + '" aria-label="Position ' + (i + 1) + ' entfernen">×</button></li>';
 		}).join('');
 		renderChips(sysSel.value);
 		document.getElementById('kf24-list-n').textContent = list.length + (list.length === 1 ? ' Position' : ' Positionen');
@@ -397,6 +401,10 @@
 	});
 	document.getElementById('kf24-list').addEventListener('click', function (e) {
 		var b = e.target.closest('button'); if (!b) return;
+		if (b.dataset.q != null) {
+			var qi = +b.dataset.q, nq = Math.max(1, Math.min(99, (+list[qi].qty || 1) + (+b.dataset.d)));
+			list[qi].qty = nq; save(); if (qi === active) setVal('#kf24-qty', nq); renderList(); return;
+		}
 		if (b.dataset.i != null) return select(+b.dataset.i);
 		if (b.dataset.del != null) {
 			list.splice(+b.dataset.del, 1);

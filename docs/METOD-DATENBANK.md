@@ -1,11 +1,9 @@
 # Metod & Faktum – Produktdatenbank
 
-## Variante A (heute, wie im alten Shop)
-Jedes Metod-Teil ist ein eigenes WooCommerce-Produkt mit Varianten (Holzart × Breite × Höhe × Anschlag × Griff).
-Bei 6 Frontfamilien, rund 30 Teilen und 4–10 Ausführungen entstehen schnell **tausende Varianten**, die jede einen eigenen Preis braucht.
-Neue Holzart = jede Variante anfassen. Preiserhöhung = jede Variante anfassen.
+## Entscheidung (24.11.2026)
+Die alten Variantenprodukte (jedes Metod-Teil ein Produkt mit Holzart × Breite × Höhe × Anschlag) sind gestrichen:
+zu viele Klicks für Kunden und tausende Einzelpreise für Michi. Es gilt nur noch dieses Modell:
 
-## Variante B (Test)
 Drei Bausteine, jeweils **einmal** gepflegt:
 
 | Baustein | Was | Wo |
@@ -25,12 +23,13 @@ Teilpreis  = Grundpreis + Grifffräsung + Topfbänder (falls mitbestellt) + Aufs
 Mindestfläche (Einstellung „min_area“) gilt zusätzlich. Die Formel gilt auch für alle Maßanfertigungen – Metod, Faktum und „nach Maß“ rechnen damit identisch.
 
 ### Für den Kunden
-Im Konfigurator gibt es bei „Maße“ das Feld **Küchensystem → Teil**. Ein Klick setzt Maß, Art, Anschlag, Topfband-Positionen und Fertigungshinweis.
-Ändert der Kunde das Maß, wird es automatisch eine Maßanfertigung (Formelpreis).
-Im Konfigurator erscheinen alle Teile als Knöpfe („Teile Ihrer Küche antippen“); jedes angetippte Teil wird eine Position der Frontenliste. Die Aufmaß-Tabelle nutzt dieselben Daten.
+Ein Weg: **Fronten bestellen → Küche wählen → Front wählen → Konfigurator.**
+Im Konfigurator bei „Maße“: **Ihre Küche → Teil für diese Front** (Auswahlliste) setzt Maß, Art, Anschlag, Topfband-Positionen und Fertigungshinweis.
+Darunter **„Ganze Küche: alle Teile im Überblick“** – jedes angetippte Teil wird eine Position der Frontenliste (wie früher die Aufmaßliste). Stückzahl direkt in der Liste mit − / +.
+Ändert der Kunde das Maß, wird es automatisch eine Maßanfertigung (Formelpreis). Die Aufmaß-Tabelle zum Ausdrucken nutzt dieselben Daten.
 
 ### Aufwand im Vergleich
-| | Variante A | Variante B |
+| | früher (Variantenprodukte) | jetzt |
 |---|---|---|
 | Produkte | ~200 + tausende Varianten | 1 je Frontfamilie (heute 21) |
 | Neue Holzart | jede Variante | 1 Material anlegen, bei der Front anhaken |

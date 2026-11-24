@@ -50,7 +50,7 @@ function kf24_catalog_js() {
  * Mein Shop → Küchensysteme & Preise (Variante B)
  * ------------------------------------------------------------------ */
 add_action( 'admin_menu', function () {
-	add_submenu_page( 'kf24-shop', 'Metod & Faktum: Teile und Preise', 'Metod & Faktum (Test B)', KF24_CAP, 'kf24-systeme', 'kf24_page_systems' );
+	add_submenu_page( 'kf24-shop', 'Metod & Faktum: Teile und Preise', 'Metod & Faktum', KF24_CAP, 'kf24-systeme', 'kf24_page_systems' );
 }, 12 );
 
 function kf24_page_systems() {
@@ -59,7 +59,7 @@ function kf24_page_systems() {
 	$sys    = sanitize_key( $_GET['sys'] ?? 'metod' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only
 	$sys    = array_key_exists( $sys, kf24_catalog_systems() ) ? $sys : 'metod';
 	$url    = fn( $t, $s = null ) => admin_url( 'admin.php?page=kf24-systeme&tab=' . $t . '&sys=' . ( $s ?: $sys ) );
-	kf24_admin_head( 'Metod & Faktum – Teile und Preise', '<b>Variante B (Test):</b> Statt hunderter Einzelprodukte gibt es <b>eine Teileliste</b> je Küchensystem und <b>eine Preisformel</b> je Frontart. Nur wo Sie einen festen Preis wollen, tragen Sie ihn ein.' );
+	kf24_admin_head( 'Metod & Faktum – Teile und Preise', 'Statt hunderter Einzelprodukte gibt es <b>eine Teileliste</b> je Küchensystem und <b>eine Preisformel</b> je Frontart. Nur wo du einen festen Preis willst, trägst du ihn ein.' );
 	echo '<nav class="nav-tab-wrapper kf24a-tabs">';
 	foreach ( [ 'preise' => '1. Preise', 'formel' => '2. Preisformel je Front', 'teile' => '3. Teileliste' ] as $k => $l ) {
 		printf( '<a class="nav-tab%s" href="%s">%s</a>', $tab === $k ? ' nav-tab-active' : '', esc_url( $url( $k ) ), esc_html( $l ) );

@@ -101,8 +101,8 @@ function kf24_render_configurator() {
 			<legend><span class="kf24-n">3</span> Maße</legend>
 			<div class="kf24-sysrow">
 				<label>Ihre Küche <select id="kf24-sys"><option value="">andere Küche – eigene Maße</option><?php foreach ( kf24_catalog_systems() as $k => $l ) { echo '<option value="' . esc_attr( $k ) . '">' . esc_html( $l ) . '</option>'; } ?></select></label>
-				<label class="kf24-partl" hidden>Teil <select id="kf24-part"></select></label>
-				<div class="kf24-chips" id="kf24-chips" hidden><p class="kf24-hint"><b>Teile Ihrer Küche antippen.</b> Jedes Teil kommt als eigene Position in die Liste – Maße, Topfbänder und Bohrbild sind eingetragen. Zweimal tippen = 2 Stück. Bitte trotzdem an der alten Front nachmessen.</p><div id="kf24-chips-in"></div></div>
+				<label class="kf24-partl" hidden>Teil für diese Front <select id="kf24-part"></select></label>
+				<details class="kf24-chips" id="kf24-chips" open hidden><summary>Ganze Küche: alle Teile im Überblick</summary><p class="kf24-hint">Antippen = eine Position mehr in Ihrer Liste. Zweimal tippen = 2 Stück. Maße, Topfbänder und Bohrbild sind eingetragen – bitte trotzdem an der alten Front nachmessen.</p><div id="kf24-chips-in"></div></details>
 				<input type="hidden" name="kf24[part]" id="kf24-part-id" value="">
 			</div>
 			<div class="kf24-row3">
@@ -200,7 +200,6 @@ function kf24_render_configurator() {
 add_action( 'wp_enqueue_scripts', function () {
 	wp_register_style( 'kf24', KF24_URL . 'assets/kf24.css', [], KF24_VERSION );
 	wp_register_script( 'kf24-config', KF24_URL . 'assets/kf24-config.js', [], KF24_VERSION, true );
-	wp_register_script( 'kf24-metod', KF24_URL . 'assets/kf24-metod.js', [ 'jquery' ], KF24_VERSION, true );
 	wp_register_script( 'kf24-tools', KF24_URL . 'assets/kf24-tools.js', [], KF24_VERSION, true );
 	if ( is_product() || is_cart() || is_checkout() ) {
 		wp_enqueue_style( 'kf24' );
