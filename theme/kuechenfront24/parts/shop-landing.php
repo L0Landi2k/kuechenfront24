@@ -1,68 +1,91 @@
 <?php
 /**
- * Shop overview: three clear paths instead of one long product list.
+ * "Fronten bestellen": the ONE entry for ordering.
+ * Step 1: which kitchen (Metod / Faktum / other) – Step 2: which front. Everything ends in the same configurator.
  */
 defined( 'ABSPATH' ) || exit;
 $cfg    = function_exists( 'kf24_all_cfg_products' ) ? kf24_all_cfg_products() : [];
-$groups = [ 'Dekor' => 'Dekor', 'Furnier' => 'Echtholz furniert', 'Massivholz' => 'Massivholz', 'Lack' => 'Lack', 'Fenix' => 'Fenix NTM' ];
-$metod  = get_term_by( 'slug', function_exists( 'kf24_opt' ) ? kf24_opt( 'front_cat' ) : 'fronten-fuer-metod', 'product_cat' );
-$nm     = get_term_by( 'slug', 'fronten-nach-mass', 'product_cat' );
+$groups = [ 'Dekor' => [ 'Dekor', 'dekor' ], 'Furnier' => [ 'Echtholz furniert', 'furnier' ], 'Massivholz' => [ 'Massivholz', 'massivholz' ], 'Lack' => [ 'Lack', 'lack' ], 'Fenix' => [ 'Fenix NTM', 'fenix' ] ];
 $page   = fn( $slug ) => ( $p = get_page_by_path( $slug ) ) ? get_permalink( $p ) : home_url( '/' . $slug . '/' );
-kf24t_pagehead( 'Shop', 'Drei Wege zu Ihren neuen Fronten. Wählen Sie, was zu Ihrer Küche passt.' );
+$k      = isset( $_GET['kueche'] ) ? sanitize_key( wp_unslash( $_GET['kueche'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only
+$k      = in_array( $k, [ 'metod', 'faktum', 'andere' ], true ) ? $k : '';
+$opts   = [
+	'metod'  => [ 'IKEA Metod', 'Teile aus Ihrem Küchenplan antippen – die Maße sind hinterlegt.' ],
+	'faktum' => [ 'IKEA Faktum', 'Alle Faktum-Teile mit Bohrbild hinterlegt, auch wenn es die Serie nicht mehr gibt.' ],
+	'andere' => [ 'Jede andere Küche', 'Nobilia, Nolte, Eigenbau … Maße millimetergenau eingeben.' ],
+];
+kf24t_pagehead( 'Fronten bestellen', 'In zwei Schritten zu Ihren neuen Fronten. Alle Teile Ihrer Küche sammeln Sie danach in einer Liste und bestellen mit einem Klick.' );
 ?>
-<div class="entry-content shop-landing">
-	<div class="paths">
-		<a class="path" href="#nach-mass"><span class="path-n">1</span><h2>Fronten nach Maß</h2><p>Für jede Küche: Faktum, Nobilia, Nolte, Eigenbau … und Sonderteile für Metod. Sie geben die Maße in Millimetern ein.</p><span class="path-go">Front wählen ↓</span></a>
-		<?php if ( $metod ) : ?><a class="path" href="<?php echo esc_url( get_term_link( $metod ) ); ?>"><span class="path-n">2</span><h2>Passend für IKEA Metod</h2><p>Fertige Teile in allen Metod-Rastermaßen. Einfach Teil aus dem Küchenplan auswählen.</p><span class="path-go">Zu den Metod-Fronten →</span></a><?php endif; ?>
-		<a class="path" href="<?php echo esc_url( $page( 'muster' ) ); ?>"><span class="path-n">3</span><h2>Erst Muster bestellen</h2><p>Farbe und Holz in die Hand nehmen, bevor Sie bestellen. Ab 0,50 €.</p><span class="path-go">Zu den Mustern →</span></a>
-	</div>
-	<p class="shop-help">Mehrere Fronten? In <a href="<?php echo esc_url( $page( 'aufmass' ) ); ?>">Planen &amp; Preis</a> tragen Sie alle Fronten Ihrer Küche ein, sehen sofort den Preis und legen am Ende alles mit einem Klick in den Warenkorb. Oder rufen Sie uns an: <a href="tel:+498946205236">089 462 05 236</a>.</p>
-
-	<h2 id="nach-mass">Fronten nach Maß konfigurieren</h2>
-	<p>Jede Front fertigen wir millimetergenau, mit Bohrungen für Topfbänder und Griffe. Preis je m², inkl. MwSt., zzgl. Versand.</p>
-	<?php foreach ( $groups as $g => $label ) :
-		$list = array_filter( $cfg, fn( $c ) => $c['group'] === $g );
-		if ( ! $list ) { continue; } ?>
-		<h3 class="shop-g"><?php echo esc_html( $label ); ?></h3>
-		<div class="shop-grid">
-			<?php foreach ( $list as $c ) :
-				$p   = wc_get_product( $c['id'] );
-				$img = $p && $p->get_image_id() ? wp_get_attachment_image_url( $p->get_image_id(), 'medium' ) : '';
-				$lk  = $img ? [ 'img' => $img, 'color' => '#ddd' ] : kf24_product_look( $c['id'] );
-				$n   = count( $c['options'] ); ?>
-				<a class="shop-card" href="<?php echo esc_url( $c['url'] ); ?>">
-					<?php if ( ! $img && $n > 1 && function_exists( 'kf24_material_collage' ) ) : ?>
-						<span class="shop-pic is-collage"><?php echo kf24_material_collage( $c['id'] ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside ?></span>
-					<?php else : ?>
-						<span class="shop-pic" style="<?php echo esc_attr( ( $lk['img'] ? 'background-image:url(' . $lk['img'] . ');' : '' ) . 'background-color:' . $lk['color'] ); ?>"></span>
-					<?php endif; ?>
-					<span class="shop-b"><b><?php echo esc_html( preg_replace( '/\s+–\s+individuell konfigurierbar$/u', '', $c['name'] ) ); ?></b>
-					<small><?php echo esc_html( $n . ' ' . ( $n === 1 ? 'Ausführung' : 'Ausführungen' ) . ' · Lieferzeit ' . $c['lz'] ); ?></small>
-					<span class="shop-price">ab <?php echo wp_kses_post( wc_price( $c['m2'] ) ); ?> je m²</span></span>
-				</a>
+<div class="entry-content shop-landing" id="kf24-shop" data-kueche="<?php echo esc_attr( $k ); ?>">
+	<section class="shop-step">
+		<h2><span class="step-n">1</span> Welche Küche haben Sie?</h2>
+		<div class="kueche" role="radiogroup" aria-label="Ihre Küche">
+			<?php foreach ( $opts as $key => $t ) : ?>
+				<label class="kueche-o"><input type="radio" name="kueche" value="<?php echo esc_attr( $key ); ?>" <?php checked( $k, $key ); ?>><b><?php echo esc_html( $t[0] ); ?></b><small><?php echo esc_html( $t[1] ); ?></small></label>
 			<?php endforeach; ?>
 		</div>
-	<?php endforeach; ?>
+	</section>
 
-	<?php if ( $metod ) :
-		$kids = get_terms( [ 'taxonomy' => 'product_cat', 'parent' => $metod->term_id, 'hide_empty' => false ] ); ?>
-		<h2 id="metod" style="margin-top:48px">Passend für IKEA Metod</h2>
-		<p>Fertige Teile in allen Metod-Rastermaßen, gebohrt für die IKEA-Beschläge. <a href="<?php echo esc_url( $page( 'ikea-metod' ) ); ?>">Mehr zu Metod</a></p>
-		<div class="shop-cats">
-			<?php foreach ( (array) $kids as $k ) : ?>
-				<a class="card" href="<?php echo esc_url( get_term_link( $k ) ); ?>"><b><?php echo esc_html( $k->name ); ?></b><small><?php echo (int) $k->count; ?> Produkte</small></a>
-			<?php endforeach; ?>
-		</div>
-	<?php endif; ?>
+	<section class="shop-step" id="front-waehlen">
+		<h2><span class="step-n">2</span> Welche Front soll es sein?</h2>
+		<p class="shop-help">Preis je m², inkl. MwSt., zzgl. Versand. Unsicher bei Farbe oder Holz? <a href="<?php echo esc_url( $page( 'muster' ) ); ?>">Erst Muster bestellen</a> – ab 0,50 €.</p>
+		<?php foreach ( $groups as $g => [ $label, $anchor ] ) :
+			$list = array_filter( $cfg, fn( $c ) => $c['group'] === $g );
+			if ( ! $list ) {
+				continue;
+			} ?>
+			<h3 class="shop-g" id="g-<?php echo esc_attr( $anchor ); ?>"><?php echo esc_html( $label ); ?></h3>
+			<div class="shop-grid">
+				<?php foreach ( $list as $c ) :
+					$p   = wc_get_product( $c['id'] );
+					$img = $p && $p->get_image_id() ? wp_get_attachment_image_url( $p->get_image_id(), 'medium' ) : '';
+					$lk  = $img ? [ 'img' => $img, 'color' => '#ddd' ] : kf24_product_look( $c['id'] );
+					$n   = count( $c['options'] );
+					$url = in_array( $k, [ 'metod', 'faktum' ], true ) ? add_query_arg( 'system', $k, $c['url'] ) : $c['url']; ?>
+					<a class="shop-card" data-base="<?php echo esc_url( $c['url'] ); ?>" href="<?php echo esc_url( $url . '#kf24-konfigurator' ); ?>">
+						<?php if ( ! $img && $n > 1 && function_exists( 'kf24_material_collage' ) ) : ?>
+							<span class="shop-pic is-collage"><?php echo kf24_material_collage( $c['id'] ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside ?></span>
+						<?php else : ?>
+							<span class="shop-pic" style="<?php echo esc_attr( ( $lk['img'] ? 'background-image:url(' . $lk['img'] . ');' : '' ) . 'background-color:' . $lk['color'] ); ?>"></span>
+						<?php endif; ?>
+						<span class="shop-b"><b><?php echo esc_html( preg_replace( '/\s+–\s+individuell konfigurierbar$/u', '', $c['name'] ) ); ?></b>
+						<small><?php echo esc_html( $n . ' ' . ( $n === 1 ? 'Ausführung' : 'Ausführungen' ) . ' · Lieferzeit ' . $c['lz'] ); ?></small>
+						<span class="shop-price">ab <?php echo wp_kses_post( wc_price( $c['m2'] ) ); ?> je m²</span></span>
+					</a>
+				<?php endforeach; ?>
+			</div>
+		<?php endforeach; ?>
+	</section>
 
-	<div class="note shop-b-test" style="margin-top:24px"><b>Test – Variante B:</b> Metod-Teile direkt bei der Front wählen. Eine Front, alle Rastermaße, Preis über Formel oder Festpreis.
-		<p class="shop-b-links"><?php
-		$seen = [];
-		foreach ( $cfg as $c ) {
-			if ( isset( $seen[ $c['group'] ] ) ) { continue; }
-			$seen[ $c['group'] ] = 1;
-			echo '<a class="btn ghost" href="' . esc_url( add_query_arg( 'system', 'metod', $c['url'] ) . '#kf24-konfigurator' ) . '">' . esc_html( $groups[ $c['group'] ] ?? $c['group'] ) . '</a> ';
-		}
-		?></p></div>
-	<div class="note" style="margin-top:24px"><b>IKEA Faktum?</b> Faktum-Fronten fertigen wir nach Maß (Weg 1). Die <a href="<?php echo esc_url( add_query_arg( 'system', 'faktum', $page( 'aufmass' ) ) ); ?>">Faktum-Bestellhilfe</a> listet alle typischen Teile.</div>
+	<section class="shop-step shop-how">
+		<h2><span class="step-n">3</span> So geht es weiter</h2>
+		<ol>
+			<li><b>Material wählen</b> und die erste Front eingeben – bei Metod und Faktum einfach das Teil antippen.</li>
+			<li>Alle weiteren Fronten Ihrer Küche kommen in eine <b>Liste</b>: Teile antippen oder „Weitere Front planen“. Preis und Zeichnung sehen Sie sofort.</li>
+			<li><b>„Alle in den Warenkorb“</b> – fertig. Die Liste bleibt gespeichert, auch wenn Sie zwischendurch aufhören.</li>
+		</ol>
+		<p class="shop-help">Lieber erst in Ruhe messen? <a href="<?php echo esc_url( $page( 'aufmass' ) ); ?>">Aufmaß-Tabelle</a> zum Ausdrucken oder Ausfüllen. Fragen? <a href="tel:+498946205236">089 462 05 236</a></p>
+	</section>
 </div>
+<script>
+(function () {
+	var root = document.getElementById('kf24-shop'); if (!root) return;
+	var cur = root.dataset.kueche;
+	try { if (cur) localStorage.setItem('kf24_kueche', cur); else cur = localStorage.getItem('kf24_kueche') || ''; } catch (e) {}
+	function apply(v) {
+		root.querySelectorAll('input[name=kueche]').forEach(function (r) { r.checked = r.value === v; });
+		root.querySelectorAll('.shop-card').forEach(function (a) {
+			var u = new URL(a.dataset.base, location.href);
+			if (v === 'metod' || v === 'faktum') u.searchParams.set('system', v);
+			u.hash = 'kf24-konfigurator'; a.href = u.toString();
+		});
+	}
+	root.addEventListener('change', function (e) {
+		if (e.target.name !== 'kueche') return;
+		try { localStorage.setItem('kf24_kueche', e.target.value); } catch (er) {}
+		apply(e.target.value);
+		document.getElementById('front-waehlen').scrollIntoView({ behavior: 'smooth' });
+	});
+	apply(cur);
+})();
+</script>

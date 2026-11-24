@@ -7,7 +7,7 @@ $u = fn( $s ) => esc_url( home_url( '/' . $s . '/' ) );
 		<div>
 			<h1>Neue Fronten.<br>Ihre Küche bleibt.</h1>
 			<p class="lead">Küchenfronten nach Maß aus der Schreinerei: passend für IKEA Metod, Faktum und jeden anderen Korpus. Fertig gebohrt geliefert, in wenigen Stunden selbst montiert.</p>
-			<div class="row"><a class="btn" href="<?php echo $u( 'aufmass' ); ?>">Fronten planen &amp; Preis</a><a class="btn ghost" href="<?php echo $u( 'muster' ); ?>">Muster ab 0,50 €</a></div>
+			<div class="row"><a class="btn" href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>">Fronten bestellen</a><a class="btn ghost" href="<?php echo $u( 'muster' ); ?>">Muster ab 0,50 €</a></div>
 		</div>
 		<ul>
 			<li><?php echo kf24t_icon_check(); ?><span><b>Über 120 Oberflächen</b> von Dekor über Lack bis Massivholz und Fenix NTM</span></li>
@@ -36,9 +36,9 @@ $u = fn( $s ) => esc_url( home_url( '/' . $s . '/' ) );
 	<h2>Welche Küche haben Sie?</h2>
 	<p class="lead">Wählen Sie Ihren Weg. Alle Fronten fertigen wir auf Bestellung.</p>
 	<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))">
-		<a class="path" href="<?php echo $u( 'ikea-metod' ); ?>"><div class="pic" data-scene="metod"></div><div class="txt"><h3>IKEA Metod</h3><p class="small">Fertige Frontmaße aus Ihrem Küchenplan auswählen, in den Warenkorb legen, fertig.</p><span class="btn sm ghost">Zu den Metod-Fronten</span></div></a>
-		<a class="path" href="<?php echo $u( 'ikea-faktum' ); ?>"><div class="pic" data-scene="faktum"></div><div class="txt"><h3>IKEA Faktum</h3><p class="small">Die alte Serie gibt es nicht mehr. Wir fertigen passende Fronten mit allen Bohrungen.</p><span class="btn sm ghost">Faktum aufmöbeln</span></div></a>
-		<a class="path" href="<?php echo $u( 'nach-mass' ); ?>"><div class="pic" data-scene="indiv"></div><div class="txt"><h3>Jede andere Küche</h3><p class="small">Maße eingeben, Anschlag und Bohrungen festlegen. Passend für jeden Korpus mit 16 oder 19 mm.</p><span class="btn sm ghost">Individuell konfigurieren</span></div></a>
+		<a class="path" href="<?php echo esc_url( add_query_arg( 'kueche', 'metod', wc_get_page_permalink( 'shop' ) ) ); ?>"><div class="pic" data-scene="metod"></div><div class="txt"><h3>IKEA Metod</h3><p class="small">Fertige Frontmaße aus Ihrem Küchenplan auswählen, in den Warenkorb legen, fertig.</p><span class="btn sm ghost">Metod-Fronten bestellen</span></div></a>
+		<a class="path" href="<?php echo esc_url( add_query_arg( 'kueche', 'faktum', wc_get_page_permalink( 'shop' ) ) ); ?>"><div class="pic" data-scene="faktum"></div><div class="txt"><h3>IKEA Faktum</h3><p class="small">Die alte Serie gibt es nicht mehr. Wir fertigen passende Fronten mit allen Bohrungen.</p><span class="btn sm ghost">Faktum-Fronten bestellen</span></div></a>
+		<a class="path" href="<?php echo esc_url( add_query_arg( 'kueche', 'andere', wc_get_page_permalink( 'shop' ) ) ); ?>"><div class="pic" data-scene="indiv"></div><div class="txt"><h3>Jede andere Küche</h3><p class="small">Maße eingeben, Anschlag und Bohrungen festlegen. Passend für jeden Korpus mit 16 oder 19 mm.</p><span class="btn sm ghost">Fronten nach Maß bestellen</span></div></a>
 	</div>
 </div></div>
 

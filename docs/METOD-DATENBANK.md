@@ -27,7 +27,7 @@ Mindestfläche (Einstellung „min_area“) gilt zusätzlich. Die Formel gilt au
 ### Für den Kunden
 Im Konfigurator gibt es bei „Maße“ das Feld **Küchensystem → Teil**. Ein Klick setzt Maß, Art, Anschlag, Topfband-Positionen und Fertigungshinweis.
 Ändert der Kunde das Maß, wird es automatisch eine Maßanfertigung (Formelpreis).
-In „Planen & Preis“ füllen die Bestellhilfe-Knöpfe dieselben Daten ein.
+Im Konfigurator erscheinen alle Teile als Knöpfe („Teile Ihrer Küche antippen“); jedes angetippte Teil wird eine Position der Frontenliste. Die Aufmaß-Tabelle nutzt dieselben Daten.
 
 ### Aufwand im Vergleich
 | | Variante A | Variante B |

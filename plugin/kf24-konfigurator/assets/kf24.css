@@ -295,3 +295,16 @@
 .kf24-ft-t{width:100%;border-collapse:collapse;font-size:14px}
 .kf24-ft-t th,.kf24-ft-t td{padding:7px 12px;border-top:1px solid var(--k-line);text-align:left;vertical-align:top}
 .kf24-ft-t th{font-size:12.5px;color:var(--k-mute)}
+/* type cards: text always inside the box */
+.kf24-type{padding:12px 6px;min-width:0}
+.kf24-type b{font-size:15px;line-height:1.25;overflow-wrap:anywhere;hyphens:auto}
+.kf24-type small{font-size:12.5px;line-height:1.3;overflow-wrap:anywhere}
+/* part chips */
+.kf24-chips{flex:0 0 100%;margin-top:4px}
+.kf24-chips .kf24-hint{margin:0 0 8px}
+.kf24-chipg{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px}
+.kf24-chipg>span{flex:0 0 100%;font-size:13px;font-weight:700;color:var(--k-mute);text-transform:uppercase;letter-spacing:.04em}
+.kf24-chip{font:inherit;font-size:14px;padding:6px 11px;border:1.5px solid var(--k-line);border-radius:999px;background:#fff;color:var(--k-ink);cursor:pointer;line-height:1.2}
+.kf24-chip:hover,.kf24-chip:focus-visible{border-color:var(--k-acc)}
+.kf24-chip.is-in{border-color:var(--k-acc);background:#e8f2f2}
+.kf24-chip i{font-style:normal;font-weight:700;color:var(--k-acc)}

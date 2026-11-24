@@ -77,7 +77,7 @@ function kf24_render_configurator() {
 		<fieldset class="kf24-step">
 			<legend><span class="kf24-n">1</span> Was möchten Sie bestellen?</legend>
 			<div class="kf24-types" role="radiogroup">
-				<?php foreach ( [ 'tuer' => [ 'Tür', 'mit Topfbändern' ], 'schublade' => [ 'Schubladenfront', 'ohne Topfbänder' ], 'klappe' => [ 'Klappe', 'Anschlag oben' ], 'blende' => [ 'Blende / Sockel', 'Maserung längs' ], 'sonstig' => [ 'Sonstiges', 'frei benennen' ] ] as $k => $t ) : ?>
+				<?php foreach ( [ 'tuer' => [ 'Tür', 'mit Topfbändern' ], 'schublade' => [ 'Schublade', 'Front, ohne Bänder' ], 'klappe' => [ 'Klappe', 'Anschlag oben' ], 'blende' => [ 'Blende', 'auch Sockel' ], 'sonstig' => [ 'Sonstiges', 'frei benennen' ] ] as $k => $t ) : ?>
 					<label class="kf24-type"><input type="radio" name="kf24[type]" value="<?php echo $f( $k ); ?>" <?php checked( $k, 'tuer' ); ?>><span class="kf24-type-ico" data-type="<?php echo $f( $k ); ?>"></span><b><?php echo esc_html( $t[0] ); ?></b><small><?php echo esc_html( $t[1] ); ?></small></label>
 				<?php endforeach; ?>
 			</div>
@@ -100,8 +100,9 @@ function kf24_render_configurator() {
 		<fieldset class="kf24-step">
 			<legend><span class="kf24-n">3</span> Maße</legend>
 			<div class="kf24-sysrow">
-				<label>Küchensystem <select id="kf24-sys"><option value="">eigene Maße</option><?php foreach ( kf24_catalog_systems() as $k => $l ) { echo '<option value="' . esc_attr( $k ) . '">' . esc_html( $l ) . '</option>'; } ?></select></label>
+				<label>Ihre Küche <select id="kf24-sys"><option value="">andere Küche – eigene Maße</option><?php foreach ( kf24_catalog_systems() as $k => $l ) { echo '<option value="' . esc_attr( $k ) . '">' . esc_html( $l ) . '</option>'; } ?></select></label>
 				<label class="kf24-partl" hidden>Teil <select id="kf24-part"></select></label>
+				<div class="kf24-chips" id="kf24-chips" hidden><p class="kf24-hint"><b>Teile Ihrer Küche antippen.</b> Jedes Teil kommt als eigene Position in die Liste – Maße, Topfbänder und Bohrbild sind eingetragen. Zweimal tippen = 2 Stück. Bitte trotzdem an der alten Front nachmessen.</p><div id="kf24-chips-in"></div></div>
 				<input type="hidden" name="kf24[part]" id="kf24-part-id" value="">
 			</div>
 			<div class="kf24-row3">

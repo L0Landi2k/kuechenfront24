@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-define( 'KF24T_VER', '1.4.0' );
+define( 'KF24T_VER', '1.5.0' );
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );
@@ -138,3 +138,24 @@ add_action( 'wp_head', function () {
 	}
 	echo '<meta name="description" content="' . esc_attr( $d ) . '">' . "\n";
 }, 2 );
+
+/** One way to order: front categories lead to "Fronten bestellen" instead of a second product list. */
+add_action( 'template_redirect', function () {
+	if ( ! function_exists( 'is_product_category' ) || ! is_product_category() ) {
+		return;
+	}
+	$t = get_queried_object();
+	$k = '';
+	foreach ( array_merge( [ $t->term_id ], get_ancestors( $t->term_id, 'product_cat' ) ) as $id ) {
+		$slug = get_term( $id, 'product_cat' )->slug;
+		if ( $slug === 'fronten-nach-mass' ) {
+			$k = 'andere';
+		} elseif ( $slug === 'fronten-fuer-metod' ) {
+			$k = 'metod';
+		}
+	}
+	if ( $k ) {
+		wp_safe_redirect( add_query_arg( 'kueche', $k, wc_get_page_permalink( 'shop' ) ), 301 );
+		exit;
+	}
+} );

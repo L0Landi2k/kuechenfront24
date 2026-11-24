@@ -99,30 +99,31 @@ function kf24t_run_setup( $overwrite = false, $classic = true, $menus = true, $o
 	}
 	if ( $menus ) {
 		$cat  = get_category_by_slug( 'referenzen' );
-		$fc   = get_term_by( 'slug', 'fronten-fuer-metod', 'product_cat' );
 		$shop = function_exists( 'wc_get_page_id' ) ? wc_get_page_id( 'shop' ) : 0;
+		$shopu = $shop > 0 ? get_permalink( $shop ) : home_url( '/shop/' );
 		kf24t_menu( 'Hauptnavigation', 'primary', [
-			[ 'page', $ids['frontarten'], 'Frontarten', [
+			[ 'url', $shopu, 'Fronten bestellen', [
+				[ 'url', add_query_arg( 'kueche', 'metod', $shopu ), 'Für IKEA Metod' ],
+				[ 'url', add_query_arg( 'kueche', 'faktum', $shopu ), 'Für IKEA Faktum' ],
+				[ 'url', add_query_arg( 'kueche', 'andere', $shopu ), 'Für jede andere Küche' ],
 				[ 'page', $ids['frontarten'], 'Alle Frontarten und Preise' ],
-				[ 'page', $ids['ikea-metod'], 'Für IKEA Metod' ],
-				[ 'page', $ids['ikea-faktum'], 'Für IKEA Faktum' ],
-				[ 'page', $ids['nach-mass'], 'Nach Maß für jeden Korpus' ],
 			] ],
-			$shop > 0 ? [ 'page', $shop, 'Shop' ] : ( $fc ? [ 'term', $fc->term_id, 'Shop', [], 'product_cat' ] : null ),
-			[ 'page', $ids['aufmass'], 'Planen & Preis' ],
 			[ 'page', $ids['muster'], 'Muster' ],
 			$cat ? [ 'term', $cat->term_id, 'Referenzen', [], 'category' ] : null,
 			[ 'page', $ids['ratgeber'], 'Ratgeber', [
+				[ 'page', $ids['ikea-metod'], 'IKEA Metod – was passt?' ],
+				[ 'page', $ids['ikea-faktum'], 'IKEA Faktum – Maße und Tipps' ],
+				[ 'page', $ids['nach-mass'], 'Fronten nach Maß' ],
 				[ 'page', $ids['ratgeber'], 'Aufmaß und Montage' ],
 				[ 'page', $ids['aufmass'], 'Aufmaß-Tabelle' ],
+				[ 'page', $ids['ral-farben'], 'RAL-Farben' ],
 				[ 'page', $ids['faq'], 'Häufige Fragen' ],
-				[ 'page', $ids['service'], 'Service und Preise' ],
 				[ 'page', $ids['versand'], 'Versand und Zahlung' ],
 			] ],
 			[ 'page', $ids['ueber-uns'], 'Über uns' ],
 			[ 'page', $ids['kontakt'], 'Kontakt' ],
 		] );
-		kf24t_menu( 'Footer Fronten', 'footer_shop', [ [ 'page', $ids['frontarten'], 'Frontarten und Preise' ], [ 'page', $ids['ikea-metod'], 'IKEA Metod' ], [ 'page', $ids['ikea-faktum'], 'IKEA Faktum' ], [ 'page', $ids['nach-mass'], 'Nach Maß' ], [ 'page', $ids['muster'], 'Muster bestellen' ], [ 'page', $ids['aufmass'], 'Planen & Preis' ], [ 'page', $ids['ral-farben'], 'RAL-Farben' ] ] );
+		kf24t_menu( 'Footer Fronten', 'footer_shop', [ [ 'url', $shopu, 'Fronten bestellen' ], [ 'page', $ids['frontarten'], 'Frontarten und Preise' ], [ 'page', $ids['muster'], 'Muster bestellen' ], [ 'page', $ids['ikea-metod'], 'IKEA Metod' ], [ 'page', $ids['ikea-faktum'], 'IKEA Faktum' ], [ 'page', $ids['ral-farben'], 'RAL-Farben' ] ] );
 		kf24t_menu( 'Footer Hilfe', 'footer_help', [ [ 'page', $ids['ratgeber'], 'Aufmaß und Montage' ], [ 'page', $ids['aufmass'], 'Aufmaß-Tabelle' ], [ 'page', $ids['faq'], 'Häufige Fragen' ], [ 'page', $ids['service'], 'Service und Preise' ], [ 'page', $ids['versand'], 'Versand und Zahlung' ], [ 'page', $ids['ueber-uns'], 'Über uns' ], [ 'page', $ids['kontakt'], 'Kontakt' ] ] );
 		kf24t_menu( 'Footer Rechtliches', 'footer_legal', [ [ 'page', $ids['impressum'], 'Impressum' ], [ 'page', $ids['datenschutz'], 'Datenschutz' ], [ 'page', $ids['agb'], 'AGB' ], [ 'page', $ids['widerrufsbelehrung'], 'Widerrufsbelehrung' ] ] );
 		$log[] = 'Menüs angelegt';
@@ -145,6 +146,8 @@ function kf24t_menu( $name, $location, $items ) {
 		$args = [ 'menu-item-title' => $title, 'menu-item-status' => 'publish', 'menu-item-parent-id' => $parent ];
 		if ( $type === 'page' ) {
 			$args += [ 'menu-item-object' => 'page', 'menu-item-object-id' => $obj, 'menu-item-type' => 'post_type' ];
+		} elseif ( $type === 'url' ) {
+			$args += [ 'menu-item-url' => esc_url_raw( $obj ), 'menu-item-type' => 'custom' ];
 		} else {
 			$args += [ 'menu-item-object' => $it[4], 'menu-item-object-id' => $obj, 'menu-item-type' => 'taxonomy' ];
 		}

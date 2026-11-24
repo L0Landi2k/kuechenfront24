@@ -140,6 +140,7 @@ foreach ( $families as [ $cname, $cslug, $pname, $pslug, $woods, $sw, $prices ] 
 	$p->set_slug( $pslug );
 	$p->set_status( 'publish' );
 	$p->set_category_ids( [ $cid ] );
+	$p->set_catalog_visibility( 'hidden' ); // Variante A: nur zum Vergleich, Kunden bestellen über „Fronten bestellen“
 	$p->set_short_description( 'Passend für IKEA Metod. Mit Bohrungen für die IKEA-Beschläge. (Beispielprodukt der Testversion – im Live-Shop stehen hier alle Teile aus dem bisherigen Shop.)' );
 	$list = [];
 	foreach ( $attrs as $n => $opts ) {
