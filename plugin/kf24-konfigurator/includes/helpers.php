@@ -455,7 +455,7 @@ function kf24_spec_lines( $cfg, $pcfg = null ) {
 			$txt = ', letzte ' . wc_format_localized_decimal( $cfg['hlast_val'] ) . ' mm ' . ( $cfg['hinge'] === 'oben' ? 'von rechts' : 'von unten' );
 		}
 		$l['Topfbänder']   = $cfg['hinges'] . ' Bohrungen Ø35 bei ' . implode( ' / ', array_map( 'wc_format_localized_decimal', $pos ) ) . ' mm ' . $ref . $txt;
-		$l['Topfbänder mitliefern'] = $cfg['deliver'] === 'yes' ? 'ja (' . $cfg['hinges'] . ' Stück)' : 'nein';
+		$l['Topfbänder mitliefern'] = $cfg['deliver'] === 'yes' ? 'ja, ' . $cfg['hinges'] . ' Stück je Front' : 'nein';
 	} else {
 		$l['Anschlag'] = 'keine Topfbandbohrung';
 	}

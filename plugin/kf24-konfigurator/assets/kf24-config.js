@@ -203,10 +203,14 @@
 		var rows = '<tr><td>' + (p.how === 'fest' ? 'Festpreis ' + cpn.n : p.how === 'mindest' ? 'Mindestpreis je Teil' : p.area.toLocaleString('de-DE', { maximumFractionDigits: 3 }) + ' m² × ' + eur(P.m2) + ((P.edge || P.piece) ? ' + Kante/Pauschale' : '')) + '</td><td>' + eur(p.base) + '</td></tr>';
 		if (p.fin) rows += '<tr><td>Oberfläche ' + S.finishes[c.finish][0] + '</td><td>' + eur(p.fin) + '</td></tr>';
 		if (p.mill) rows += '<tr><td>Grifffräsung</td><td>' + eur(p.mill) + '</td></tr>';
-		if (p.hin) rows += '<tr><td>' + c.hinges + ' Topfbänder</td><td>' + eur(p.hin) + '</td></tr>';
+		if (p.hin) rows += '<tr><td>' + c.hinges + ' Topfbänder à ' + eur(S.hinge_price) + '</td><td>' + eur(p.hin) + '</td></tr>';
 		if (p.seal) rows += '<tr><td>Aufsteckdichtung' + (S.seal_note ? ' (' + S.seal_note + ')' : '') + '</td><td>' + eur(p.seal) + '</td></tr>';
 		rows += '<tr class="kf24-unitrow"><td>Preis je Front</td><td>' + eur(p.unit) + '</td></tr>';
-		if (c.qty > 1) rows += '<tr><td>× ' + c.qty + ' Stück</td><td></td></tr>';
+		if (c.qty > 1) {
+			rows = '<tr class="kf24-bh"><td colspan="2">Je Front</td></tr>' + rows;
+			rows += '<tr class="kf24-qtyrow"><td>× ' + c.qty + ' gleiche Fronten</td><td>' + eur(p.total) + '</td></tr>';
+			if (p.hin) rows += '<tr class="kf24-incl"><td colspan="2">darin ' + (c.hinges * c.qty) + ' Topfbänder (' + eur(p.hin * c.qty) + ')</td></tr>';
+		}
 		$('#kf24-breakdown').innerHTML = rows;
 		$('#kf24-decor-name').textContent = c.decor || 'bitte wählen';
 		$('#kf24-total').textContent = eur(p.total);
@@ -428,15 +432,15 @@
 		cb.hidden = !list.length; if (cb.hidden) return;
 		var name = ac ? (ac.label || TYPES[ac.type] || 'Front').replace(/</g, '&lt;') : '';
 		if (ac && ac.ok === false) {
-			cb.className = 'kf24-check is-open';
+			cb.className = 'kf24-mode is-open';
 			t.innerHTML = '<b class="kf24-check-h">Position ' + (active + 1) + ' prüfen: ' + name + '</b>' + grainTxt(ac) + ' · ' + hingeTxt(ac) + '.<br>Stimmt die Zeichnung? Sonst links ändern' + (ac.type === 'tuer' ? ' – vor allem den Anschlag' : '') + '. Änderungen gelten für diese Position.';
 			ok.dataset.act = 'ok'; ok.textContent = '✓ Passt – in Frontenliste übernehmen';
 		} else if (ac) {
-			cb.className = 'kf24-check is-edit';
+			cb.className = 'kf24-mode is-edit';
 			t.innerHTML = '<b class="kf24-check-h">Sie bearbeiten Position ' + (active + 1) + ': ' + name + '</b>Jede Änderung links wird sofort in die Liste übernommen.';
 			ok.dataset.act = 'done'; ok.textContent = 'Fertig – neue Front planen';
 		} else {
-			cb.className = 'kf24-check is-new';
+			cb.className = 'kf24-mode is-new';
 			t.innerHTML = '<b class="kf24-check-h">Neue Front – noch nicht in der Liste</b>Links Maße und Bohrungen eingeben' + (sysSel.value ? ' oder oben ein Teil antippen' : '') + ', dann übernehmen.';
 			ok.dataset.act = 'add'; ok.textContent = '+ In die Frontenliste übernehmen';
 		}
