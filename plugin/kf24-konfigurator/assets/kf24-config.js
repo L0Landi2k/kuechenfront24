@@ -208,7 +208,7 @@
 		rows += '<tr class="kf24-unitrow"><td>Preis je Front</td><td>' + eur(p.unit) + '</td></tr>';
 		if (c.qty > 1) {
 			rows = '<tr class="kf24-bh"><td colspan="2">Je Front</td></tr>' + rows;
-			rows += '<tr class="kf24-qtyrow"><td>× ' + c.qty + ' gleiche Fronten</td><td>' + eur(p.total) + '</td></tr>';
+			rows += '<tr class="kf24-qtyrow"><td>× ' + c.qty + ' Stück</td><td>' + eur(p.total) + '</td></tr>';
 			if (p.hin) rows += '<tr class="kf24-incl"><td colspan="2">darin ' + (c.hinges * c.qty) + ' Topfbänder (' + eur(p.hin * c.qty) + ')</td></tr>';
 		}
 		$('#kf24-breakdown').innerHTML = rows;
@@ -467,7 +467,7 @@
 		var b = e.target.closest('button'); if (!b) return;
 		if (b.dataset.q != null) {
 			var qi = +b.dataset.q, nq = Math.max(1, Math.min(99, (+list[qi].qty || 1) + (+b.dataset.d)));
-			list[qi].qty = nq; save(); if (qi === active) setVal('#kf24-qty', nq); renderList(); return;
+			list[qi].qty = nq; save(); if (qi === active) { setVal('#kf24-qty', nq); sync(); } renderList(); return;
 		}
 		if (b.dataset.i != null) return select(+b.dataset.i);
 		if (b.dataset.del != null) {
@@ -526,7 +526,7 @@
 		list.forEach(function (c, i) { if (c.part === cp.id && same < 0) same = i; });
 		if (same >= 0) {
 			list[same].qty = (+list[same].qty || 1) + 1; save();
-			if (same === active) setVal('#kf24-qty', list[same].qty);
+			if (same === active) { setVal('#kf24-qty', list[same].qty); sync(); }
 		} else {
 			var cur = state();
 			if (!list.length && ownDims && cur.w && cur.h && !cur.part) { list.push(cur); }

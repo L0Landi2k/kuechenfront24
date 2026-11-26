@@ -173,10 +173,10 @@ function kf24_render_configurator() {
 		</fieldset>
 
 		<fieldset class="kf24-step">
-			<legend><span class="kf24-n">6</span> Extras und Menge</legend>
+			<legend><span class="kf24-n">6</span> Extras</legend>
 			<label class="kf24-check kf24-seal"><input type="checkbox" name="kf24[seal]" value="yes"> Aufsteckdichtung für Sockelblende<?php echo (float) kf24_opt( 'seal_price_lfm' ) > 0 ? ' (' . esc_html( wp_strip_all_tags( wc_price( kf24_opt( 'seal_price_lfm' ) ) ) ) . ' je lfm' . ( kf24_opt( 'seal_note' ) ? ' – ' . esc_html( kf24_opt( 'seal_note' ) ) : '' ) . ')' : ''; ?></label>
 			<label class="kf24-block">Hinweis zu dieser Front <small>(optional)</small><textarea name="kf24[note]" rows="2" maxlength="400" placeholder="Sonstige Bohrungen bitte mit vermaßter Skizze per E-Mail."></textarea></label>
-			<label class="kf24-qty">Anzahl gleicher Fronten <input type="number" name="quantity" id="kf24-qty" value="1" min="1" max="99" step="1" inputmode="numeric"></label>
+			<input type="hidden" name="quantity" id="kf24-qty" value="1"><?php // Stückzahl nur noch in der Frontenliste (− / +) ?>
 		</fieldset>
 	</div>
 
