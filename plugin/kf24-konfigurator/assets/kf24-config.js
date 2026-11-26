@@ -324,7 +324,7 @@
 	sysSel.addEventListener('change', function () { fillParts(sysSel.value, ''); if (!sysSel.value) partId.value = ''; try { localStorage.setItem('kf24_kueche', sysSel.value || 'andere'); } catch (e) {} sync(); });
 	partSel.addEventListener('change', function () {
 		var cp = catPart(partSel.value); if (cp) applyPart(cp); else { partId.value = ''; sync(); }
-		if (active >= 0 && list[active]) { list[active] = state(); save(); renderList(); }
+		if (active >= 0 && list[active]) { upd(); renderList(); }
 	});
 	form.addEventListener('input', function (e) {
 		if ((e.target.id === 'kf24-w' || e.target.id === 'kf24-h') && partId.value) {
@@ -365,25 +365,48 @@
 		sync();
 	}
 	function short(n) { return n.length > 22 ? n.slice(0, 21) + '…' : n; }
+	function upd() { var ok = list[active].ok; list[active] = state(); if (ok === false) list[active].ok = false; save(); }
+	function grainTxt(c) { return c.type === 'blende' || c.grain === 'laengs' ? 'Maserung längs' : c.grain === 'quer' ? 'Maserung ↔ quer' : 'Maserung ↕ aufrecht'; }
+	function hingeTxt(c) {
+		if (c.hinge === 'keine' || !c.hinges) return c.type === 'tuer' ? 'ohne Topfbandbohrung' : 'ohne Bohrung';
+		return (c.hinge === 'oben' ? 'Bänder oben' : 'Anschlag ' + c.hinge) + ', ' + c.hinges + ' Bänder';
+	}
+	function thumb(c) { // mini drawing: proportion, grain direction, hinge holes
+		if (!c.w || !c.h) return '<span class="kf24-th"></span>';
+		var s = 30 / Math.max(c.w, c.h), w = c.w * s, h = c.h * s, x = (34 - w) / 2, y = (34 - h) / 2, o = '';
+		var across = c.grain === 'quer' || ((c.grain === 'laengs' || c.type === 'blende') && c.w > c.h);
+		for (var i = 1; i < 5; i++) o += across ? '<line x1="' + (x + 2) + '" x2="' + (x + w - 2) + '" y1="' + (y + h * i / 5) + '" y2="' + (y + h * i / 5) + '"/>' : '<line y1="' + (y + 2) + '" y2="' + (y + h - 2) + '" x1="' + (x + w * i / 5) + '" x2="' + (x + w * i / 5) + '"/>';
+		var dots = c.hinge === 'keine' ? [] : hingePts(c).map(function (p) { return '<circle cx="' + (x + p[0] * s) + '" cy="' + (y + p[1] * s) + '" r="2.2"/>'; }).join('');
+		return '<svg class="kf24-th" viewBox="0 0 34 34" aria-hidden="true"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="1"/><g>' + o + '</g>' + dots + '</svg>';
+	}
+	function nextOpen(from) { for (var k = 1; k <= list.length; k++) { var j = (from + k) % list.length; if (list[j].ok === false) return j; } return -1; }
 	function renderList() {
 		var box = document.getElementById('kf24-list');
 		box.hidden = list.length === 0;
 		form.classList.toggle('kf24-has-list', list.length > 0);
 		if (!list.length) { renderChips(sysSel.value); return; }
-		var total = 0, bad = 0;
+		var total = 0, bad = 0, chk = 0;
 		document.getElementById('kf24-list-items').innerHTML = list.map(function (c, i) {
 			var r = check(c), p = price(c); total += p.total; if (r.err.length) bad++;
-			return '<li class="' + (i === active ? 'is-active ' : '') + (r.err.length ? 'has-err' : 'is-ok') + '"><button type="button" class="kf24-li" data-i="' + i + '"><b>' + (i + 1) + '. ' + (c.label ? c.label.replace(/</g, '&lt;') : TYPES[c.type] || 'Front') + '</b><small>' + fmt(c.w) + ' × ' + fmt(c.h) + ' mm · ' + (c.decor ? short(c.decor).replace(/</g, '&lt;') : '<em>Material fehlt</em>') + (P.finish && c.finish === 'oel' ? ' · ' + S.finishes.oel[0].toLowerCase() : '') + '</small><span class="kf24-li-p">' + (r.err.length ? '<span class="kf24-li-x">' + r.err.length + ' offen</span>' : eur(p.total)) + '</span></button><span class="kf24-li-q"><button type="button" data-q="' + i + '" data-d="-1" aria-label="Eins weniger">−</button><b>' + (c.qty || 1) + '</b><button type="button" data-q="' + i + '" data-d="1" aria-label="Eins mehr">+</button></span><button type="button" class="kf24-li-del" data-del="' + i + '" aria-label="Position ' + (i + 1) + ' entfernen">×</button></li>';
+			var open = c.ok === false; if (open && !r.err.length) chk++;
+			return '<li class="' + (i === active ? 'is-active ' : '') + (r.err.length ? 'has-err' : open ? 'is-open' : 'is-ok') + '"><button type="button" class="kf24-li" data-i="' + i + '">' + thumb(c) + '<b>' + (i + 1) + '. ' + (c.label ? c.label.replace(/</g, '&lt;') : TYPES[c.type] || 'Front') + '</b><small>' + fmt(c.w) + ' × ' + fmt(c.h) + ' mm · ' + (c.decor ? short(c.decor).replace(/</g, '&lt;') : '<em>Material fehlt</em>') + (P.finish && c.finish === 'oel' ? ' · ' + S.finishes.oel[0].toLowerCase() : '') + '</small><small class="kf24-li-d">' + grainTxt(c) + ' · ' + hingeTxt(c) + '</small><span class="kf24-li-p">' + (r.err.length ? '<span class="kf24-li-x">' + r.err.length + ' offen</span>' : open ? '<span class="kf24-li-o">prüfen</span>' : eur(p.total)) + '</span></button><span class="kf24-li-q"><button type="button" data-q="' + i + '" data-d="-1" aria-label="Eins weniger">−</button><b>' + (c.qty || 1) + '</b><button type="button" data-q="' + i + '" data-d="1" aria-label="Eins mehr">+</button></span><button type="button" class="kf24-li-del" data-del="' + i + '" aria-label="Position ' + (i + 1) + ' entfernen">×</button></li>';
 		}).join('');
 		renderChips(sysSel.value);
 		document.getElementById('kf24-list-n').textContent = list.length + (list.length === 1 ? ' Position' : ' Positionen');
 		document.getElementById('kf24-list-total').textContent = eur(total);
 		var btn = document.getElementById('kf24-list-cart');
 		btn.disabled = bad > 0;
-		btn.textContent = bad ? bad + ' Position' + (bad > 1 ? 'en' : '') + ' noch unvollständig' : 'Alle ' + list.length + ' in den Warenkorb';
+		btn.dataset.open = chk;
+		btn.textContent = bad ? bad + ' Position' + (bad > 1 ? 'en' : '') + ' noch unvollständig' : chk ? 'Noch ' + chk + ' Position' + (chk > 1 ? 'en' : '') + ' prüfen' : 'Alle ' + list.length + ' in den Warenkorb';
+		var cb = document.getElementById('kf24-check'), ac = list[active];
+		cb.hidden = !(ac && ac.ok === false);
+		if (!cb.hidden) {
+			document.getElementById('kf24-check-t').innerHTML = '<b>Position ' + (active + 1) + ' prüfen:</b> ' + (ac.label || TYPES[ac.type]).replace(/</g, '&lt;') + ', ' + grainTxt(ac) + ', ' + hingeTxt(ac) + '. Stimmt die Zeichnung? Sonst links ändern' + (ac.type === 'tuer' ? ' – vor allem den Anschlag' : '') + '.';
+			document.getElementById('kf24-check-ok').textContent = chk > 1 ? '✓ Passt – nächste prüfen' : '✓ Passt';
+		}
 		$('#kf24-submit').hidden = true; $('#kf24-tolist').hidden = true;
 		$('#kf24-mtotal').textContent = eur(total);
-		$('#kf24-msubmit').textContent = bad ? 'Liste prüfen' : 'Alle ' + list.length + ' in den Warenkorb';
+		$('#kf24-msubmit').textContent = bad || chk ? 'Liste prüfen' : 'Alle ' + list.length + ' in den Warenkorb';
 		$('#kf24-msubmit').disabled = false;
 	}
 	$('#kf24-msubmit').addEventListener('click', function (e) {
@@ -397,7 +420,7 @@
 
 	// edits in the form update the active position
 	['input', 'change'].forEach(function (ev) {
-		form.addEventListener(ev, function () { if (active >= 0 && list[active]) { list[active] = state(); save(); renderList(); } });
+		form.addEventListener(ev, function () { if (active >= 0 && list[active]) { upd(); renderList(); } });
 	});
 	document.getElementById('kf24-tolist').addEventListener('click', function () {
 		list.push(state()); list.push(blankFrom(state())); active = list.length - 1; save(); toForm(list[active]); renderList();
@@ -422,6 +445,7 @@
 			if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Wirklich leeren?'; setTimeout(function () { delete b.dataset.sure; b.textContent = 'Liste leeren'; }, 3000); return; }
 			list = []; active = -1; save(); $('#kf24-submit').hidden = false; $('#kf24-tolist').hidden = false; renderList(); return;
 		}
+		if (b.id === 'kf24-list-cart' && +b.dataset.open > 0) { var o = nextOpen(-1); if (o >= 0) { active = o; toForm(list[o]); renderList(); document.getElementById('kf24-check').scrollIntoView({ behavior: 'smooth', block: 'center' }); } return; }
 		if (b.id === 'kf24-list-cart') {
 			b.disabled = true; b.textContent = 'Wird in den Warenkorb gelegt …';
 			var fd = new FormData(); fd.append('product_id', P.id); fd.append('items', JSON.stringify(list));
@@ -434,6 +458,14 @@
 				renderList();
 			}).catch(function () { $('#kf24-msgs').innerHTML = '<li class="kf24-err">Keine Verbindung. Ihre Liste ist gespeichert – bitte erneut versuchen.</li>'; renderList(); });
 		}
+	});
+
+	document.getElementById('kf24-check-ok').addEventListener('click', function () {
+		if (!list[active]) return;
+		delete list[active].ok; save();
+		var o = nextOpen(active);
+		if (o >= 0) { active = o; toForm(list[o]); }
+		renderList();
 	});
 
 	// Teile-Knöpfe: jedes angetippte Teil wird eine Position der Frontenliste
@@ -454,7 +486,7 @@
 			var nt = form.querySelector('[name="kf24[note]"]'); if (nt) { nt.value = ''; nt.dataset.auto = '1'; }
 			setVal('#kf24-qty', 1);
 			applyPart(cp);
-			list.push(state()); active = list.length - 1; save();
+			var np = state(); np.ok = false; list.push(np); active = list.length - 1; save();
 		}
 		renderList(); renderChips(sysSel.value);
 	});
@@ -478,6 +510,7 @@
 					c.part = cp.id; c.note = cp.x || '';
 					if (cp.hr && cp.hr.length === c.hinges) { c.hraw = cp.hr.slice(); c.hlast = cp.hl || 'start'; c.hpos = c.hraw.map(function (v, i) { return c.hlast === 'ende' && i === c.hraw.length - 1 ? len - v : v; }); }
 				}
+				c.ok = false;
 				return c;
 			});
 			save();

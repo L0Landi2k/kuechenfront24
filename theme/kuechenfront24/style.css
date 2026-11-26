@@ -2,7 +2,7 @@
 Theme Name: Küchenfront24
 Theme URI: https://www.kuechenfront24.de/
 Description: Theme für Küchenfront24 – Küchenfronten nach Maß. Für WooCommerce und das Plugin „Küchenfront24 Konfigurator“.
-Version: 1.5.0
+Version: 1.5.1
 Requires at least: 6.5
 Requires PHP: 8.0
 Text Domain: kuechenfront24
@@ -262,3 +262,9 @@ a.card:hover,a.card:focus-visible{border-color:var(--acc);box-shadow:var(--sh)}
 .kueche-o:hover{border-color:var(--acc)}
 .kueche-o:has(input:checked){border-color:var(--acc);box-shadow:0 0 0 2px var(--acc) inset;background:#f4f9f9}
 .shop-how ol{margin:0 0 10px;padding-left:22px;max-width:760px}.shop-how li{margin:0 0 8px}
+/* Header: Menüpunkte gleichmäßig zwischen Logo und Telefon/Warenkorb verteilen */
+@media(min-width:1101px){
+	.main-nav{flex:1;margin-left:clamp(12px,2vw,40px);margin-right:clamp(8px,1.5vw,24px)}
+	.main-nav>ul{justify-content:space-between}
+	.main-nav>ul>li:first-child>a{color:var(--acc)}
+}

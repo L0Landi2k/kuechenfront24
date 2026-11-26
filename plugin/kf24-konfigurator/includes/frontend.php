@@ -189,6 +189,7 @@ function kf24_render_configurator() {
 			<div class="kf24-list-tools"><button type="button" class="kf24-link" id="kf24-list-add">+ Front hinzufügen</button><button type="button" class="kf24-link" id="kf24-list-decor">Material für alle übernehmen</button><button type="button" class="kf24-link kf24-danger-l" id="kf24-list-clear">Liste leeren</button></div>
 			<p class="kf24-hint">Klicken Sie auf eine Position, um sie zu bearbeiten. Die Liste bleibt in diesem Browser gespeichert.</p>
 		</div>
+		<div class="kf24-check" id="kf24-check" hidden><p id="kf24-check-t"></p><button type="button" class="button alt" id="kf24-check-ok">✓ Passt</button></div>
 		<div class="kf24-drawing" id="kf24-drawing" role="img" aria-label="Zeichnung der Front"></div>
 		<ul class="kf24-msgs" id="kf24-msgs"></ul>
 		<div class="kf24-pricebox">

@@ -325,3 +325,17 @@ details.kf24-chips[open]>summary{margin-bottom:6px}
 .kf24-fin b{font-size:15px}.kf24-fin small{font-size:12.5px;color:var(--k-mute);line-height:1.35}
 .kf24-fin input:checked+span{border-color:var(--k-acc);box-shadow:inset 0 0 0 1px var(--k-acc);background:#f2f8f8}
 .kf24-fin input:focus-visible+span{outline:2px solid var(--k-acc);outline-offset:2px}
+
+/* list: mini drawing, grain + hinge line, check step */
+.kf24-li{position:relative;padding-left:58px!important}
+.kf24-th{position:absolute;left:8px;top:50%;transform:translateY(-50%);width:42px;height:42px}
+.kf24-th rect{fill:#efe2cf;stroke:#6f5a44;stroke-width:1.1}
+.kf24-th line{stroke:#8a6a48;stroke-opacity:.9;stroke-width:.9}
+.kf24-th circle{fill:#fff;stroke:#0f5e5e;stroke-width:1.4}
+.kf24-li-d{display:block;font-size:12.5px;color:var(--k-mute)}
+.kf24-li-o{display:inline-block;background:#fff3cd;color:#7a5a00;border-radius:6px;padding:1px 7px;font-size:12.5px;font-weight:700}
+.kf24-list-items li.is-open .kf24-li{border-color:#e7c35a;background:#fffbf0}
+.kf24-li-p{grid-column:2;grid-row:1/4;align-self:center}
+.kf24-check{background:#fff8e1;border:1.5px solid #e7c35a;border-radius:10px;padding:10px 12px;margin:10px 0}
+.kf24-check p{margin:0 0 8px;font-size:14px;line-height:1.45}
+.kf24-check .button{width:100%}
