@@ -71,6 +71,8 @@ function kf24_product_cfg( $product_id ) {
 		'group'     => get_post_meta( $product_id, '_kf24_group', true ),
 		'milling'   => get_post_meta( $product_id, '_kf24_milling', true ) === 'yes',
 		'finish'    => kf24_finish_enabled( $product_id ),
+		'factor'    => ( $fx = kf24_num( get_post_meta( $product_id, '_kf24_factor', true ) ) ) > 0 ? $fx : 1.0,
+		'oil_m2'    => get_post_meta( $product_id, '_kf24_oil_m2', true ) === '' ? null : kf24_num( get_post_meta( $product_id, '_kf24_oil_m2', true ) ),
 		'thickness' => (int) get_post_meta( $product_id, '_kf24_thickness', true ) ?: 19,
 		'kgm2'      => kf24_num( get_post_meta( $product_id, '_kf24_kgm2', true ) ) ?: (float) kf24_opt( 'kgm2_default' ),
 		'sample'    => get_post_meta( $product_id, '_kf24_sample', true ),
@@ -92,11 +94,12 @@ function kf24_finish_enabled( $product_id ) {
 	return in_array( get_post_meta( $product_id, '_kf24_group', true ), [ 'Massivholz', 'Furnier' ], true );
 }
 
-/** Surface options with prices: [ key => [ label, €/m², min € per front ] ]. */
-function kf24_finishes() {
+/** Surface options with prices: [ key => [ label, €/m², min € per front ] ]. A front may set its own oil price. */
+function kf24_finishes( $pcfg = null ) {
+	$oil = is_array( $pcfg ) && isset( $pcfg['oil_m2'] ) && $pcfg['oil_m2'] !== null ? (float) $pcfg['oil_m2'] : (float) kf24_opt( 'finish_oil_m2' );
 	return [
 		'lack' => [ kf24_opt( 'finish_lack_label' ) ?: 'Klarlack matt', (float) kf24_opt( 'finish_lack_m2' ), 0.0 ],
-		'oel'  => [ kf24_opt( 'finish_oil_label' ) ?: 'Geölt', (float) kf24_opt( 'finish_oil_m2' ), (float) kf24_opt( 'finish_oil_min' ) ],
+		'oel'  => [ kf24_opt( 'finish_oil_label' ) ?: 'Geölt', $oil, (float) kf24_opt( 'finish_oil_min' ) ],
 	];
 }
 
@@ -395,7 +398,7 @@ function kf24_base_price( $cfg, $pcfg, &$how = null ) {
 		}
 	}
 	$lfm  = 2 * ( $cfg['w'] + $cfg['h'] ) / 1000;
-	$calc = $area * $pcfg['m2'] + $lfm * ( $pcfg['edge'] ?? 0 ) + ( $pcfg['piece'] ?? 0 );
+	$calc = ( $area * $pcfg['m2'] + $lfm * ( $pcfg['edge'] ?? 0 ) + ( $pcfg['piece'] ?? 0 ) ) * ( ( $pcfg['factor'] ?? 1 ) > 0 ? $pcfg['factor'] : 1 );
 	$how  = ( $pcfg['minprice'] ?? 0 ) > $calc ? 'mindest' : 'formel';
 	return [ 'area' => $area, 'base' => round( max( $calc, (float) ( $pcfg['minprice'] ?? 0 ) ), 2 ) ];
 }
@@ -410,7 +413,7 @@ function kf24_price( $cfg, $pcfg ) {
 	$seal     = $cfg['seal'] === 'yes' ? ( $cfg['w'] / 1000 ) * (float) kf24_opt( 'seal_price_lfm' ) : 0;
 	$fin      = 0;
 	if ( ! empty( $pcfg['finish'] ) && ! empty( $cfg['finish'] ) ) {
-		$f   = kf24_finishes()[ $cfg['finish'] ] ?? null;
+		$f   = kf24_finishes( $pcfg )[ $cfg['finish'] ] ?? null;
 		$fin = $f ? round( max( $f[2], $area * $f[1] ), 2 ) : 0;
 	}
 	$unit     = round( $base + $mill + $hinges + $seal + $fin, 2 );

@@ -335,9 +335,16 @@
 	var ff = $('#kf24a-formula');
 	if (ff) {
 		var ex = function (tr) {
-			var g = function (n) { return dec($('[name=' + n + ']', tr).value); };
-			var w = 597, h = 797, area = w * h / 1e6, calc = area * g('m2') + 2 * (w + h) / 1000 * g('edge') + g('piece'), v = Math.max(calc, g('minprice'));
-			$('.kf24a-ex', tr).innerHTML = '<b>' + v.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) + '</b><small> = ' + area.toFixed(3).replace('.', ',') + ' m² × ' + g('m2') + (g('edge') ? ' + 2,79 lfm × ' + g('edge') : '') + (g('piece') ? ' + ' + g('piece') : '') + (g('minprice') > calc ? ' → Mindestpreis' : '') + '</small>';
+			var num = function (v) { var n = parseFloat(String(v).replace(',', '.')); return isNaN(n) ? 0 : n; }, g = function (n) { var i = $('[name=' + n + ']', tr); return i ? num(i.value) : 0; };
+			var eu = function (v) { return v.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }); };
+			var fx = g('factor') > 0 ? g('factor') : 1, oilIn = $('[name=oil_m2]', tr);
+			var w = 597, h = 797, area = w * h / 1e6, raw = area * g('m2') + 2 * (w + h) / 1000 * g('edge') + g('piece'), calc = raw * fx, v = Math.max(calc, g('minprice'));
+			var html = '<b>' + eu(v) + '</b><small> = ' + (fx !== 1 ? '(' : '') + area.toFixed(3).replace('.', ',') + ' m² × ' + g('m2') + (g('edge') ? ' + 2,79 lfm × ' + g('edge') : '') + (g('piece') ? ' + ' + g('piece') : '') + (fx !== 1 ? ') × ' + String(fx).replace('.', ',') : '') + (g('minprice') > calc ? ' → Mindestpreis' : '') + '</small>';
+			if (oilIn) {
+				var om = oilIn.value.trim() === '' ? +ff.dataset.oil : num(oilIn.value), oil = Math.max(+ff.dataset.oilmin || 0, area * om);
+				html += '<br><small>geölt: <b>' + eu(v + oil) + '</b> (+ ' + eu(oil) + ')</small>';
+			}
+			$('.kf24a-ex', tr).innerHTML = html;
 		};
 		$$('tbody tr', ff).forEach(ex);
 		ff.addEventListener('input', function (e) { ex(e.target.closest('tr')); });

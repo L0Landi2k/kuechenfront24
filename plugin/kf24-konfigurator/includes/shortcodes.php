@@ -10,7 +10,7 @@ function kf24_tools_data() {
 			'kg' => $p['kgm2'], 'tex' => kf24_product_look( $p['id'] )['img'], 'col' => kf24_product_look( $p['id'] )['color'],
 			'sid' => $sid, 'sp' => $sid ? (float) wc_get_product( $sid )->get_price() : 0,
 			'sadd' => $sid ? kf24_sample_link( $sid ) : '',
-			'e' => $p['edge'], 'pc' => $p['piece'], 'mp' => $p['minprice'], 'ov' => $p['overrides'] ?: new stdClass(),
+			'e' => $p['edge'], 'pc' => $p['piece'], 'mp' => $p['minprice'], 'fx' => $p['factor'] ?? 1, 'ov' => $p['overrides'] ?: new stdClass(),
 		];
 	}
 	return [

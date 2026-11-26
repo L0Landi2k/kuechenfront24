@@ -113,7 +113,7 @@
 	function basePrice(c, area) { // identical to kf24_base_price() on the server
 		var cp = c.part && catPart(c.part), ov = P.overrides || {};
 		if (cp && ov[c.part] > 0 && Math.abs(cp.w - c.w) < 0.6 && Math.abs(cp.h - c.h) < 0.6) return { v: +ov[c.part], how: 'fest' };
-		var calc = area * P.m2 + 2 * (c.w + c.h) / 1000 * (P.edge || 0) + (P.piece || 0);
+		var calc = (area * P.m2 + 2 * (c.w + c.h) / 1000 * (P.edge || 0) + (P.piece || 0)) * (P.factor > 0 ? P.factor : 1);
 		return { v: Math.round(Math.max(calc, P.minprice || 0) * 100) / 100, how: (P.minprice || 0) > calc ? 'mindest' : 'formel' };
 	}
 	function price(c) {
@@ -200,7 +200,7 @@
 		var shown = !c.w && !c.h ? ['<li class="kf24-info">Bitte Breite und Höhe in mm eintragen.</li>'] : r.err.map(function (m) { return '<li class="kf24-err">' + m + '</li>'; });
 		$('#kf24-msgs').innerHTML = shown.join('') + r.warn.map(function (m) { return '<li class="kf24-warn">' + m + '</li>'; }).join('');
 		var cpn = c.part && catPart(c.part);
-		var rows = '<tr><td>' + (p.how === 'fest' ? 'Festpreis ' + cpn.n : p.how === 'mindest' ? 'Mindestpreis je Teil' : p.area.toLocaleString('de-DE', { maximumFractionDigits: 3 }) + ' m² × ' + eur(P.m2) + ((P.edge || P.piece) ? ' + Kante/Pauschale' : '')) + '</td><td>' + eur(p.base) + '</td></tr>';
+		var rows = '<tr><td>' + (p.how === 'fest' ? 'Festpreis ' + cpn.n : p.how === 'mindest' ? 'Mindestpreis je Teil' : p.area.toLocaleString('de-DE', { maximumFractionDigits: 3 }) + ' m² × ' + eur(P.m2) + ((P.edge || P.piece) ? ' + Kante/Pauschale' : '') + (P.factor > 0 && P.factor !== 1 ? ' × ' + String(P.factor).replace('.', ',') : '')) + '</td><td>' + eur(p.base) + '</td></tr>';
 		if (p.fin) rows += '<tr><td>Oberfläche ' + S.finishes[c.finish][0] + '</td><td>' + eur(p.fin) + '</td></tr>';
 		if (p.mill) rows += '<tr><td>Grifffräsung</td><td>' + eur(p.mill) + '</td></tr>';
 		if (p.hin) rows += '<tr><td>' + c.hinges + ' Topfbänder à ' + eur(S.hinge_price) + '</td><td>' + eur(p.hin) + '</td></tr>';

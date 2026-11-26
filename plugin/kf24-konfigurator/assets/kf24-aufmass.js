@@ -90,7 +90,7 @@
 	function unit(r, p) { // same formula as the server: max(Mindestpreis, m² × Preis + Umfang × Kante + Pauschale) or fixed price
 		if (r.pid && p.ov && p.ov[r.pid] > 0) return +p.ov[r.pid];
 		var area = Math.max(r.w * r.h / 1e6, (T.s && T.s.ma) || 0), lfm = 2 * (+r.w + +r.h) / 1000;
-		return Math.round(Math.max(area * p.p + lfm * (p.e || 0) + (p.pc || 0), p.mp || 0) * 100) / 100;
+		return Math.round(Math.max((area * p.p + lfm * (p.e || 0) + (p.pc || 0)) * (p.fx > 0 ? p.fx : 1), p.mp || 0) * 100) / 100;
 	}
 	function rowPrice(r) {
 		var p = front(); if (!p || !(+r.w && +r.h)) return '–';

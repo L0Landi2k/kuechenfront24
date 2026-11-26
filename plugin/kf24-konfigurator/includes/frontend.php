@@ -60,7 +60,7 @@ function kf24_render_configurator() {
 			'hinge_price'    => (float) kf24_opt( 'hinge_price' ),
 			'seal_price_lfm' => (float) kf24_opt( 'seal_price_lfm' ),
 			'milling_price'  => (float) kf24_opt( 'milling_price' ),
-			'finishes'       => kf24_finishes(),
+			'finishes'       => kf24_finishes( $c ),
 			'min_area'       => (float) kf24_opt( 'min_area' ),
 			'min_dim'        => (float) kf24_opt( 'min_dim' ),
 			'max_long'       => (float) kf24_opt( 'max_long' ),
@@ -95,7 +95,7 @@ function kf24_render_configurator() {
 				<?php endforeach; ?>
 			</div>
 			<p class="kf24-filter-empty" hidden>Nichts gefunden. Anderer Suchbegriff?</p>
-<?php if ( ! empty( $c['finish'] ) ) : $fs = kf24_finishes(); ?>
+<?php if ( ! empty( $c['finish'] ) ) : $fs = kf24_finishes( $c ); ?>
 				<p class="kf24-sub">Oberfläche</p>
 				<div class="kf24-fin" role="radiogroup" aria-label="Oberfläche">
 					<?php foreach ( $fs as $fk => $fv ) :

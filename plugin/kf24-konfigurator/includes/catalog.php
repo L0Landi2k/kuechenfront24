@@ -72,17 +72,20 @@ function kf24_page_systems() {
 	$parts = array_values( array_filter( kf24_catalog(), fn( $p ) => $p['system'] === $sys ) );
 
 	if ( $tab === 'formel' ) {
-		echo '<p class="kf24a-hint">So rechnet der Shop jedes Teil: <b>Fläche (m²) × m²-Preis + Umfang (lfm) × Kantenpreis + Stückpauschale</b>, mindestens aber der Mindestpreis. Topfbänder, Grifffräsung und Dichtungen kommen wie gewohnt dazu. Die Formel gilt auch für Maßanfertigungen.</p>';
-		echo '<form id="kf24a-formula"><table class="widefat striped kf24a-table kf24a-formula"><thead><tr><th>Front</th><th>m²-Preis €</th><th>Kante € je lfm</th><th>Stückpauschale €</th><th>Mindestpreis €</th><th>Beispiel Tür 597 × 797</th></tr></thead><tbody>';
+		echo '<p class="kf24a-hint">So rechnet der Shop jedes Teil: <b>(Fläche m² × m²-Preis + Umfang lfm × Kantenpreis + Stückpauschale) × Faktor</b>, mindestens aber der Mindestpreis. Danach kommen Oberfläche geölt, Topfbänder, Grifffräsung und Dichtungen dazu. Die Formel gilt für Metod, Faktum und Maßanfertigungen. Feste Preise aus Reiter 1 bleiben fest.</p>';
+		echo '<p class="kf24a-hint"><b>Faktor:</b> z. B. 1,2 = alles 20 % teurer, 1 = unverändert. <b>Geölt €/m²:</b> leer = Standard aus „Preise &amp; Versand“ (' . esc_html( wp_strip_all_tags( wc_price( kf24_opt( 'finish_oil_m2' ) ) ) ) . ' je m², mind. ' . esc_html( wp_strip_all_tags( wc_price( kf24_opt( 'finish_oil_min' ) ) ) ) . ' je Front). Nur bei Holzfronten mit Oberflächen-Auswahl.</p>';
+		echo '<form id="kf24a-formula" data-oil="' . esc_attr( (float) kf24_opt( 'finish_oil_m2' ) ) . '" data-oilmin="' . esc_attr( (float) kf24_opt( 'finish_oil_min' ) ) . '"><table class="widefat striped kf24a-table kf24a-formula"><thead><tr><th>Front</th><th>m²-Preis €</th><th>Kante € je lfm</th><th>Stückpauschale €</th><th>Faktor</th><th>Mindestpreis €</th><th>Geölt € je m²</th><th>Beispiel Tür 597 × 797</th></tr></thead><tbody>';
 		foreach ( $fronts as $f ) {
 			printf(
-				'<tr data-id="%1$d"><td><b>%2$s</b></td><td><input type="text" inputmode="decimal" name="m2" value="%3$s"></td><td><input type="text" inputmode="decimal" name="edge" value="%4$s"></td><td><input type="text" inputmode="decimal" name="piece" value="%5$s"></td><td><input type="text" inputmode="decimal" name="minprice" value="%6$s"></td><td class="kf24a-ex"></td></tr>',
+				'<tr data-id="%1$d"><td><b>%2$s</b></td><td><input type="text" inputmode="decimal" name="m2" value="%3$s"></td><td><input type="text" inputmode="decimal" name="edge" value="%4$s"></td><td><input type="text" inputmode="decimal" name="piece" value="%5$s"></td><td><input type="text" inputmode="decimal" name="factor" value="%7$s" placeholder="1"></td><td><input type="text" inputmode="decimal" name="minprice" value="%6$s"></td><td>%8$s</td><td class="kf24a-ex"></td></tr>',
 				(int) $f['id'],
 				esc_html( preg_replace( '/\s+–\s+individuell konfigurierbar$/u', '', $f['name'] ) ),
 				esc_attr( wc_format_localized_decimal( $f['m2'] ) ),
 				esc_attr( $f['edge'] ? wc_format_localized_decimal( $f['edge'] ) : '' ),
 				esc_attr( $f['piece'] ? wc_format_localized_decimal( $f['piece'] ) : '' ),
-				esc_attr( $f['minprice'] ? wc_format_localized_decimal( $f['minprice'] ) : '' )
+				esc_attr( $f['minprice'] ? wc_format_localized_decimal( $f['minprice'] ) : '' ),
+				esc_attr( ( $f['factor'] ?? 1 ) != 1 ? wc_format_localized_decimal( $f['factor'] ) : '' ),
+				! empty( $f['finish'] ) ? '<input type="text" inputmode="decimal" name="oil_m2" value="' . esc_attr( isset( $f['oil_m2'] ) && $f['oil_m2'] !== null ? wc_format_localized_decimal( $f['oil_m2'] ) : '' ) . '" placeholder="' . esc_attr( wc_format_localized_decimal( kf24_opt( 'finish_oil_m2' ) ) ) . '">' : '<span class="kf24a-dim">–</span>'
 			);
 		}
 		echo '</tbody></table><p><button type="submit" class="button button-primary button-hero">Formeln speichern</button></p></form>';
@@ -92,7 +95,7 @@ function kf24_page_systems() {
 		echo '<p><button type="button" class="button kf24a-part-add">+ Teil hinzufügen</button> <button type="submit" class="button button-primary button-hero">Teileliste speichern</button></p></form>';
 		echo '<script type="application/json" id="kf24a-parts-data">' . wp_json_encode( $parts ) . '</script>';
 	} else {
-		echo '<p class="kf24a-hint">Grau = Preis aus der Formel. Tragen Sie nur dort einen Betrag ein, wo Sie einen <b>festen Preis</b> wollen (z. B. weil kleine Teile sonst zu günstig wären). Feld leeren = wieder Formel. Preise inkl. MwSt., ohne Topfbänder und Zuschläge.</p>';
+		echo '<p class="kf24a-hint">Grau = Preis aus der Formel. Tragen Sie nur dort einen Betrag ein, wo Sie einen <b>festen Preis</b> wollen (z. B. weil kleine Teile sonst zu günstig wären). Feld leeren = wieder Formel. Preise inkl. MwSt., Oberfläche Klarlack. Geölt, Topfbänder und Zuschläge kommen dazu.</p>';
 		echo '<form id="kf24a-prices"><div class="kf24a-scroll"><table class="widefat kf24a-table kf24a-prices"><thead><tr><th class="kf24a-sticky-c">Teil</th><th>Maß</th>';
 		foreach ( $fronts as $f ) {
 			echo '<th title="' . esc_attr( $f['name'] ) . '">' . esc_html( kf24_short_front( $f ) ) . '</th>';
@@ -169,6 +172,12 @@ add_action( 'wp_ajax_kf24_save_formula', function () {
 		}
 		foreach ( [ 'edge', 'piece', 'minprice' ] as $k ) {
 			update_post_meta( $fid, '_kf24_' . $k, kf24_num( sanitize_text_field( (string) ( $f[ $k ] ?? '' ) ) ) );
+		}
+		$fx = kf24_num( sanitize_text_field( (string) ( $f['factor'] ?? '' ) ) );
+		update_post_meta( $fid, '_kf24_factor', $fx > 0 && $fx != 1 ? min( $fx, 10 ) : '' );
+		if ( array_key_exists( 'oil_m2', $f ) ) {
+			$oil = trim( sanitize_text_field( (string) $f['oil_m2'] ) );
+			update_post_meta( $fid, '_kf24_oil_m2', $oil === '' ? '' : kf24_num( $oil ) );
 		}
 		wc_delete_product_transients( $fid );
 	}

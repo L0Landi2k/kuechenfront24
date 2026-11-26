@@ -34,6 +34,8 @@ Tipp für Fotos: Muster bei Tageslicht von oben fotografieren, ohne Schatten, qu
 ## Preise, Zuschläge, Versand
 *Mein Shop → Preise & Versand*: Topfband, Aufsteckdichtung, Grifffräsung, Maße, Mindermengen- und Längenzuschlag, Versandstaffeln.
 
+**Preisformel je Front (Mein Shop → Metod & Faktum → 2. Preisformel):** (m² × m²-Preis + Umfang × Kante + Stückpauschale) × **Faktor**, mindestens der Mindestpreis. Faktor 1,2 = 20 % teurer, leer = 1. In der Spalte **Geölt € je m²** kann jede Holzfront ihren eigenen Ölpreis bekommen; leer = Standard aus „Preise & Versand“. Rechts siehst du sofort das Beispiel Tür 597 × 797 lackiert und geölt. Feste Preise aus Reiter 1 gelten für Klarlack, geölt kommt obendrauf.
+
 **Oberfläche Holzfronten (Klarlack / geölt):** Bei Massivholz- und Furnierfronten wählt der Kunde die Oberfläche. Klarlack matt ist Standard und steckt im m²-Preis der Front. Für „geölt“ gibt es zwei Felder: Aufpreis je m² (Start: 30 €) und Mindestaufpreis je Front (Start: 8 €). Feld ändern, speichern – alle Preise im Shop rechnen sofort neu. Ob eine Front die Auswahl anbietet, steht in der Front selbst (Häkchen „Kunde wählt Oberfläche“).
 
 ## Bestellungen
