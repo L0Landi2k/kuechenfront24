@@ -510,6 +510,14 @@
 					c.part = cp.id; c.note = cp.x || '';
 					if (cp.hr && cp.hr.length === c.hinges) { c.hraw = cp.hr.slice(); c.hlast = cp.hl || 'start'; c.hpos = c.hraw.map(function (v, i) { return c.hlast === 'ende' && i === c.hraw.length - 1 ? len - v : v; }); }
 				}
+				if (c.type !== 'blende' && r.g === 'quer') c.grain = 'quer';
+				var hp = String(r.hp || '').split(/[^0-9.,]+/).filter(Boolean).map(function (v) { return num(v); });
+				if (c.hinges && hp.length === c.hinges) { c.hraw = hp; c.hlast = hp.length > 1 ? 'ende' : 'start'; c.hpos = hp.map(function (v, i) { return c.hlast === 'ende' && i === hp.length - 1 ? len - v : v; }); }
+				if (r.gr === '1' || r.gr === '2') { c.grip = r.gr; c.gpos = r.gp || 'mitte'; if (+r.gd) c.gd = +r.gd; }
+				if (r.mf === 'oben' || r.mf === 'unten') c.mill = r.mf;
+				if (r.sl && c.type === 'blende') c.seal = 'yes';
+				if (r.body === 16 || r.body === 19) c.body = String(r.body);
+				if (P.finish && (r.fin === 'oel' || r.fin === 'lack')) c.finish = r.fin;
 				c.ok = false;
 				return c;
 			});

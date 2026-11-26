@@ -35,6 +35,7 @@ function kf24_enqueue_aufmass() {
 		'catalog' => kf24_catalog_js(),
 		'ajax'    => admin_url( 'admin-ajax.php' ),
 		'nonce'   => wp_create_nonce( 'kf24_aufmass' ),
+		'phone'   => kf24_opt( 'phone' ) ?: '089 462 05 236',
 		'calc'    => ( $p = get_page_by_path( 'preisrechner' ) ) ? get_permalink( $p ) : home_url( '/preisrechner/' ),
 		'max'     => [ (int) kf24_opt( 'max_long' ), (int) kf24_opt( 'max_short' ), (int) kf24_opt( 'min_dim' ) ],
 	] );
@@ -62,6 +63,7 @@ add_shortcode( 'kf24_aufmass', function ( $atts ) {
 				<label><input type="radio" name="am_sys" value="andere" checked> andere Küche</label>
 			</fieldset>
 			<label class="kf24-am-f">Korpus-Wandstärke<select id="am-body"><option value="">weiß ich nicht</option><option>16 mm</option><option>19 mm</option><option>18 mm</option></select></label>
+			<label class="kf24-am-f">Oberfläche <small>(Holzfronten)</small><select id="am-fin"><option value="">Standard</option><option value="lack">Klarlack matt</option><option value="oel">geölt</option></select></label>
 			<label class="kf24-am-f kf24-am-wide">Ihre Front <small>(für Preis und Bestellung)</small><select id="am-front"><option value="">bitte wählen</option></select></label>
 		</div>
 
@@ -70,13 +72,10 @@ add_shortcode( 'kf24_aufmass', function ( $atts ) {
 			<div class="kf24-am-chips"></div>
 		</div>
 
-		<div class="kf24-am-print-head">
-			<b>Aufmaß Küchenfronten · Küchenfront24</b><span>Tel. <?php echo esc_html( kf24_opt( 'phone' ) ?: '089 462 05 236' ); ?> · kuechenfront24.de</span>
-			<span>Name: ________________________ Datum: ____________ Küche: <i class="am-p-sys"></i> Wandstärke: <i class="am-p-body"></i></span>
-		</div>
+		<div class="kf24-am-sheet" id="am-sheet" aria-hidden="true"></div>
 
 		<div class="kf24-scroll"><table class="kf24-am-table">
-			<thead><tr><th>#</th><th>Bezeichnung</th><th>Art</th><th>Breite<br><small>mm</small></th><th>Höhe<br><small>mm</small></th><th>Anschlag</th><th>Topf&shy;bänder</th><th>Stück</th><th>Bemerkung</th><th class="kf24-noprint">Preis</th><th class="kf24-noprint"><span class="screen-reader-text">Aktionen</span></th></tr></thead>
+			<thead><tr><th>#</th><th>Bezeichnung</th><th>Art</th><th>Breite<br><small>mm</small></th><th>Höhe<br><small>mm</small></th><th>Anschlag</th><th>Topf&shy;bänder</th><th>Stück</th><th>Bemerkung</th><th>Preis</th><th><span class="screen-reader-text">Aktionen</span></th></tr></thead>
 			<tbody id="am-rows"></tbody>
 		</table></div>
 		<p class="kf24-noprint"><button type="button" class="button" id="am-add">+ Frontteil hinzufügen</button></p>
@@ -88,7 +87,7 @@ add_shortcode( 'kf24_aufmass', function ( $atts ) {
 			<button type="button" class="button kf24-ghost" id="am-blank">Leere Vorlage drucken</button>
 			<button type="button" class="button kf24-ghost" id="am-reset">Tabelle leeren</button>
 		</div>
-		<p class="kf24-hint kf24-noprint">Im nächsten Schritt wählen Sie das Material und können jede Front im Detail anpassen (Topfbandpositionen, Griffe). Danach legen Sie alle Positionen mit einem Klick in den Warenkorb. Ihre Eingaben bleiben in diesem Browser gespeichert.</p>
+		<p class="kf24-hint kf24-noprint">Unter „Details“ je Zeile: Maserung, Topfband-Abstände, Griffbohrung und Grifffräsung – alles kommt auch auf den Ausdruck. Mit „Weiter“ wählen Sie das Material und legen alle Positionen in den Warenkorb. Ihre Eingaben bleiben in diesem Browser gespeichert.</p>
 
 		<form class="kf24-am-send kf24-noprint" id="am-send">
 			<h3>Aufmaß an uns schicken</h3>
@@ -131,11 +130,11 @@ function kf24_ajax_aufmass() {
 	}
 	$f    = fn( $v ) => esc_html( sanitize_text_field( (string) $v ) );
 	$html = '<p><b>Aufmaß von ' . $f( $name ) . '</b> · ' . $f( $email ) . ' · ' . $f( $in['phone'] ?? '' ) . '</p>';
-	$html .= '<p>Küche: ' . $f( $in['sys'] ?? '' ) . ' · Wandstärke: ' . $f( $in['body'] ?? '' ) . ' · Gewünschte Front: ' . $f( $in['front'] ?? '' ) . '</p>';
+	$html .= '<p>Küche: ' . $f( $in['sys'] ?? '' ) . ' · Wandstärke: ' . $f( $in['body'] ?? '' ) . ' · Gewünschte Front: ' . $f( $in['front'] ?? '' ) . ' · Oberfläche: ' . $f( $in['fin'] ?? '' ) . '</p>';
 	$html .= '<p>' . nl2br( esc_html( sanitize_textarea_field( $in['msg'] ?? '' ) ) ) . '</p>';
-	$html .= '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font:14px sans-serif"><tr><th>#</th><th>Bezeichnung</th><th>Art</th><th>Breite</th><th>Höhe</th><th>Anschlag</th><th>Topfbänder</th><th>Stück</th><th>Bemerkung</th></tr>';
+	$html .= '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font:14px sans-serif"><tr><th>#</th><th>Bezeichnung</th><th>Art</th><th>Breite</th><th>Höhe</th><th>Anschlag</th><th>Topfbänder</th><th>Stück</th><th>Bemerkung</th><th>Details</th></tr>';
 	foreach ( $rows as $i => $r ) {
-		$html .= '<tr><td>' . ( $i + 1 ) . '</td><td>' . $f( $r['n'] ?? '' ) . '</td><td>' . $f( $r['t'] ?? '' ) . '</td><td>' . (int) ( $r['w'] ?? 0 ) . '</td><td>' . (int) ( $r['h'] ?? 0 ) . '</td><td>' . $f( $r['a'] ?? '' ) . '</td><td>' . (int) ( $r['b'] ?? 0 ) . '</td><td>' . max( 1, (int) ( $r['q'] ?? 1 ) ) . '</td><td>' . $f( $r['r'] ?? '' ) . '</td></tr>';
+		$html .= '<tr><td>' . ( $i + 1 ) . '</td><td>' . $f( $r['n'] ?? '' ) . '</td><td>' . $f( $r['t'] ?? '' ) . '</td><td>' . (int) ( $r['w'] ?? 0 ) . '</td><td>' . (int) ( $r['h'] ?? 0 ) . '</td><td>' . $f( $r['a'] ?? '' ) . '</td><td>' . (int) ( $r['b'] ?? 0 ) . '</td><td>' . max( 1, (int) ( $r['q'] ?? 1 ) ) . '</td><td>' . $f( $r['r'] ?? '' ) . '</td><td>' . $f( $r['d'] ?? '' ) . '</td></tr>';
 	}
 	$html   .= '</table>';
 	$to      = kf24_opt( 'notify_email' ) ?: get_option( 'admin_email' );
