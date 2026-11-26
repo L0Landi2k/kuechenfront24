@@ -8,6 +8,11 @@ function kf24_defaults() {
 		'seal_price_lfm'       => 2,      // € je lfm Aufsteckdichtung
 		'seal_note'            => 'fiktiv', // Zusatz in Klammern hinter dem Preis (leer = keiner)
 		'milling_price'        => 30,     // € Grifffräsung je Front (Massivholz)
+		'finish_lack_label'    => 'Klarlack matt',
+		'finish_lack_m2'       => 0,      // € je m² Aufpreis Klarlack (0 = im Grundpreis enthalten)
+		'finish_oil_label'     => 'Geölt',
+		'finish_oil_m2'        => 30,     // € je m² Aufpreis geölt (Schätzung, Michi prüft)
+		'finish_oil_min'       => 8,      // € Aufpreis geölt mindestens je Front
 		'min_order_threshold'  => 300,
 		'min_order_fee'        => 30,
 		'length_limit'         => 950,
@@ -65,6 +70,7 @@ function kf24_product_cfg( $product_id ) {
 		'lz'        => get_post_meta( $product_id, '_kf24_lz', true ),
 		'group'     => get_post_meta( $product_id, '_kf24_group', true ),
 		'milling'   => get_post_meta( $product_id, '_kf24_milling', true ) === 'yes',
+		'finish'    => kf24_finish_enabled( $product_id ),
 		'thickness' => (int) get_post_meta( $product_id, '_kf24_thickness', true ) ?: 19,
 		'kgm2'      => kf24_num( get_post_meta( $product_id, '_kf24_kgm2', true ) ) ?: (float) kf24_opt( 'kgm2_default' ),
 		'sample'    => get_post_meta( $product_id, '_kf24_sample', true ),
@@ -74,6 +80,23 @@ function kf24_product_cfg( $product_id ) {
 		'edge'      => kf24_num( get_post_meta( $product_id, '_kf24_edge', true ) ),
 		'minprice'  => kf24_num( get_post_meta( $product_id, '_kf24_minprice', true ) ),
 		'overrides' => array_map( 'floatval', (array) ( get_post_meta( $product_id, '_kf24_overrides', true ) ?: [] ) ),
+	];
+}
+
+/** Surface choice (Klarlack / geölt) – default on for wood fronts (Massivholz, Furnier). */
+function kf24_finish_enabled( $product_id ) {
+	$v = get_post_meta( $product_id, '_kf24_finish', true );
+	if ( $v === 'yes' || $v === 'no' ) {
+		return $v === 'yes';
+	}
+	return in_array( get_post_meta( $product_id, '_kf24_group', true ), [ 'Massivholz', 'Furnier' ], true );
+}
+
+/** Surface options with prices: [ key => [ label, €/m², min € per front ] ]. */
+function kf24_finishes() {
+	return [
+		'lack' => [ kf24_opt( 'finish_lack_label' ) ?: 'Klarlack matt', (float) kf24_opt( 'finish_lack_m2' ), 0.0 ],
+		'oel'  => [ kf24_opt( 'finish_oil_label' ) ?: 'Geölt', (float) kf24_opt( 'finish_oil_m2' ), (float) kf24_opt( 'finish_oil_min' ) ],
 	];
 }
 
@@ -207,6 +230,7 @@ function kf24_sanitize_config( $raw, $pcfg ) {
 		'h'        => $n( 'h' ),
 		'grain'    => $s( 'grain' ) === 'quer' ? 'quer' : 'aufrecht',
 		'hlast'    => $s( 'hlast' ) === 'ende' ? 'ende' : 'start',
+		'finish'   => ! empty( $pcfg['finish'] ) ? ( $s( 'finish' ) === 'oel' ? 'oel' : 'lack' ) : '',
 		'hinge'    => in_array( $s( 'hinge' ), [ 'links', 'rechts', 'oben', 'keine' ], true ) ? $s( 'hinge' ) : 'keine',
 		'hinges'   => min( 5, max( 0, (int) $n( 'hinges' ) ) ),
 		'hpos'     => [],
@@ -384,7 +408,12 @@ function kf24_price( $cfg, $pcfg ) {
 	$mill     = ( $pcfg['milling'] && $cfg['mill'] !== 'keine' ) ? (float) kf24_opt( 'milling_price' ) : 0;
 	$hinges   = $cfg['deliver'] === 'yes' ? $cfg['hinges'] * (float) kf24_opt( 'hinge_price' ) : 0;
 	$seal     = $cfg['seal'] === 'yes' ? ( $cfg['w'] / 1000 ) * (float) kf24_opt( 'seal_price_lfm' ) : 0;
-	$unit     = round( $base + $mill + $hinges + $seal, 2 );
+	$fin      = 0;
+	if ( ! empty( $pcfg['finish'] ) && ! empty( $cfg['finish'] ) ) {
+		$f   = kf24_finishes()[ $cfg['finish'] ] ?? null;
+		$fin = $f ? round( max( $f[2], $area * $f[1] ), 2 ) : 0;
+	}
+	$unit     = round( $base + $mill + $hinges + $seal + $fin, 2 );
 	return [
 		'area'   => $area,
 		'base'   => $base,
@@ -392,6 +421,7 @@ function kf24_price( $cfg, $pcfg ) {
 		'mill'   => $mill,
 		'hinges' => round( $hinges, 2 ),
 		'seal'   => round( $seal, 2 ),
+		'finish' => $fin,
 		'unit'   => $unit,
 		'weight' => round( $cfg['w'] * $cfg['h'] / 1e6 * $pcfg['kgm2'], 2 ),
 	];
@@ -410,6 +440,9 @@ function kf24_spec_lines( $cfg, $pcfg = null ) {
 	}
 	$l['Frontart']   = $types[ $cfg['type'] ] ?? $cfg['type'];
 	$l['Dekor/Holz'] = $cfg['decor'];
+	if ( ! empty( $cfg['finish'] ) ) {
+		$l['Oberfläche'] = kf24_finishes()[ $cfg['finish'] ][0] ?? $cfg['finish'];
+	}
 	$l['Maß (B × H)'] = sprintf( '%s × %s mm', wc_format_localized_decimal( $cfg['w'] ), wc_format_localized_decimal( $cfg['h'] ) );
 	$l['Maserung']   = $cfg['grain'] === 'laengs' ? 'längs' : ( $cfg['grain'] === 'quer' ? 'quer (90° gedreht)' : 'aufrecht' );
 	if ( $cfg['hinge'] !== 'keine' && $cfg['hinges'] ) {

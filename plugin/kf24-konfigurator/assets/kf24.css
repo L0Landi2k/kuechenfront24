@@ -316,3 +316,12 @@ details.kf24-chips{background:#fff;border:1px solid var(--k-line);border-radius:
 details.kf24-chips>summary{cursor:pointer;font-weight:700;font-size:14px;padding:2px 0}
 details.kf24-chips[open]>summary{margin-bottom:6px}
 #kf24-chips-in{max-height:320px;overflow:auto}
+
+/* surface choice */
+.kf24-fin{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:8px;margin:0 0 10px}
+.kf24-fin label{position:relative;cursor:pointer}
+.kf24-fin input{position:absolute;opacity:0;pointer-events:none}
+.kf24-fin span{display:flex;flex-direction:column;gap:2px;height:100%;padding:10px 12px;border:1.5px solid var(--k-line);border-radius:10px;background:#fff}
+.kf24-fin b{font-size:15px}.kf24-fin small{font-size:12.5px;color:var(--k-mute);line-height:1.35}
+.kf24-fin input:checked+span{border-color:var(--k-acc);box-shadow:inset 0 0 0 1px var(--k-acc);background:#f2f8f8}
+.kf24-fin input:focus-visible+span{outline:2px solid var(--k-acc);outline-offset:2px}

@@ -124,7 +124,7 @@ function kf24_page_overview() {
 		[ 'admin.php?page=kf24-materialien', 'format-image', 'Materialien & Fotos', 'Fotos per Drag & Drop tauschen, Farben anlegen.' ],
 		[ kf24_orders_url(), 'cart', 'Bestellungen', 'Bestellungen ansehen, Fertigungsblatt drucken.' ],
 		[ 'admin.php?page=kf24-fronten', 'grid-view', 'Fronten verwalten', 'Ein-/ausschalten, duplizieren, löschen.' ],
-		[ 'admin.php?page=kf24-preise', 'money-alt', 'Preise & Versand', 'Topfbänder, Zuschläge, Versandkosten, Maße.' ],
+		[ 'admin.php?page=kf24-preise', 'money-alt', 'Preise & Versand', 'Topfbänder, Oberfläche geölt, Zuschläge, Versand, Maße.' ],
 		[ 'admin.php?page=kf24-systeme', 'calculator', 'Metod & Faktum', 'Eine Teileliste, Preisformel, Festpreise – statt hunderter Produkte.' ],
 		[ 'edit.php?post_type=page', 'admin-page', 'Seiten & Texte', 'Über uns, FAQ, Service, Rechtstexte.' ],
 		[ 'admin.php?page=kf24-referenzen', 'format-gallery', 'Referenzen', 'Kundenküchen mit Fotos und Vorher/Nachher zeigen.' ],
@@ -235,7 +235,7 @@ function kf24_page_front_edit() {
 		echo '<div class="wrap"><p>Front nicht gefunden.</p></div>';
 		return;
 	}
-	$c        = $id ? kf24_product_cfg( $id ) : [ 'name' => '', 'm2' => '', 'group' => 'Dekor', 'field' => 'Dekor', 'options' => [], 'lz' => 'ca. 4 Wochen', 'thickness' => 19, 'kgm2' => 13, 'milling' => false, 'sample' => '' ];
+	$c        = $id ? kf24_product_cfg( $id ) : [ 'name' => '', 'm2' => '', 'group' => 'Dekor', 'field' => 'Dekor', 'options' => [], 'lz' => 'ca. 4 Wochen', 'thickness' => 19, 'kgm2' => 13, 'milling' => false, 'finish' => false, 'sample' => '' ];
 	$selected = $c['options'];
 	$mats     = array_values( kf24_materials() );
 	$samples  = wc_get_products( [ 'category' => [ kf24_opt( 'sample_cat' ) ], 'limit' => 200, 'status' => [ 'publish', 'draft' ] ] );
@@ -264,6 +264,7 @@ function kf24_page_front_edit() {
 						<label class="kf24a-f"><span>Gewicht je m² (kg)</span><input type="text" inputmode="decimal" name="kgm2" value="<?php echo esc_attr( wc_format_localized_decimal( $c['kgm2'] ) ); ?>"></label>
 					</div>
 					<label class="kf24a-check"><input type="checkbox" name="milling" value="1" <?php checked( $c['milling'] ); ?>> Grifffräsung möglich (Aufpreis lt. „Preise &amp; Versand“)</label>
+					<label class="kf24a-check"><input type="checkbox" name="finish" value="1" <?php checked( ! empty( $c['finish'] ) ); ?>> Kunde wählt Oberfläche: Klarlack oder geölt (Aufpreis lt. „Preise &amp; Versand“)</label>
 				</section>
 
 				<section class="kf24a-card">
@@ -345,6 +346,7 @@ add_action( 'admin_post_kf24_front_save', function () {
 		'_kf24_thickness' => absint( $in['thickness'] ?? 19 ) ?: 19,
 		'_kf24_kgm2'      => kf24_num( $in['kgm2'] ?? 0 ) ?: (float) kf24_opt( 'kgm2_default' ),
 		'_kf24_milling'   => ! empty( $in['milling'] ) ? 'yes' : 'no',
+		'_kf24_finish'    => ! empty( $in['finish'] ) ? 'yes' : 'no',
 		'_kf24_sample'    => sanitize_title( $in['sample'] ?? '' ),
 	];
 	foreach ( $meta as $k => $v ) {
@@ -562,7 +564,7 @@ add_action( 'wp_ajax_kf24_front_duplicate', function () {
 	$n->set_category_ids( $p->get_category_ids() );
 	$n->set_image_id( $p->get_image_id() );
 	$nid = $n->save();
-	foreach ( [ '_kf24_enabled', '_kf24_m2', '_kf24_group', '_kf24_field', '_kf24_options', '_kf24_lz', '_kf24_thickness', '_kf24_kgm2', '_kf24_milling', '_kf24_sample', '_kf24_swatch' ] as $k ) {
+	foreach ( [ '_kf24_enabled', '_kf24_m2', '_kf24_group', '_kf24_field', '_kf24_options', '_kf24_lz', '_kf24_thickness', '_kf24_kgm2', '_kf24_milling', '_kf24_finish', '_kf24_sample', '_kf24_swatch' ] as $k ) {
 		update_post_meta( $nid, $k, get_post_meta( $id, $k, true ) );
 	}
 	wp_send_json_success( [ 'redirect' => admin_url( 'admin.php?page=kf24-front&id=' . $nid . '&kf24=dup' ) ] );

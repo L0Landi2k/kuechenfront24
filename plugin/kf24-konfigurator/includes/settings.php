@@ -29,6 +29,13 @@ function kf24_settings_fields() {
 			'seal_note'      => 'Zusatz hinter dem Dichtungspreis, z. B. „fiktiv“ (leer = keiner)',
 			'min_area'       => 'Abgerechnete Mindestfläche je Front, m² (0 = keine)',
 		],
+		'Oberfläche Holzfronten (Massivholz, Furnier)' => [
+			'finish_lack_label' => 'Name Standard-Oberfläche',
+			'finish_lack_m2'    => 'Aufpreis Standard je m², € (0 = im m²-Preis der Front enthalten)',
+			'finish_oil_label'  => 'Name zweite Oberfläche',
+			'finish_oil_m2'     => 'Aufpreis geölt je m², €',
+			'finish_oil_min'    => 'Aufpreis geölt mindestens je Front, €',
+		],
 		'Maße'               => [
 			'min_dim'      => 'Mindestmaß Breite/Höhe, mm',
 			'max_long'     => 'Höchstmaß lange Seite, mm',

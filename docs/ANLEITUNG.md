@@ -34,6 +34,8 @@ Tipp für Fotos: Muster bei Tageslicht von oben fotografieren, ohne Schatten, qu
 ## Preise, Zuschläge, Versand
 *Mein Shop → Preise & Versand*: Topfband, Aufsteckdichtung, Grifffräsung, Maße, Mindermengen- und Längenzuschlag, Versandstaffeln.
 
+**Oberfläche Holzfronten (Klarlack / geölt):** Bei Massivholz- und Furnierfronten wählt der Kunde die Oberfläche. Klarlack matt ist Standard und steckt im m²-Preis der Front. Für „geölt“ gibt es zwei Felder: Aufpreis je m² (Start: 30 €) und Mindestaufpreis je Front (Start: 8 €). Feld ändern, speichern – alle Preise im Shop rechnen sofort neu. Ob eine Front die Auswahl anbietet, steht in der Front selbst (Häkchen „Kunde wählt Oberfläche“).
+
 ## Bestellungen
 *Mein Shop → Übersicht* zeigt die letzten Bestellungen. „Fertigungsblatt“ öffnet eine druckfertige Seite mit Zeichnung und allen Maßen je Front.
 

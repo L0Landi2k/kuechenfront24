@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Küchenfront24 Konfigurator
  * Description: Fronten-Konfigurator mit m²-Preis, Live-Zeichnung und Plausibilitätsprüfung, Zuschläge, Versand nach Gewicht, Fertigungsblatt, Preisrechner, Muster, Kontakt und elektronische Widerrufsfunktion (§ 356a BGB).
- * Version: 1.5.1
+ * Version: 1.6.0
  * Author: Küchenfront24
  * Requires at least: 6.5
  * Requires PHP: 8.0
@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'KF24_VERSION', '1.5.1' );
+define( 'KF24_VERSION', '1.6.0' );
 define( 'KF24_FILE', __FILE__ );
 define( 'KF24_DIR', plugin_dir_path( __FILE__ ) );
 define( 'KF24_URL', plugin_dir_url( __FILE__ ) );

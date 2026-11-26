@@ -60,6 +60,7 @@ function kf24_render_configurator() {
 			'hinge_price'    => (float) kf24_opt( 'hinge_price' ),
 			'seal_price_lfm' => (float) kf24_opt( 'seal_price_lfm' ),
 			'milling_price'  => (float) kf24_opt( 'milling_price' ),
+			'finishes'       => kf24_finishes(),
 			'min_area'       => (float) kf24_opt( 'min_area' ),
 			'min_dim'        => (float) kf24_opt( 'min_dim' ),
 			'max_long'       => (float) kf24_opt( 'max_long' ),
@@ -94,6 +95,15 @@ function kf24_render_configurator() {
 				<?php endforeach; ?>
 			</div>
 			<p class="kf24-filter-empty" hidden>Nichts gefunden. Anderer Suchbegriff?</p>
+<?php if ( ! empty( $c['finish'] ) ) : $fs = kf24_finishes(); ?>
+				<p class="kf24-sub">Oberfläche</p>
+				<div class="kf24-fin" role="radiogroup" aria-label="Oberfläche">
+					<?php foreach ( $fs as $fk => $fv ) :
+						$extra = $fv[1] > 0 ? '+ ' . wp_strip_all_tags( wc_price( $fv[1] ) ) . ' je m²' . ( $fv[2] > 0 ? ', mind. ' . wp_strip_all_tags( wc_price( $fv[2] ) ) . ' je Front' : '' ) : 'im Preis enthalten'; ?>
+						<label><input type="radio" name="kf24[finish]" value="<?php echo esc_attr( $fk ); ?>" <?php checked( $fk, 'lack' ); ?>><span><b><?php echo esc_html( $fv[0] ); ?></b><small><?php echo esc_html( ( $fk === 'lack' ? 'Standard, pflegeleicht · ' : 'natürliche Holzoptik, nachölbar · ' ) . $extra ); ?></small></span></label>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
 			<p class="kf24-hint">Bildschirmfarben weichen vom Original ab. <?php $sid = kf24_sample_product_id( $c['sample'] ); echo $sid ? '<a href="' . esc_url( kf24_sample_link( $sid ) ) . '">Muster bestellen</a>.' : 'Rufen Sie uns an: ' . esc_html( kf24_opt( 'phone' ) ) . '.'; ?></p>
 		</fieldset>
 

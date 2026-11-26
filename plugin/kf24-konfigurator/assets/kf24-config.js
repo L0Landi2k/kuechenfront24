@@ -38,6 +38,7 @@
 			deliver: $('input[name="kf24[deliver]"]').checked ? 'yes' : 'no',
 			grip: radio('grip') || '0', gpos: $('#kf24-gpos').value,
 			ga: num($('#kf24-ga').value), gb: num($('#kf24-gb').value), gd: num($('#kf24-gd').value),
+			finish: P.finish ? (radio('finish') || 'lack') : '',
 			mill: radio('mill') || 'keine', seal: $('input[name="kf24[seal]"]').checked ? 'yes' : 'no',
 			qty: Math.max(1, parseInt($('#kf24-qty').value, 10) || 1), hpos: []
 		};
@@ -121,8 +122,9 @@
 		var mill = P.milling && c.mill !== 'keine' ? S.milling_price : 0;
 		var hin = c.deliver === 'yes' ? c.hinges * S.hinge_price : 0;
 		var seal = c.seal === 'yes' ? (c.w / 1000) * S.seal_price_lfm : 0;
-		var unit = Math.round((base + mill + hin + seal) * 100) / 100;
-		return { area: area, base: base, how: bp.how, mill: mill, hin: hin, seal: seal, unit: unit, total: unit * c.qty };
+		var ff = P.finish && c.finish && S.finishes && S.finishes[c.finish], fin = ff ? Math.round(Math.max(ff[2], area * ff[1]) * 100) / 100 : 0;
+		var unit = Math.round((base + mill + hin + seal + fin) * 100) / 100;
+		return { area: area, base: base, how: bp.how, mill: mill, hin: hin, seal: seal, fin: fin, unit: unit, total: unit * c.qty };
 	}
 
 	function draw(c) {
@@ -198,6 +200,7 @@
 		$('#kf24-msgs').innerHTML = r.err.map(function (m) { return '<li class="kf24-err">' + m + '</li>'; }).join('') + r.warn.map(function (m) { return '<li class="kf24-warn">' + m + '</li>'; }).join('');
 		var cpn = c.part && catPart(c.part);
 		var rows = '<tr><td>' + (p.how === 'fest' ? 'Festpreis ' + cpn.n : p.how === 'mindest' ? 'Mindestpreis je Teil' : p.area.toLocaleString('de-DE', { maximumFractionDigits: 3 }) + ' m² × ' + eur(P.m2) + ((P.edge || P.piece) ? ' + Kante/Pauschale' : '')) + '</td><td>' + eur(p.base) + '</td></tr>';
+		if (p.fin) rows += '<tr><td>Oberfläche ' + S.finishes[c.finish][0] + '</td><td>' + eur(p.fin) + '</td></tr>';
 		if (p.mill) rows += '<tr><td>Grifffräsung</td><td>' + eur(p.mill) + '</td></tr>';
 		if (p.hin) rows += '<tr><td>' + c.hinges + ' Topfbänder</td><td>' + eur(p.hin) + '</td></tr>';
 		if (p.seal) rows += '<tr><td>Aufsteckdichtung' + (S.seal_note ? ' (' + S.seal_note + ')' : '') + '</td><td>' + eur(p.seal) + '</td></tr>';
@@ -351,7 +354,7 @@
 		$('input[name="kf24[deliver]"]').checked = c.deliver === 'yes';
 		setRadio('grip', c.grip || '0'); setVal('#kf24-gpos', c.gpos || 'mitte');
 		setVal('#kf24-ga', c.ga || ''); setVal('#kf24-gb', c.gb || 40); setVal('#kf24-gd', c.gd || 128);
-		setRadio('mill', c.mill || 'keine'); var se = $('input[name="kf24[seal]"]'); if (se) se.checked = c.seal === 'yes';
+		setRadio('mill', c.mill || 'keine'); if (P.finish) setRadio('finish', c.finish || 'lack'); var se = $('input[name="kf24[seal]"]'); if (se) se.checked = c.seal === 'yes';
 		setVal('#kf24-qty', c.qty || 1);
 		var cpp = c.part && catPart(c.part); partId.value = cpp ? c.part : '';
 		if (cpp) { sysSel.value = cpp.s; fillParts(cpp.s, cpp.id); } else if (partSel.value) { partSel.value = ''; }
@@ -370,7 +373,7 @@
 		var total = 0, bad = 0;
 		document.getElementById('kf24-list-items').innerHTML = list.map(function (c, i) {
 			var r = check(c), p = price(c); total += p.total; if (r.err.length) bad++;
-			return '<li class="' + (i === active ? 'is-active ' : '') + (r.err.length ? 'has-err' : 'is-ok') + '"><button type="button" class="kf24-li" data-i="' + i + '"><b>' + (i + 1) + '. ' + (c.label ? c.label.replace(/</g, '&lt;') : TYPES[c.type] || 'Front') + '</b><small>' + fmt(c.w) + ' × ' + fmt(c.h) + ' mm · ' + (c.decor ? short(c.decor).replace(/</g, '&lt;') : '<em>Material fehlt</em>') + '</small><span class="kf24-li-p">' + (r.err.length ? '<span class="kf24-li-x">' + r.err.length + ' offen</span>' : eur(p.total)) + '</span></button><span class="kf24-li-q"><button type="button" data-q="' + i + '" data-d="-1" aria-label="Eins weniger">−</button><b>' + (c.qty || 1) + '</b><button type="button" data-q="' + i + '" data-d="1" aria-label="Eins mehr">+</button></span><button type="button" class="kf24-li-del" data-del="' + i + '" aria-label="Position ' + (i + 1) + ' entfernen">×</button></li>';
+			return '<li class="' + (i === active ? 'is-active ' : '') + (r.err.length ? 'has-err' : 'is-ok') + '"><button type="button" class="kf24-li" data-i="' + i + '"><b>' + (i + 1) + '. ' + (c.label ? c.label.replace(/</g, '&lt;') : TYPES[c.type] || 'Front') + '</b><small>' + fmt(c.w) + ' × ' + fmt(c.h) + ' mm · ' + (c.decor ? short(c.decor).replace(/</g, '&lt;') : '<em>Material fehlt</em>') + (P.finish && c.finish === 'oel' ? ' · ' + S.finishes.oel[0].toLowerCase() : '') + '</small><span class="kf24-li-p">' + (r.err.length ? '<span class="kf24-li-x">' + r.err.length + ' offen</span>' : eur(p.total)) + '</span></button><span class="kf24-li-q"><button type="button" data-q="' + i + '" data-d="-1" aria-label="Eins weniger">−</button><b>' + (c.qty || 1) + '</b><button type="button" data-q="' + i + '" data-d="1" aria-label="Eins mehr">+</button></span><button type="button" class="kf24-li-del" data-del="' + i + '" aria-label="Position ' + (i + 1) + ' entfernen">×</button></li>';
 		}).join('');
 		renderChips(sysSel.value);
 		document.getElementById('kf24-list-n').textContent = list.length + (list.length === 1 ? ' Position' : ' Positionen');
@@ -414,7 +417,7 @@
 			renderList(); return;
 		}
 		if (b.id === 'kf24-list-add') { list.push(blankFrom(state())); active = list.length - 1; save(); toForm(list[active]); renderList(); return; }
-		if (b.id === 'kf24-list-decor') { var d = radio('decor'); if (!d) return; list.forEach(function (c) { c.decor = d; }); save(); renderList(); return; }
+		if (b.id === 'kf24-list-decor') { var d = radio('decor'); if (!d) return; var fi = radio('finish'); list.forEach(function (c) { c.decor = d; if (fi) c.finish = fi; }); save(); renderList(); return; }
 		if (b.id === 'kf24-list-clear') {
 			if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Wirklich leeren?'; setTimeout(function () { delete b.dataset.sure; b.textContent = 'Liste leeren'; }, 3000); return; }
 			list = []; active = -1; save(); $('#kf24-submit').hidden = false; $('#kf24-tolist').hidden = false; renderList(); return;
