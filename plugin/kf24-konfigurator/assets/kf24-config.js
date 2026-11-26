@@ -205,18 +205,19 @@
 		if (p.mill) rows += '<tr><td>Grifffräsung</td><td>' + eur(p.mill) + '</td></tr>';
 		if (p.hin) rows += '<tr><td>' + c.hinges + ' Topfbänder à ' + eur(S.hinge_price) + '</td><td>' + eur(p.hin) + '</td></tr>';
 		if (p.seal) rows += '<tr><td>Aufsteckdichtung' + (S.seal_note ? ' (' + S.seal_note + ')' : '') + '</td><td>' + eur(p.seal) + '</td></tr>';
-		rows += '<tr class="kf24-unitrow"><td>Preis je Front</td><td>' + eur(p.unit) + '</td></tr>';
+		if (c.qty > 1) rows += '<tr class="kf24-unitrow"><td>Preis je Front</td><td>' + eur(p.unit) + '</td></tr>';
 		if (c.qty > 1) {
 			rows = '<tr class="kf24-bh"><td colspan="2">Je Front</td></tr>' + rows;
 			rows += '<tr class="kf24-qtyrow"><td>× ' + c.qty + ' Stück</td><td>' + eur(p.total) + '</td></tr>';
 			if (p.hin) rows += '<tr class="kf24-incl"><td colspan="2">darin ' + (c.hinges * c.qty) + ' Topfbänder (' + eur(p.hin * c.qty) + ')</td></tr>';
 		}
-		$('#kf24-breakdown').innerHTML = rows;
 		$('#kf24-decor-name').textContent = c.decor || 'bitte wählen';
-		$('#kf24-total').textContent = eur(p.total);
+		var cp2 = document.getElementById('kf24-check-p');
+		if (cp2) cp2.innerHTML = r.err.length || !c.w ? '' : (active >= 0 ? 'Preis dieser Position: ' : 'Preis dieser Front: ') + '<b>' + eur(p.total) + '</b>' + (c.qty > 1 ? ' (' + c.qty + ' × ' + eur(p.unit) + ')' : '');
+		if (typeof list !== 'undefined' && list && list.length) { listSummary(); }
+		else { $('#kf24-breakdown').innerHTML = rows; $('#kf24-total').textContent = eur(p.total); $('#kf24-total-l').textContent = 'Gesamt'; }
 		$('#kf24-submit').disabled = r.err.length > 0;
-		$('#kf24-msubmit').disabled = r.err.length > 0;
-		$('#kf24-mtotal').textContent = eur(p.total);
+		if (!(typeof list !== 'undefined' && list && list.length)) { $('#kf24-msubmit').disabled = r.err.length > 0; $('#kf24-mtotal').textContent = eur(p.total); }
 		$('.kf24-hint-body').hidden = !c.hinges;
 		var rec = recommend(len);
 		$('#kf24-hinges').setAttribute('aria-description', 'Empfohlen: ' + rec);
@@ -399,7 +400,7 @@
 		form.classList.toggle('kf24-has-list', list.length > 0);
 		if (!list.length) {
 			renderChips(sysSel.value); document.getElementById('kf24-check').hidden = true;
-			$('#kf24-submit').hidden = false; $('#kf24-tolist').hidden = false; return;
+			$('#kf24-submit').hidden = false; $('#kf24-tolist').hidden = false; sync(); return;
 		}
 		var total = 0, bad = 0, chk = 0;
 		document.getElementById('kf24-list-items').innerHTML = list.map(function (c, i) {
@@ -414,7 +415,7 @@
 		btn.disabled = bad > 0;
 		btn.dataset.open = chk;
 		btn.textContent = bad ? bad + ' Position' + (bad > 1 ? 'en' : '') + ' noch unvollständig' : chk ? 'Noch ' + chk + ' Position' + (chk > 1 ? 'en' : '') + ' prüfen' : 'Alle ' + list.length + ' in den Warenkorb';
-		renderMode(chk);
+		renderMode(chk); listSummary();
 		$('#kf24-submit').hidden = true; $('#kf24-tolist').hidden = true;
 		$('#kf24-mtotal').textContent = eur(total);
 		$('#kf24-msubmit').textContent = bad || chk ? 'Liste prüfen' : 'Alle ' + list.length + ' in den Warenkorb';
@@ -445,6 +446,31 @@
 			ok.dataset.act = 'add'; ok.textContent = '+ In die Frontenliste übernehmen';
 		}
 		if (chk > 0 && ok.dataset.act === 'ok') ok.textContent += chk > 1 ? ' (noch ' + chk + ')' : '';
+		t.insertAdjacentHTML('beforeend', '<span class="kf24-check-p" id="kf24-check-p"></span>'); sync();
+	}
+	/* Dunkler Kasten = Summe der ganzen Frontenliste (Preis je Position steht in der Liste) */
+	function listSummary() {
+		var t = { pos: list.length, n: 0, area: 0, base: 0, fin: 0, mill: 0, nmill: 0, hin: 0, nhin: 0, holes: 0, seal: 0, total: 0, bad: 0 };
+		list.forEach(function (c) {
+			var q = Math.max(1, +c.qty || 1), pr = price(c), rr = check(c);
+			if (rr.err.length) { t.bad++; return; }
+			t.n += q; t.area += (c.w * c.h / 1e6) * q; t.base += pr.base * q; t.fin += pr.fin * q; t.seal += pr.seal * q; t.total += pr.total;
+			if (pr.mill) { t.mill += pr.mill * q; t.nmill += q; }
+			if (c.hinge !== 'keine' && c.hinges) { t.holes += c.hinges * q; if (pr.hin) { t.hin += pr.hin * q; t.nhin += c.hinges * q; } }
+		});
+		var f2 = function (v) { return v.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+		var rows = '<tr class="kf24-bh"><td colspan="2">Ihre Frontenliste: ' + t.pos + (t.pos === 1 ? ' Position' : ' Positionen') + ', ' + t.n + (t.n === 1 ? ' Front' : ' Fronten') + '</td></tr>' +
+			'<tr><td>Fronten, Fläche gesamt ' + f2(t.area) + ' m²</td><td>' + eur(t.base) + '</td></tr>';
+		if (t.fin) rows += '<tr><td>Oberfläche ' + S.finishes.oel[0].toLowerCase() + '</td><td>' + eur(t.fin) + '</td></tr>';
+		if (t.nmill) rows += '<tr><td>' + t.nmill + ' × Grifffräsung</td><td>' + eur(t.mill) + '</td></tr>';
+		if (t.nhin) rows += '<tr><td>' + t.nhin + ' Topfbänder mitgeliefert</td><td>' + eur(t.hin) + '</td></tr>';
+		if (t.holes) rows += '<tr class="kf24-incl"><td colspan="2">' + t.holes + ' Topfbandbohrungen Ø 35 mm – im Preis enthalten</td></tr>';
+		if (t.seal) rows += '<tr><td>Aufsteckdichtung</td><td>' + eur(t.seal) + '</td></tr>';
+		if (t.bad) rows += '<tr class="kf24-incl"><td colspan="2">' + t.bad + (t.bad === 1 ? ' Position ist' : ' Positionen sind') + ' noch unvollständig und nicht mitgerechnet.</td></tr>';
+		$('#kf24-breakdown').innerHTML = rows;
+		$('#kf24-total').textContent = eur(t.total);
+		$('#kf24-total-l').textContent = 'Gesamt Frontenliste';
+		$('#kf24-mtotal').textContent = eur(t.total); $('#kf24-msubmit').disabled = false;
 	}
 	function freshForm() { // keep material, type and system – clear what belongs to one front
 		var n = blankFrom(state()); n.w = 0; n.h = 0; n.part = ''; n.hraw = []; n.hlast = 'start'; delete n.ok;

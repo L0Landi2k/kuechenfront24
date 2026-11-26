@@ -393,3 +393,5 @@ details.kf24-chips[open]>summary{margin-bottom:6px}
 .kf24-breakdown .kf24-bh td,.kf24-breakdown .kf24-incl td{text-align:left!important}
 .woocommerce div.product form.cart .kf24-pricebox .button.kf24-ghost{background:transparent!important;color:#f3ece2!important;border:1.5px solid rgba(243,236,226,.7)!important}
 .woocommerce div.product form.cart .kf24-pricebox .button.kf24-ghost:hover{background:rgba(255,255,255,.08)!important}
+
+.kf24-check-p{display:block;margin-top:6px;font-size:15px}

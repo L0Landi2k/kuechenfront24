@@ -194,7 +194,7 @@ function kf24_render_configurator() {
 		<ul class="kf24-msgs" id="kf24-msgs"></ul>
 		<div class="kf24-pricebox">
 			<table class="kf24-breakdown" id="kf24-breakdown"></table>
-			<div class="kf24-total"><span>Gesamt</span><b id="kf24-total">–</b></div>
+			<div class="kf24-total"><span id="kf24-total-l">Gesamt</span><b id="kf24-total">–</b></div>
 			<p class="kf24-legal">inkl. MwSt., zzgl. <a href="<?php echo esc_url( home_url( '/versand/' ) ); ?>">Versand</a> · Lieferzeit <?php echo esc_html( $c['lz'] ); ?></p>
 			<button type="submit" name="add-to-cart" value="<?php echo (int) $product->get_id(); ?>" class="single_add_to_cart_button button alt kf24-submit" id="kf24-submit">In den Warenkorb</button>
 			<button type="button" class="button kf24-ghost kf24-tolist" id="kf24-tolist">Weitere Front planen</button>
