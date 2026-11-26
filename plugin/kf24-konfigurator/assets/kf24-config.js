@@ -197,7 +197,8 @@
 		if (fixedGrip) $('.kf24-ga-l').textContent = 'Höhe der Griffmitte von oben (A, leer = Mitte)';
 		$('.kf24-grain-l').hidden = c.type === 'blende'; $('.kf24-grain-fix').hidden = c.type !== 'blende';
 		$('.kf24-label-t').innerHTML = c.type === 'sonstig' ? 'Bezeichnung <small>(Pflicht, z. B. „Regalboden“ oder „Wandpaneel“)</small>' : 'Eigene Bezeichnung <small>(optional, z. B. „Spüle links“)</small>';
-		$('#kf24-msgs').innerHTML = r.err.map(function (m) { return '<li class="kf24-err">' + m + '</li>'; }).join('') + r.warn.map(function (m) { return '<li class="kf24-warn">' + m + '</li>'; }).join('');
+		var shown = !c.w && !c.h ? ['<li class="kf24-info">Bitte Breite und Höhe in mm eintragen.</li>'] : r.err.map(function (m) { return '<li class="kf24-err">' + m + '</li>'; });
+		$('#kf24-msgs').innerHTML = shown.join('') + r.warn.map(function (m) { return '<li class="kf24-warn">' + m + '</li>'; }).join('');
 		var cpn = c.part && catPart(c.part);
 		var rows = '<tr><td>' + (p.how === 'fest' ? 'Festpreis ' + cpn.n : p.how === 'mindest' ? 'Mindestpreis je Teil' : p.area.toLocaleString('de-DE', { maximumFractionDigits: 3 }) + ' m² × ' + eur(P.m2) + ((P.edge || P.piece) ? ' + Kante/Pauschale' : '')) + '</td><td>' + eur(p.base) + '</td></tr>';
 		if (p.fin) rows += '<tr><td>Oberfläche ' + S.finishes[c.finish][0] + '</td><td>' + eur(p.fin) + '</td></tr>';
@@ -221,9 +222,9 @@
 	// presets per front type
 	function preset(t) {
 		if (t === 'tuer') { setRadio('hinge', 'links'); setRadio('grip', '0'); }
-		if (t === 'schublade') { setRadio('hinge', 'keine'); $('#kf24-h').value = 197; $('#kf24-gpos').value = 'mitte'; }
-		if (t === 'klappe') { setRadio('hinge', 'oben'); $('#kf24-h').value = 397; $('#kf24-hinges').value = 2; }
-		if (t === 'blende') { setRadio('hinge', 'keine'); setRadio('grip', '0'); $('#kf24-h').value = 80; $('#kf24-w').value = 597; }
+		if (t === 'schublade') { setRadio('hinge', 'keine'); if (!ownDims) $('#kf24-h').value = 197; $('#kf24-gpos').value = 'mitte'; }
+		if (t === 'klappe') { setRadio('hinge', 'oben'); if (!ownDims) $('#kf24-h').value = 397; $('#kf24-hinges').value = 2; }
+		if (t === 'blende') { setRadio('hinge', 'keine'); setRadio('grip', '0'); if (!ownDims) { $('#kf24-h').value = 80; $('#kf24-w').value = 597; } }
 		if (t === 'sonstig') { setRadio('hinge', 'keine'); setRadio('grip', '0'); setTimeout(function () { $('#kf24-label').focus(); }, 50); }
 		$('.kf24-seal').hidden = t !== 'blende';
 		hposDirty = false;
@@ -311,7 +312,7 @@
 		document.getElementById('kf24-chips-in').innerHTML = h + (g ? '</div>' : '');
 	}
 	function applyPart(cp) {
-		setRadio('type', cp.t); preset(cp.t);
+		ownDims = false; setRadio('type', cp.t); preset(cp.t);
 		$('#kf24-w').value = cp.w; $('#kf24-h').value = cp.h;
 		setRadio('hinge', cp.a); if (cp.b) $('#kf24-hinges').value = String(cp.b);
 		var note = form.querySelector('[name="kf24[note]"]'); if (note && (!note.value || note.dataset.auto)) { note.value = cp.x || ''; note.dataset.auto = '1'; }
@@ -342,6 +343,14 @@
 	var LKEY = 'kf24_list_' + P.id, list = [], active = -1;
 	var TYPES = { tuer: 'Tür', schublade: 'Schublade', klappe: 'Klappe', blende: 'Blende', sonstig: 'Sonstiges' };
 	try { list = JSON.parse(localStorage.getItem(LKEY)) || []; } catch (e) { list = []; }
+	(function () { // items saved by older versions: fill missing fields so nothing breaks
+		var d = state();
+		list = (Array.isArray(list) ? list : []).filter(function (c) { return c && typeof c === 'object'; }).map(function (c) {
+			Object.keys(d).forEach(function (k) { if (c[k] === undefined) c[k] = d[k]; });
+			if (!Array.isArray(c.hpos)) c.hpos = []; if (!Array.isArray(c.hraw)) c.hraw = [];
+			return c;
+		});
+	})();
 	function save() { try { localStorage.setItem(LKEY, JSON.stringify(list)); } catch (e) { /* private mode */ } }
 	function setVal(sel, v) { var el = form.querySelector(sel); if (el && v != null) el.value = v; }
 	function toForm(c) {
@@ -384,7 +393,10 @@
 		var box = document.getElementById('kf24-list');
 		box.hidden = list.length === 0;
 		form.classList.toggle('kf24-has-list', list.length > 0);
-		if (!list.length) { renderChips(sysSel.value); return; }
+		if (!list.length) {
+			renderChips(sysSel.value); document.getElementById('kf24-check').hidden = true;
+			$('#kf24-submit').hidden = false; $('#kf24-tolist').hidden = false; return;
+		}
 		var total = 0, bad = 0, chk = 0;
 		document.getElementById('kf24-list-items').innerHTML = list.map(function (c, i) {
 			var r = check(c), p = price(c); total += p.total; if (r.err.length) bad++;
@@ -398,12 +410,7 @@
 		btn.disabled = bad > 0;
 		btn.dataset.open = chk;
 		btn.textContent = bad ? bad + ' Position' + (bad > 1 ? 'en' : '') + ' noch unvollständig' : chk ? 'Noch ' + chk + ' Position' + (chk > 1 ? 'en' : '') + ' prüfen' : 'Alle ' + list.length + ' in den Warenkorb';
-		var cb = document.getElementById('kf24-check'), ac = list[active];
-		cb.hidden = !(ac && ac.ok === false);
-		if (!cb.hidden) {
-			document.getElementById('kf24-check-t').innerHTML = '<b>Position ' + (active + 1) + ' prüfen:</b> ' + (ac.label || TYPES[ac.type]).replace(/</g, '&lt;') + ', ' + grainTxt(ac) + ', ' + hingeTxt(ac) + '. Stimmt die Zeichnung? Sonst links ändern' + (ac.type === 'tuer' ? ' – vor allem den Anschlag' : '') + '.';
-			document.getElementById('kf24-check-ok').textContent = chk > 1 ? '✓ Passt – nächste prüfen' : '✓ Passt';
-		}
+		renderMode(chk);
 		$('#kf24-submit').hidden = true; $('#kf24-tolist').hidden = true;
 		$('#kf24-mtotal').textContent = eur(total);
 		$('#kf24-msubmit').textContent = bad || chk ? 'Liste prüfen' : 'Alle ' + list.length + ' in den Warenkorb';
@@ -415,6 +422,31 @@
 		var b = document.getElementById('kf24-list-cart');
 		if (b.disabled) document.getElementById('kf24-list').scrollIntoView({ behavior: 'smooth' }); else b.click();
 	});
+	/* Was bearbeite ich gerade? Ein Kasten über der Zeichnung sagt es – und hat den passenden Knopf. */
+	function renderMode(chk) {
+		var cb = document.getElementById('kf24-check'), t = document.getElementById('kf24-check-t'), ok = document.getElementById('kf24-check-ok'), ac = list[active];
+		cb.hidden = !list.length; if (cb.hidden) return;
+		var name = ac ? (ac.label || TYPES[ac.type] || 'Front').replace(/</g, '&lt;') : '';
+		if (ac && ac.ok === false) {
+			cb.className = 'kf24-check is-open';
+			t.innerHTML = '<b class="kf24-check-h">Position ' + (active + 1) + ' prüfen: ' + name + '</b>' + grainTxt(ac) + ' · ' + hingeTxt(ac) + '.<br>Stimmt die Zeichnung? Sonst links ändern' + (ac.type === 'tuer' ? ' – vor allem den Anschlag' : '') + '. Änderungen gelten für diese Position.';
+			ok.dataset.act = 'ok'; ok.textContent = '✓ Passt – in Frontenliste übernehmen';
+		} else if (ac) {
+			cb.className = 'kf24-check is-edit';
+			t.innerHTML = '<b class="kf24-check-h">Sie bearbeiten Position ' + (active + 1) + ': ' + name + '</b>Jede Änderung links wird sofort in die Liste übernommen.';
+			ok.dataset.act = 'done'; ok.textContent = 'Fertig – neue Front planen';
+		} else {
+			cb.className = 'kf24-check is-new';
+			t.innerHTML = '<b class="kf24-check-h">Neue Front – noch nicht in der Liste</b>Links Maße und Bohrungen eingeben' + (sysSel.value ? ' oder oben ein Teil antippen' : '') + ', dann übernehmen.';
+			ok.dataset.act = 'add'; ok.textContent = '+ In die Frontenliste übernehmen';
+		}
+		if (chk > 0 && ok.dataset.act === 'ok') ok.textContent += chk > 1 ? ' (noch ' + chk + ')' : '';
+	}
+	function freshForm() { // keep material, type and system – clear what belongs to one front
+		var n = blankFrom(state()); n.w = 0; n.h = 0; n.part = ''; n.hraw = []; n.hlast = 'start'; delete n.ok;
+		toForm(n); var l = $('#kf24-label'); l.dataset.auto = '1'; ownDims = false;
+	}
+	function newMode() { active = -1; freshForm(); renderList(); }
 	function select(i) { active = i; toForm(list[i]); renderList(); form.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 	function blankFrom(c) { var n = JSON.parse(JSON.stringify(c)); n.label = ''; n.note = ''; n.qty = 1; return n; }
 
@@ -423,7 +455,9 @@
 		form.addEventListener(ev, function () { if (active >= 0 && list[active]) { upd(); renderList(); } });
 	});
 	document.getElementById('kf24-tolist').addEventListener('click', function () {
-		list.push(state()); list.push(blankFrom(state())); active = list.length - 1; save(); toForm(list[active]); renderList();
+		var c = state();
+		if (c.w && c.h) { list.push(c); save(); }
+		newMode();
 	});
 	document.getElementById('kf24-list').addEventListener('click', function (e) {
 		var b = e.target.closest('button'); if (!b) return;
@@ -433,17 +467,16 @@
 		}
 		if (b.dataset.i != null) return select(+b.dataset.i);
 		if (b.dataset.del != null) {
-			list.splice(+b.dataset.del, 1);
-			if (active >= list.length) active = list.length - 1;
-			save();
-			if (list.length) toForm(list[active]); else { active = -1; $('#kf24-submit').hidden = false; $('#kf24-tolist').hidden = false; }
-			renderList(); return;
+			var di = +b.dataset.del;
+			list.splice(di, 1); save();
+			if (di === active || !list.length) { newMode(); } else { if (di < active) active--; renderList(); }
+			return;
 		}
-		if (b.id === 'kf24-list-add') { list.push(blankFrom(state())); active = list.length - 1; save(); toForm(list[active]); renderList(); return; }
+		if (b.id === 'kf24-list-add') { newMode(); form.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
 		if (b.id === 'kf24-list-decor') { var d = radio('decor'); if (!d) return; var fi = radio('finish'); list.forEach(function (c) { c.decor = d; if (fi) c.finish = fi; }); save(); renderList(); return; }
 		if (b.id === 'kf24-list-clear') {
 			if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Wirklich leeren?'; setTimeout(function () { delete b.dataset.sure; b.textContent = 'Liste leeren'; }, 3000); return; }
-			list = []; active = -1; save(); $('#kf24-submit').hidden = false; $('#kf24-tolist').hidden = false; renderList(); return;
+			list = []; save(); newMode(); return;
 		}
 		if (b.id === 'kf24-list-cart' && +b.dataset.open > 0) { var o = nextOpen(-1); if (o >= 0) { active = o; toForm(list[o]); renderList(); document.getElementById('kf24-check').scrollIntoView({ behavior: 'smooth', block: 'center' }); } return; }
 		if (b.id === 'kf24-list-cart') {
@@ -461,12 +494,23 @@
 	});
 
 	document.getElementById('kf24-check-ok').addEventListener('click', function () {
-		if (!list[active]) return;
-		delete list[active].ok; save();
+		var act = this.dataset.act;
+		if (act === 'add') {
+			var c = state(), r = check(c);
+			if (r.err.length) { sync(); $('#kf24-msgs').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+			delete c.ok; list.push(c); save(); newMode(); flash(list.length - 1); return;
+		}
+		if (act === 'ok' && list[active]) {
+			var r2 = check(list[active]); if (r2.err.length) { sync(); return; }
+			delete list[active].ok; save(); flash(active);
+		}
 		var o = nextOpen(active);
-		if (o >= 0) { active = o; toForm(list[o]); }
-		renderList();
+		if (o >= 0) { active = o; toForm(list[o]); renderList(); } else newMode();
 	});
+	function flash(i) { // short highlight so the customer sees where the front went
+		var li = document.querySelectorAll('#kf24-list-items li')[i]; if (!li) return;
+		li.classList.add('is-flash'); setTimeout(function () { li.classList.remove('is-flash'); }, 1200);
+	}
 
 	// Teile-Knöpfe: jedes angetippte Teil wird eine Position der Frontenliste
 	var ownDims = false;
@@ -524,6 +568,6 @@
 			save();
 		}
 	} catch (e) { /* ignore */ }
-	if (list.length) { active = 0; toForm(list[0]); }
-	renderList();
+	if (list.length) { var fo = nextOpen(-1); if (fo >= 0) { active = fo; toForm(list[fo]); renderList(); } else newMode(); }
+	else renderList();
 })();
